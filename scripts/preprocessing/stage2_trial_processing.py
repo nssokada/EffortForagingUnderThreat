@@ -379,7 +379,7 @@ def compute_auc_effort(
     if len(valid_efforts) < 2:
         return np.nan
 
-    return np.trapz(valid_efforts, valid_times)
+    return np.trapezoid(valid_efforts, valid_times)
 
 
 def calculate_all_effort_metrics(
