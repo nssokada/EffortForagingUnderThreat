@@ -1,0 +1,37 @@
+name: effort_foraging_threat
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.11
+  - pip
+
+  # ── Core scientific ────────────────────────────────────────────────
+  - numpy>=1.26,<3
+  - pandas>=2.2
+  - scipy>=1.13
+
+  # ── Visualization ─────────────────────────────────────────────────
+  - matplotlib>=3.9
+  - seaborn>=0.13
+
+  # ── ML / stats ────────────────────────────────────────────────────
+  - scikit-learn>=1.5
+  - statsmodels>=0.14
+
+  # ── Bayesian diagnostics ──────────────────────────────────────────
+  - arviz>=0.19
+
+  # ── Utilities ─────────────────────────────────────────────────────
+  - tqdm
+  - ipykernel
+  - jupyterlab>=4.0
+
+  # ── JAX ecosystem (via pip for best Mac/CPU compatibility) ─────────
+  - pip:
+    - "jax[cpu]>=0.4.30"      # hierarchical model inference backend
+    - jaxlib>=0.4.30
+    - numpyro>=0.15.0         # HMC/NUTS sampling (choice models)
+    - pymc>=5.10.0            # used in psych/mental health analysis
+    - bambi>=0.13.0           # Bayesian mixed-effects regressions

@@ -1,0 +1,150 @@
+# =============================================================================
+# Effort Foraging Under Threat — .gitignore
+# =============================================================================
+# Rules:
+#   1. No participant data of any kind
+#   2. Only figs/publication/ is tracked; all intermediate figures are ignored
+#   3. Large binary outputs (MCMC fits, pickles, numpy arrays) are ignored
+
+
+# =============================================================================
+# DATA — never commit any participant data
+# =============================================================================
+data/exploratory_350/raw/*
+data/exploratory_350/processed/*
+data/confirmatory_350/raw/*
+data/confirmatory_350/processed/*
+
+# Keep directory structure
+!data/exploratory_350/raw/.gitkeep
+!data/exploratory_350/processed/.gitkeep
+!data/confirmatory_350/raw/.gitkeep
+!data/confirmatory_350/processed/.gitkeep
+
+# Participant ID lists and demographics (PII)
+data/**/*.txt
+data/**/*.csv
+data/**/*.tsv
+data/**/*.xlsx
+
+# Any stray data files at the sample level
+data/**/*.json
+data/**/*.zip
+data/**/*.gz
+data/**/*.tar
+
+
+# =============================================================================
+# FIGURES — only publication-ready figures are tracked
+# =============================================================================
+figs/*
+!figs/publication/
+
+# Intermediate figure files under figs/ (publication/ is re-allowed above)
+figs/*.png
+figs/*.jpg
+figs/*.jpeg
+figs/*.pdf
+figs/*.svg
+figs/*.eps
+figs/*.tiff
+figs/*.tif
+
+
+# =============================================================================
+# LARGE BINARY OUTPUTS — model fits, arrays, databases
+# =============================================================================
+# MCMC posterior samples (can be hundreds of MB per fit)
+results/model_fits/
+
+# Serialised Python objects
+**/*.pkl
+**/*.pickle
+
+# NumPy / array formats
+**/*.npy
+**/*.npz
+
+# HDF5 / NetCDF / Arrow
+**/*.h5
+**/*.hdf5
+**/*.nc
+**/*.arrow
+**/*.parquet
+**/*.feather
+
+# Keep results/stats/ tracked (small summary tables)
+!results/stats/
+!results/stats/**
+
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.spec
+
+
+# =============================================================================
+# JUPYTER
+# =============================================================================
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+# Uncomment to strip notebook outputs before committing (recommended):
+# *.ipynb  — too aggressive; use nbstripout instead
+
+
+# =============================================================================
+# ENVIRONMENT & SECRETS
+# =============================================================================
+.env
+.env.*
+*.pem
+*.key
+secrets/
+credentials*
+*.token
+prolific_api*
+
+
+# =============================================================================
+# macOS
+# =============================================================================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.Spotlight-V100
+.Trashes
+
+
+# =============================================================================
+# IDEs
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+
+# =============================================================================
+# MISC
+# =============================================================================
+*.log
+*.tmp
+*.bak
+*.orig
+Thumbs.db
