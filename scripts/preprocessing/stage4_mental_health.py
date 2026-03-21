@@ -308,29 +308,44 @@ def score_sticsa(df: pd.DataFrame, logger: Optional[PipelineLogger] = None) -> p
 
 
 def score_stai(df: pd.DataFrame, logger: Optional[PipelineLogger] = None) -> pd.DataFrame:
-    """Calculate STAI State and Trait scores."""
-    direct_items = [2, 3, 5, 6, 8, 9, 11, 12, 13, 16, 17]
-    reverse_items = [0, 1, 4, 7, 10, 14, 15, 18, 19]
-    
-    def score_response(idx, response):
+    """Calculate STAI State and Trait scores.
+
+    STAI-S (Form Y-1, surveyName='STAI') and STAI-T (Form Y-2, surveyName='STAI_2')
+    have different reverse-scored items. All items are on a 0-3 scale in raw data,
+    converted to 1-4 for scoring. Reverse items are scored as (5 - response).
+
+    STAI-S reverse items (anxiety-absent, 0-indexed): 0,1,4,7,10,14,15,18,19
+      Correspond to items 1,2,5,8,11,15,16,19,20 ("I feel calm", "I feel secure", etc.)
+    STAI-T reverse items (anxiety-absent, 0-indexed): 1,3,6,7,10,13,14,16,19
+      Correspond to items 22,24,27,28,31,34,35,37,40 ("I feel pleasant", "I feel satisfied", etc.)
+    """
+    # State (Form Y-1): 9 reverse-scored anxiety-absent items
+    state_reverse_items = [0, 1, 4, 7, 10, 14, 15, 18, 19]
+    # Trait (Form Y-2): 9 reverse-scored anxiety-absent items
+    trait_reverse_items = [1, 3, 6, 7, 10, 13, 14, 16, 19]
+
+    reverse_items_by_scale = {
+        'State': set(state_reverse_items),
+        'Trait': set(trait_reverse_items),
+    }
+
+    def score_response(idx, response, scale_name):
         # Add 1 to convert 0-3 scale to 1-4
         response = response + 1
-        if idx in direct_items:
-            return response
-        elif idx in reverse_items:
+        if idx in reverse_items_by_scale[scale_name]:
             return 5 - response
         return response
-    
+
     results = []
-    
+
     for scale_name, survey_name in [('State', 'STAI'), ('Trait', 'STAI_2')]:
         survey_df = df[df['surveyName'] == survey_name].copy()
         if survey_df.empty:
             continue
-        
+
         survey_df['itemIndex'] = survey_df.groupby('participantID').cumcount()
         survey_df['scored_response'] = survey_df.apply(
-            lambda row: score_response(row['itemIndex'], row['response']),
+            lambda row: score_response(row['itemIndex'], row['response'], scale_name),
             axis=1
         )
         
