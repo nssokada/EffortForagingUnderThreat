@@ -1,0 +1,7 @@
+param_1,param_2,r,p,method
+log(k),δ,-0.2834,8.1440925e-07,independent_bayesian
+log(β),δ,0.5494,1.6769546e-24,independent_bayesian
+log(k),α,0.3476,9.579504e-10,independent_bayesian
+log(β),α,0.0774,0.18629402,independent_bayesian
+α,δ,0.0564,0.3359116,independent_bayesian
+log(k),log(β),0.0376,0.52168447,independent_bayesian

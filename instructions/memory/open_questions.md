@@ -1,73 +1,36 @@
-# Open Questions
-
-Unresolved theoretical, methodological, and empirical questions that need decisions or further analysis.
-
 ---
+name: Open Questions
+description: Unresolved theoretical, methodological, and empirical questions for the paper
+type: questions
+---
+
+# Open Questions
 
 ## Theoretical
 
-### What does β (threat bias) capture computationally?
-- β is the residual threat sensitivity beyond what the survival-weighted EV accounts for
-- Right-skewed distribution (β̄=1.44, SD=1.89, range [0.20, 13.58]) — is this a genuine individual difference or noise?
-- Correlates with anticipatory mobilization (vigor) — consistent with a "preparatory arousal" interpretation
-- Open: does β relate to psychiatric measures (anxiety, STAI-T) more than z does?
+### Why is vigor more threat-driven than distance-driven?
+The joint model pushes λ to ~35 (S ≈ 1−T), while choice prefers λ ≈ 14 (distance matters). This means vigor excess effort responds mainly to "will I be attacked?" rather than "how far must I escape?" One interpretation: motor mobilization is triggered by threat detection (amygdala-driven), while choice computation integrates both threat and distance (prefrontal). This could be tested with neural data.
 
-### Does the paper's "common computational structure" claim hold for affect?
-- Choice ✅, Vigor ✅, Affect ✅ — all show S_probe/model-param links (NB12 complete)
-- z → chronic confidence deficit (β=−0.199, p_fdr=0.013); p_threat → phasic anxiety/confidence (β=±0.575/0.586)
-- **NEW NUANCE:** κ also predicts trait affect (anxiety + confidence). z×threat moderation NULL.
-- **Cross-domain null:** vigor × affect r all <0.13, none FDR-significant → parallel but independent reactive systems
-- **Resolution:** Two-system framing (deliberative vs. reactive) is the right story. NOT a simple "common substrate."
-
-### Tonic-phasic tradeoff interpretation
-- r = -0.36 to -0.48 between tonic vigor and reactive spike on attack trials
-- Reactive surge is also larger in low-threat patches (ceiling effect confirmed in NB11)
-- Could be ceiling/floor effect, resource allocation, or compensatory strategy
-- Open: does this tradeoff vary by threat level or model parameters?
+### Why are α and δ independent (r = +0.06)?
+Tonic baseline vigor and phasic danger mobilization are uncorrelated. This parallels the tonic-phasic dissociation in anxiety (mean anxiety vs anxiety-S slope). Suggests two separable systems: a baseline motor engagement trait (α, linked to dopaminergic tone → apathy) and a threat-responsive mobilization system (δ, linked to β via survival computation).
 
 ---
 
 ## Methodological
 
-### Factor analysis of psychiatric battery
-- DASS-21, PHQ-9, OASIS, STAI, AMI, MFIS, STICSA collected but not yet factor-analyzed
-- NB07 (clinical prediction) is blocked on this
-- Key question: how many factors? Expected: negative affect, apathy/fatigue, anxiety specificity
-- Should we do EFA first, then CFA on confirmatory sample?
+### Will MCMC resolve the λ sensitivity in the joint model?
+SVI's variational approximation may be getting stuck in different modes for different λ values. NUTS explores the full posterior and might give stable ρ estimates. The MCMC script is ready (`scripts/run_mcmc_pipeline.py`). This is the key methodological question.
 
-### Should we run full 7-model MCMC comparison on N=293?
-- WAIC table in paper currently from N=270 GPU fit
-- For the paper: need WAIC comparison on the same dataset as the winning model
-- Computational cost: ~6 hrs per model × 7 models = ~42 hrs total (or parallelized)
-
-### Confirmatory sample (N=350)
-- Not yet preprocessed or analyzed
-- Will need: full preprocessing pipeline, then refit FETExponentialBias, rerun all vigor analyses
-- Should confirmatory analysis be pre-registered?
+### Should the confirmatory analysis pre-register the independent Bayesian pipeline or the joint model?
+Current preregistration (H5) specifies the joint model with LKJ correlations. But the paper's primary evidence is the independent Bayesian r = +0.55. Consider adding the independent pipeline as an alternative analysis in the preregistration.
 
 ---
 
-## Pipeline
+## RESOLVED
 
-### Parameter recovery — does FETExponentialBias recover well?
-- `02_parameter_recovery.ipynb` has not been run against N=293 fit
-- Important for paper: shows model identifiability and parameter independence
-
-### What's the right time window for "terminal vigor"?
-- Currently: last 2s before trial resolution (escape or capture)
-- Alternative: fixed window before encounter; or dynamic window from encounter to resolution
-- Open: sensitivity analysis on window size
-
----
-
-## Statistical
-
-### Multiple comparison correction strategy for vigor → psych regressions (NB04 psych)
-- Currently using FDR (Benjamini-Hochberg) within each DV set
-- Alternative: Bonferroni, or family-wise correction across all tests
-- Decision needed before writing up NB04 results
-
-### Should z-scored parameters be used throughout or raw?
-- NB08/09 currently use z-scored (z_z, kappa_z, beta_z) for mixed models
-- Raw params used in NB06 scatter plots
-- Standardization helps interpretability of β coefficients across params with different scales
+- ~~What does β capture?~~ → Subjective capture cost in additive model. Correlates with δ (r=+0.55).
+- ~~Does the "common computation" claim hold?~~ → Yes, reframed as "effort reallocation." S governs choice, affect, and vigor. Coupling confirmed by independent Bayesian models.
+- ~~Factor analysis~~ → Done. 3 factors. α → apathy only.
+- ~~Should we run MCMC?~~ → Yes. Script ready. Awaiting GPU.
+- ~~λ = 2 vs λ = 14 discrepancy~~ → λ = 14 is correct from current data. λ = 2 was from older fit. Results robust to this change.
+- ~~α → apathy paradox~~ → Kept as Discussion point. High α = more motor engagement but self-reports more apathy. May reflect habitual vs goal-directed distinction.

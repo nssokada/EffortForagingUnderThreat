@@ -1,47 +1,58 @@
-# Active Issues
-
-Issues that are currently broken or blocking further work, in priority order.
-
 ---
+name: Active Issues
+description: Currently blocking or requiring attention for Nature Comms submission
+type: issues
+---
+
+# Active Issues
 
 ## BLOCKING
 
-### NB07 — Clinical Prediction needs factor scores
-- **File:** `notebooks/03_vigor_analysis/07_clinical_prediction.ipynb`
-- **Issue:** Loads `results/stats/modeling_factor_param.csv` which does not exist.
-- **What's needed:** Factor analysis (EFA/CFA) of the psychiatric battery (DASS-21, PHQ-9, OASIS, STAI, AMI, MFIS, STICSA) to produce factor scores per subject.
-- **Inputs available:** `data/exploratory_350/processed/stage5_filtered_data_*/psych.csv` (N=293, all subscales scored)
-- **Resolution:** Run EFA, save output to `results/stats/modeling_factor_param.csv` with column `subj`.
+*None currently blocking the draft. MCMC and confirmatory sample are the remaining execution items.*
+
+---
+
+## MAJOR OPEN WORK
+
+### MCMC pipeline not yet run on GPU
+- **Script:** `scripts/run_mcmc_pipeline.py`
+- **Issue:** All current fits use SVI (variational inference). Full MCMC (NUTS) needed for proper posteriors, Rhat/ESS diagnostics, and reviewer credibility.
+- **Resolution:** Run on GPU machine. Stage 1+2 ~1 hour, Stage 3 ~2-4 hours.
+- **Commands:** `python3 scripts/run_mcmc_pipeline.py --platform gpu`
+
+### Confirmatory sample (N=350) not started
+- **Issue:** Raw data exists in `data/confirmatory_350/raw/` but not preprocessed.
+- **Resolution:** Run full pipeline, then refit all models, test preregistered H1-H6.
+- **Preregistration:** Updated at `drafts/preregistration.md` with H5 (joint model) and H6 (metacognition).
+
+### Missing figures
+- **Fig 1** (task design + choice model comparison) — not yet generated
+- **Fig 2** (vigor + affect) — not yet generated
+- **PPCs** for choice and vigor models — not yet computed
+- **Parameter recovery** — not yet run on current model
 
 ---
 
 ## TECHNICAL DEBT
 
-### parameter_recovery.ipynb not yet run
-- **File:** `notebooks/02_choice_modeling/02_parameter_recovery.ipynb`
-- **Issue:** Has not been executed against the new N=293 fit.
-- **Resolution:** Run after confirming fit quality.
+### Old model files may cause confusion
+- `results/model_fits/exploratory/FET_Exp_Bias_fit.pkl` — superseded by L3_add
+- `results/stats/joint_model_*.csv` — superseded by `joint_correlated_*.csv` and `independent_bayesian_*.csv`
+- `results/stats/FET_Exp_Bias_*.csv` — superseded by `unified_3param_clean.csv`
 
-### Full model comparison not run on N=293
-- **Issue:** Only FETExponentialBias was fitted on the full N=293 dataset. The WAIC comparison table is from the old 270-subject GPU fit.
-- **Resolution:** Run all 7 models (FETExponential, FETHyperbolic, FETLinear, FETQuadratic, FETExponentialBias, ThreatOnly, EffortOnly) on N=293 for the paper.
-
-### Confirmatory sample (N=350) not started
-- **Issue:** Raw data exists but preprocessing pipeline has not been run on confirmatory sample.
-- **Resolution:** Run full pipeline (stage1→stage5), then refit FETExponentialBias, rerun all vigor analyses.
-
-### Draft main.md needs updating
-- **Issue:** Draft contains placeholder affect values. Real values are now computed (NB12 complete).
-- **Core results:** anxiety β=+0.575 (p_threat), β=−0.602 (S_probe); confidence β=−0.586 (p_threat), β=+0.632 (S_probe)
-- **State-trait:** z → trait confidence (β=−0.719, p=0.044); κ → trait anxiety (+) and confidence (−); z×threat moderation NULL
-- **Cross-domain null:** vigor × affect correlations all n.s. (FDR-corrected) — parallel but independent reactive systems
-- **Resolution:** Update draft with two-system framing and actual results from `results/stats/affect_lmm_results.csv`.
+### λ = 2.0 references may persist in old notebooks
+- The original affect analyses used λ = 2.0 which was incorrect
+- Current correct λ = 13.9 (±0.6) from L3_add SVI fit
+- Affect results are robust to this change (S correlations r > 0.99 between λ values)
+- Check any notebook that computes S_probe to ensure it uses λ = 13.9
 
 ---
 
-## INFRASTRUCTURE
+## RESOLVED
 
-### Disk space is tight
-- 259 GB free after cleanup (was 2.9 GB).
-- `Desktop/Lima-Analysis/` still has 94 GB of old fits — candidate for archival/deletion.
-- `data/exploratory_350/processed/stage2_trial_processing_*/processed_trials.pkl` is 1.5 GB; will re-accumulate if pipeline is re-run.
+- ~~Draft needs rewriting~~ → Complete rewrite done (2026-03-22), 4 Results sections
+- ~~Joint model σ_δ collapsed~~ → Fixed with LKJ + AutoMultivariateNormal
+- ~~β unidentified in joint model~~ → Fixed with option-specific S
+- ~~λ discrepancy~~ → Resolved: both guides give λ ≈ 14, documented in Methods
+- ~~Factor analysis blocked~~ → Complete (3 factors, α → apathy)
+- ~~Bayesian MH analysis~~ → Complete with ROPE equivalence testing

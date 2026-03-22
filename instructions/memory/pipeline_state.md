@@ -1,7 +1,7 @@
 # Pipeline State
 
 Current execution status of each notebook and script in the analysis pipeline.
-Last updated: 2026-03-18.
+Last updated: 2026-03-20.
 
 ---
 
@@ -14,9 +14,10 @@ Last updated: 2026-03-18.
 | `03_data_prep_stage1_analysis_table.ipynb` | ✅ Complete | `analysis_table.parquet` (deprecated for vigor) |
 | `04_behavior_overview.ipynb` | ✅ Complete | `results/figs/behavior/fig{1-5}_*.{pdf,png}` |
 
-**Active stage5 output:** `data/exploratory_350/processed/stage5_filtered_data_20260317_094210/`
-- `behavior.csv` — N=293, 13,185 trials
-- `psych.csv` — psychiatric battery (all subscales scored)
+**Active stage5 output:** `data/exploratory_350/processed/stage5_filtered_data_20260320_191950/`
+- `behavior.csv` — N=293 trials
+- `psych.csv` — psychiatric battery (all subscales scored), N=293 subjects
+- `feelings.csv` — 10,546 rows, 293 subjects (5,274 anxiety + 5,272 confidence)
 - `subject_mapping.csv` — participantID → subj integer
 
 ---
@@ -25,17 +26,30 @@ Last updated: 2026-03-18.
 
 | Notebook | Status | Notes |
 |----------|--------|-------|
-| `01_fit_compare_ppc.ipynb` | ✅ Complete | Full plotter version; N=270 GPU fit used for WAIC table |
-| `02_parameter_recovery.ipynb` | ⚠️ Not run | Needs to run against N=293 fit |
-| `03_unified_model_comparison.ipynb` | ✅ Complete | 12-model SVI comparison. Winner: L4a_add (additive effort, hyperbolic escape, unified α). Saved: `unified_model_comparison.csv`, `unified_3param_clean.csv` |
+| `01_fit_compare_ppc.ipynb` | ✅ Complete | FETExponentialBias fit (superseded by L3_add) |
+| `02_parameter_recovery.ipynb` | ⚠️ Not run | Needs to run against L3_add fit |
+| `03_unified_model_comparison.ipynb` | ✅ Complete | **11-model SVI comparison. Winner: L4a_add (α in survival, additive effort, hyperbolic kernel).** Saved: `unified_model_comparison.csv`, `unified_3param_clean.csv` |
+| `scripts/run_unified_model_comparison.py` | ✅ Complete | Standalone re-run on new data path (stage5_20260320_191950). Results consistent with NB03. |
 
-**Scripts:**
-| Script | Status | Output |
-|--------|--------|--------|
-| `scripts/run_fit_best_model.py` | ✅ Complete | `results/model_fits/exploratory/FET_Exp_Bias_fit.pkl` (217 MB) |
-| `scripts/run_ppc_analysis.py` | ✅ Complete | `results/stats/FET_Exp_Bias_*.csv` |
+**Current winning model: L4a_add** (by ELBO and BIC)
+```
+SV = R·S - k·E - β·(1-S)
+S = (1-T) + T/(1+λ·D/α)
+```
+Note: L3_add (no α) is still primary for subject-level parameter extraction (unified_3param_clean.csv) since α comes from vigor independently. L4a_add wins by 15.7 ELBO over L3_add.
 
-**Fit quality (N=293):** WAIC=12,063, R²=0.454, AUC=0.912, Accuracy=82.5%, ECE=0.023
+- k, β per-subject; λ, τ population-level
+- α (from vigor HBM) enters survival kernel — marginal gain (+15.7 ELBO vs L3_add)
+- Additive >> multiplicative (+158 ELBO)
+- Hyperbolic >> exponential (+190 ELBO vs L3_survival)
+
+**Key model comparison findings (2026-03-20 re-run, N=293, 13185 trials):**
+- L4a_add: ELBO=−6259.7, BIC=18135.6 (best)
+- L3_add:  ELBO=−6275.4, BIC=18167.1 (primary parameter source)
+- Per-subject z hurts (−112 ELBO) — not needed
+- α in effort only (L4c): hurts (−24 ELBO vs L3_add)
+- α in effort+survival (L4d): hurts (−2.6 ELBO vs L3_add)
+- k-β r=−0.138 (p=0.018), k-α r=−0.052 (p=0.37), β-α r=+0.264 (p<0.001)
 
 ---
 
@@ -47,7 +61,7 @@ Last updated: 2026-03-18.
 
 **vigor_prep contents:**
 - `keypress_events.parquet` — 899,936 rows (one per keypress)
-- `trial_events.parquet` — 23,733 rows (one per trial); columns include `effort_L`, `calibrationMax`
+- `trial_events.parquet` — 23,733 rows (one per trial)
 - `effort_ts.parquet` — 293 rows (calibrationMax)
 - `subject_mapping.csv` — 293 rows
 
@@ -57,28 +71,33 @@ Last updated: 2026-03-18.
 
 | Notebook | Status | Key Output | Notes |
 |----------|--------|------------|-------|
-| `01_single_trial_visualization.ipynb` | ✅ Fixed | — | Column harmonization + f_max_i merge added this session |
-| `02_kernel_smoothing.ipynb` | ✅ Complete | `smoothed_vigor_ts.parquet` (48.2 MB, 3,988,277 rows), `demand_curves.parquet` | EVAL_HZ=20 restored this session |
-| `03_tonic_phasic_decomposition.ipynb` | ✅ Fixed | — | Column harmonization + c_it optional added this session |
-| `04_phase_extraction.ipynb` | ✅ Complete | `phase_vigor_metrics.parquet`, `phase_trial_metrics.parquet`, `encounter_phase_ts.parquet`, `terminal_phase_ts.parquet` | |
+| `01_single_trial_visualization.ipynb` | ✅ Fixed | — | Column harmonization done |
+| `02_kernel_smoothing.ipynb` | ✅ Complete | `smoothed_vigor_ts.parquet` (48.2 MB) | EVAL_HZ=20 |
+| `03_tonic_phasic_decomposition.ipynb` | ✅ Fixed | — | Column harmonization done |
+| `04_phase_extraction.ipynb` | ✅ Complete | `phase_vigor_metrics.parquet`, `phase_trial_metrics.parquet` | |
 | `05_subject_features.ipynb` | ✅ Complete | `subject_vigor_table.csv` | |
 | `06_choice_vigor_mapping.ipynb` | ✅ Complete | `results/choice_vigor_mapping_results.csv` | |
-| `07_clinical_prediction.ipynb` | ❌ Blocked | — | Needs `modeling_factor_param.csv` (EFA of psych battery) |
+| `07_clinical_prediction.ipynb` | ✅ Unblocked | — | Factor scores now available from NB06-psych |
 | `08_parameter_dissociation.ipynb` | ✅ Complete | `results/tables/table_s2_parameter_dissociation.csv/.tex` | |
 | `09_final_stats.ipynb` | ✅ Complete | `results/step1_modelfree_results.csv` | |
-| `10_pls_vigor_params.ipynb` | ✅ Complete | `results/stats/pls_vigor_params_results.csv` | New this session; PLS + trial-level LMM |
-| `11_vigor_ode.ipynb` | ✅ Run (dead end) | `results/stats/vigor_ode_params.csv`, `vigor_ode_correlations.csv` | ODE kinetics degenerate, no new findings |
+| `10_pls_vigor_params.ipynb` | ✅ Complete | `results/stats/pls_vigor_params_results.csv` | PLS + trial-level LMM |
+| `11_vigor_ode.ipynb` | ✅ Dead end | — | ODE kinetics degenerate, no new findings |
 | `12_imminence_diagnostics.ipynb` | ✅ Complete | — | Phase-based encounter diagnostics |
 | `13_encounter_vigor_counts.ipynb` | ✅ Complete | — | Encounter-centered count-based vigor |
 | `14_choice_vigor_dissociation.ipynb` | ✅ Complete | `results/figs/fig_*.png` | 6-figure dissociation visualization |
 | `15_dissociation_formal_tests.ipynb` | ✅ Complete | — | Phase 0-6 statistical pipeline |
-| `16_bayesian_vigor_model.ipynb` | ✅ Complete | `results/stats/vigor_hbm_posteriors.csv`, `vigor_hbm_population.csv`, `results/model_fits/exploratory/vigor_hbm_idata.nc` | Two-window HBM for α (pre-enc) and ρ (terminal) via NumPyro |
+| `16_bayesian_vigor_model.ipynb` | ✅ Complete | `vigor_hbm_posteriors.csv`, `vigor_hbm_population.csv`, `vigor_hbm_idata.nc` | **Two-window HBM: α (pre-enc) + ρ (terminal)** |
 
-**smoothed_vigor_ts.parquet columns (key):**
-- `subj`, `trial`, `t` (trial-relative seconds), `vigor_norm` (v_t), `vigor_resid`
-- `isAttackTrial` (encounter flag), `encounterTime` (ALL trials — scheduled predator time)
-- `threat` (0.1/0.5/0.9), `choice` (0/1), `distance_H` (1/2/3), `effort_H` (0.6/0.8/1.0)
-- `startDistance` (5/7/9 — predator start distance)
+**Vigor model (final) — re-run 2026-03-20 via scripts/run_vigor_hbm.py:**
+```
+pre_enc_rate  ~ Normal(α_i, σ_pre)                     # [enc-2, enc], vigor_norm
+terminal_rate ~ Normal(γ_i + ρ_i·attack, σ_term)       # [trialEnd-2, trialEnd], vigor_norm
+```
+Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm per window), N=293, 23,554 trials.
+- μ_α=0.315, SB=0.964, shrinkage=89%, max Rhat=1.008
+- μ_ρ=0.067, P(>0)=1.0, SB=0.635, shrinkage=37%, max Rhat=1.006
+- α-ρ: r=+0.016, p=0.78 (independent)
+- 0 divergences. idata.nc saved (549 MB).
 
 ---
 
@@ -86,13 +105,14 @@ Last updated: 2026-03-18.
 
 | Notebook | Status | Notes |
 |----------|--------|-------|
-| `01_bayesian_mental_health_regressions.ipynb` | ⚠️ Unknown | Not checked this session |
-| `02_psychological_analysis.ipynb` | ⚠️ Unknown | Not checked this session |
-| `03_affect_survival.ipynb` | ✅ Complete | S_probe → anxiety/confidence LMM; state-trait decomposition; cross-domain vigor×affect (all n.s.) |
-| `04_anxiety_vigor_coupling.ipynb` | ✅ Complete | Anxiety → vigor coupling at trial level — NULL at all levels (concurrent, residual, predictive) |
+| `01_bayesian_mental_health_regressions.ipynb` | ⚠️ Unknown | Not checked recently |
+| `02_psychological_analysis.ipynb` | ⚠️ Unknown | Not checked recently |
+| `03_affect_survival.ipynb` | ✅ Complete (re-run 2026-03-20) | S_probe (L3_add, λ=2.0) → anxiety/confidence LMM; state-trait decomposition |
+| `04_anxiety_vigor_coupling.ipynb` | ✅ Complete | Anxiety → vigor coupling NULL at all levels |
 | `05_metacognitive_calibration.ipynb` | ✅ Complete | Probe-trial linkage, S_probe→ratings, k→calibration |
-| `06_factor_analysis.ipynb` | ✅ Complete | 3-factor EFA (distress/fatigue/apathy), α→apathy R²=0.155 |
+| `06_factor_analysis.ipynb` | ✅ Complete (re-run 2026-03-20) | 3-factor EFA (distress/fatigue/apathy), α→F3(apathy) R²=0.123, t=−6.11 |
 | `07_pls_params_mental_health.ipynb` | ✅ Complete | PLS 5 params→MH+affect, CV R²=0.039, perm p<0.001 |
+| `08_mixture_model_subtypes.ipynb` | ✅ Complete | GMM k=3; coupled/decoupled hypothesis NULL |
 
 ---
 
@@ -100,31 +120,38 @@ Last updated: 2026-03-18.
 
 | Notebook | Status | Notes |
 |----------|--------|-------|
-| `01_publication_figures.ipynb` | ⚠️ Unknown | Not checked this session |
+| `01_publication_figures.ipynb` | ⚠️ Needs update | Will need rerun after draft rewrite |
 
 ---
 
 ## Results Files
 
-**`results/stats/`:**
-- `FET_Exp_Bias_waic.csv` ✅
-- `FET_Exp_Bias_predictions.csv` ✅
-- `FET_Exp_Bias_subject_metrics.csv` ✅
-- `FET_Exp_Bias_population_params.csv` ✅
-- `FET_Exp_Bias_k_params.csv` ✅ (column: `subject`, not `subj`)
-- `FET_Exp_Bias_z_params.csv` ✅ (column: `subject`, not `subj`)
-- `FET_Exp_Bias_beta_params.csv` ✅ (column: `subject`, not `subj`)
-- `modeling_factor_param.csv` ❌ MISSING (blocks NB07)
-- `pls_vigor_params_results.csv` ✅
-- `vigor_ode_params.csv` ✅ (exploratory only — dead end)
-- `vigor_ode_correlations.csv` ✅ (exploratory only — dead end)
-- `vigor_hbm_posteriors.csv` ✅ (NB16: per-subject α, ρ Bayesian posteriors + choice params)
-- `vigor_hbm_population.csv` ✅ (NB16: population-level hyperparameters)
-- `affect_lmm_results.csv` ✅ (NB12)
-- `affect_threat_slopes.csv` ✅ (NB12)
-- `affect_vigor_cross_domain.csv` ✅ (NB12 — all n.s.)
-- `affect_trait_scores.csv` ✅ (NB12)
+**`results/stats/` (key files):**
+- `unified_model_comparison.csv` ✅ (12-model SVI comparison)
+- `unified_3param_clean.csv` ✅ (L3_add subject parameters: k, β)
+- `vigor_hbm_posteriors.csv` ✅ (per-subject α, ρ, γ with posterior SDs; re-run 2026-03-20 via smoothed_vigor_ts)
+- `vigor_hbm_population.csv` ✅ (population hyperparameters + split-half reliability)
+- `affect_lmm_results.csv` ✅ (re-run 2026-03-20, L3_add S_probe)
+- `affect_trait_scores.csv` ✅ (re-run 2026-03-20, per-subject mean affect + k/β)
+- `affect_vigor_cross_domain.csv` ✅ (all n.s.)
+- `psych_factor_scores.csv` ✅ (re-run 2026-03-20, 3-factor EFA, N=291)
+- `psych_factor_loadings.csv` ✅ (re-run 2026-03-20)
+- `psych_params_to_factors.csv` ✅ (re-run 2026-03-20, 3-param + 4-param OLS)
+- `choice_vigor_dissociation_results.csv` ✅ (2026-03-20, 20-row stats table: correlations, ANOVAs, t-tests)
+- `choice_vigor_dissociation_subjects.csv` ✅ (2026-03-20, N=293 subject-level data with quadrant labels)
+- `pls_mh_*.csv` ✅ (PLS params→MH)
+- `joint_correlated_correlations.csv` ✅ (2026-03-21, LKJ ρ posteriors for all 6 param pairs)
+- `joint_correlated_subjects.csv` ✅ (2026-03-21, per-subject k, β, α, δ from joint model)
+- `joint_correlated_population.csv` ✅ (2026-03-21, population hyperparameters + ELBO)
+- `joint_correlated_omega_samples.csv` ✅ (2026-03-21, 4000 posterior samples of correlation matrix)
+
+**Superseded (keep for reference):**
+- `FET_Exp_Bias_*.csv` — old model, replaced by L3_add
+- `joint_model_*.csv` — old joint model (independent priors, σ_δ collapsed), replaced by joint_correlated_*
+
+**`results/model_fits/exploratory/`:**
+- `vigor_hbm_idata.nc` ✅ (full MCMC trace, 549 MB, re-run 2026-03-20 via smoothed_vigor_ts)
+- `FET_Exp_Bias_fit.pkl` — superseded
 
 **`results/tables/`:**
-- `table_s2_parameter_dissociation.csv` ✅
-- `table_s2_parameter_dissociation.tex` ✅
+- `table_s2_parameter_dissociation.csv/.tex` ✅

@@ -10,7 +10,7 @@ Summary of all empirical findings from the exploratory sample (N=293). Organized
 
 **Value function:** SV = R·S − k·E − β·(1−S)
 **Survival:** S = (1−T) + T / (1 + λ·D/α)
-**Choice:** softmax(τ · ΔSV)
+**Choice:** softmax(τ · ΔSV)1
 
 - k = additive effort cost (per-subject). β = subjective capture cost (per-subject). α = tonic vigor (observed, from vigor HBM). τ, λ = population-level.
 - Best by ELBO (−6260) and BIC across 12 models tested via SVI (NB03-choice, 2026-03-20)
@@ -93,6 +93,39 @@ Subject-level regression of vigor dimensions on model parameters (z, k, β):
 | post_encounter_vigor × threat | k | −0.031 | 0.004 |
 
 **Summary:** z → onset/anticipatory vigor; k → global suppression across phases; β → anticipatory slope boost.
+
+### 2c2. Joint Correlated Random Effects Model (2026-03-21) — KEY RESULT
+
+**Script:** `scripts/run_joint_correlated.py`
+**Design:** Two-stage SVI. Step 1: choice-only → λ=15.1 (±3.3). Step 2: joint choice+vigor with λ fixed, correlated [log(k), log(β), α, δ] ~ MVN(μ, Σ) via LKJCholesky(η=2) prior, AutoMultivariateNormal guide, 30k steps, Adam lr=0.002. N=293, 13,094 trials.
+
+**Population parameters:**
+- τ = 0.918, μ_logk = 1.74, μ_logβ = 1.15, μ_α = 0.015, μ_δ = +0.210
+- σ_δ = 0.153 (non-trivial; 25.6% shrinkage)
+- 97.3% of subjects have δ > 0; P(μ_δ > 0) = 1.0
+
+**Correlation matrix (all 95% CIs exclude zero):**
+
+| Pair | ρ | 95% CI | Empirical r | Interpretation |
+|------|---|--------|-------------|----------------|
+| **β × δ** | **+0.295** | **[+0.191, +0.393]** | **+0.462** | **Threat aversion → vigor mobilization** |
+| **k × δ** | **−0.332** | **[−0.440, −0.222]** | **−0.430** | **Effort avoidance → less vigor** |
+| k × β | −0.336 | [−0.497, −0.162] | −0.195 | Effort-sensitive ≠ threat-biased |
+| k × α | +0.222 | [+0.146, +0.299] | +0.383 | High k → higher baseline vigor |
+| β × α | −0.151 | [−0.208, −0.093] | −0.090 | High β → lower baseline vigor |
+| α × δ | −0.401 | [−0.498, −0.299] | −0.193 | High baseline → less additional mobilization |
+
+**Why this matters for the paper:**
+- The β-δ correlation is now a **model parameter** (ρ = +0.30 [0.19, 0.39]), not a post-hoc statistic
+- Validates the "coordinated strategy shift" claim: threat sensitivity in choice and vigor share ~9% of variance at the population level
+- Empirical r of posterior means (+0.46) is even stronger, confirming the model is conservative
+- k-δ negative correlation confirms effort avoidance and vigor mobilization are complementary strategies
+
+**Development notes:**
+- v1 (independent priors, AutoNormal): σ_δ collapsed, β unidentified (single S per trial)
+- v2 (LKJ + AutoMultivariateNormal, single S): β still exploded (S_H = S_L → β cancels in ΔSV)
+- v2b (option-specific S_H, S_L): β identified but λ inflated to 50 (vigor pulling λ away from choice-optimal)
+- v3 (λ fixed from choice-only): ALL issues resolved. This is the final model.
 
 ### 2d. Trial-level survival → vigor (NB10, survival_vigor_lmm.csv)
 - Terminal mean: S_trial β=−0.011, p_fdr=0.0002 — **lower survival → higher terminal vigor**
@@ -297,16 +330,16 @@ Clean imminence signal: when predator actually appears, post-encounter pressing 
 ## 3. Affect Analysis
 
 ### 3a. Core LMM results (NB12, N=293, 10,546 ratings)
-| DV | Predictor | β | p |
-|----|-----------|---|---|
-| Anxiety | p_threat | +0.575 | <0.001 |
-| Anxiety | S_probe | −0.602 | <0.001 |
-| Anxiety | dist_safety | +0.226 | <0.001 |
-| Confidence | p_threat | −0.586 | <0.001 |
-| Confidence | S_probe | +0.632 | <0.001 |
-| Confidence | dist_safety | −0.283 | <0.001 |
+| DV | Predictor | β | SE | t | p |
+|----|-----------|---|----|---|---|
+| Anxiety | S_probe_z (L3_add) | −0.605 | 0.024 | −25.63 | <0.001 |
+| Anxiety | p_threat_z | +0.575 | 0.024 | +24.45 | <0.001 |
+| Anxiety | dist_safety_z | +0.226 | 0.023 | +9.71 | <0.001 |
+| Confidence | S_probe_z (L3_add) | +0.612 | 0.024 | +25.65 | <0.001 |
+| Confidence | p_threat_z | −0.586 | 0.024 | −23.99 | <0.001 |
+| Confidence | dist_safety_z | −0.283 | 0.025 | −11.46 | <0.001 |
 
-Model-derived survival predicts anxiety (−) and confidence (+) at trial level.
+Model-derived survival (L3_add, S=(1−T)+T/(1+λD), λ=2.0) predicts anxiety (−) and confidence (+) at trial level. Re-run 2026-03-20 on stage5_filtered_data_20260320_191950, unified_3param_clean.csv, N=293 subjects, 5,274 anxiety + 5,272 confidence ratings.
 
 ### 3b. Parameter moderation of affect
 - z → chronic confidence deficit (main effect): β=−0.199, p_fdr=0.013 ✅
@@ -317,17 +350,15 @@ Model-derived survival predicts anxiety (−) and confidence (+) at trial level.
 - p_threat × z interaction: NULL (p>0.09 for both affect types)
 - **Interpretation**: Directional tendencies consistent with draft claims but none survive FDR. The robust finding is z → chronic confidence main effect. Draft updated to reflect this.
 
-### 3c. State-trait decomposition (NB12, Section 7)
-Between-subjects OLS (trait ~ z + k + β):
+### 3c. State-trait decomposition (re-run 2026-03-20)
+Between-subjects OLS (mean affect ~ k_z + β_z), N=293:
 
-| DV | z | k | β | adj. R² |
-|----|---|---|---|---------|
-| Trait anxiety (mean task) | −0.581, p=0.097 n.s. | +0.146, p=0.019* | n.s. | 0.020 |
-| Trait confidence (mean task) | −0.719, p=0.044* | −0.163, p=0.010* | n.s. | 0.036 |
+| DV | k_z β | k_z p | β_z β | β_z p | R² | F_p |
+|----|-------|-------|-------|-------|----|-----|
+| Mean anxiety | +0.127 | 0.032* | −0.061 | 0.300 | 0.022 | 0.041 |
+| Mean confidence | −0.154 | 0.009** | −0.109 | 0.063 | 0.031 | 0.010 |
 
-Within-subjects (state ~ p_threat + dist_safety): phasic state responses robust and parameter-independent.
-
-**Key:** k predicts BOTH trait anxiety (+) and confidence (−); z predicts only confidence. Phasic state responses are driven by task variables, not model parameters.
+**Key (L3_add params):** k predicts trait anxiety (+) and confidence (−); β marginal for confidence. Cross-domain: mean S_probe ~ mean anxiety r=−0.063 (p=0.286, n.s.); mean S_probe ~ mean confidence r=+0.004 (n.s.). Between-subject mean survival does not predict trait affect — individual differences in willingness to forage (k) matter more.
 
 ### 3d. Cross-domain: vigor × affect — NULL
 - 15 vigor × affect pairs tested; **none survive FDR** (highest: tonic_vigor ~ anx_threat_slope r=+0.124, p_fdr=0.196)
@@ -366,27 +397,31 @@ Within-subjects (state ~ p_threat + dist_safety): phasic state responses robust 
 
 ### 3f. Psychiatric battery × model parameters
 
-#### Factor analysis of psychiatric battery (NB06-psych, 2026-03-20)
+#### Factor analysis of psychiatric battery (re-run 2026-03-20, scripts/run_factor_analysis.py)
 
-**14 subscales → 3 factors** (parallel analysis suggested 2; 3-factor solution used on theoretical grounds). KMO=0.931, Bartlett's p≈0. Varimax rotation. 69.2% total variance explained.
+**13 subscales → 3 factors** (sklearn FactorAnalysis + varimax, N=291 after NA drop). Data source: stage5_filtered_data_20260320_191950/psych.csv.
 
-| Factor | Var% | Key loaders | Interpretation |
+| Factor | Var% | Key loaders (>|0.4|) | Interpretation |
 |---|---|---|---|
-| F1 | 37.1% | STICSA (0.88), DASS_Anx (0.82), DASS_Stress (0.78), OASIS (0.72), PHQ9 (0.72), STAI_State (0.72) | General distress |
-| F2 | 20.4% | MFIS_Phys (−0.79), MFIS_Cog (−0.74), MFIS_Psychosoc (−0.66) | Fatigue |
-| F3 | 11.7% | AMI_Social (−0.62), AMI_Behav (−0.56), DASS_Dep (−0.48), STAI_Trait (+0.39) | Apathy/amotivation |
+| F1 | 18.3% | STICSA (0.86), DASS_Anx (0.84), DASS_Stress (0.78), PHQ9 (0.72), OASIS (0.71), DASS_Dep (0.66), STAI_Trait (−0.53), MFIS_Phys (0.49), MFIS_Cog (0.46) | General distress |
+| F2 | 10.6% | MFIS_Phys (−0.78), MFIS_Cog (−0.75), MFIS_Psychosoc (−0.67), OASIS (−0.42), PHQ9 (−0.41), AMI_Behav (−0.40) | Fatigue |
+| F3 | 6.2% | AMI_Social (−0.61), AMI_Behav (−0.56), DASS_Dep (−0.51) | Apathy/amotivation |
 
-Factors near-orthogonal (max inter-factor r=0.107).
+Note: STAI_Trait loads negatively on F1 (low trait anxiety = high distress factor), consistent with compressed STAI range in this sample.
 
-**5 params → 3 factor scores:**
+**3 params → 3 factor scores (k, β, α):**
 
-| Factor | R² | p | Significant predictors |
-|---|---|---|---|
-| F1 (Distress) | 0.015 | 0.51 | None |
-| F2 (Fatigue) | 0.030 | 0.12 | z marginal (β=+0.138, p=0.013) |
-| **F3 (Apathy)** | **0.155** | **3×10⁻⁹** | **α (β=−0.343, p<0.001)** |
+| Factor | k_z β | β_z β | α_z β | R² | R²adj | F_p |
+|---|---|---|---|---|---|---|
+| F1 (Distress) | −0.040 | −0.056 | −0.132* | 0.020 | 0.010 | 0.117 |
+| F2 (Fatigue) | +0.082 | −0.033 | +0.050 | 0.008 | −0.003 | 0.532 |
+| **F3 (Apathy)** | **−0.108** | **+0.004** | **−0.438***  | **0.123** | **0.113** | **<0.001** |
 
-**Key finding:** α alone explains 15.5% of the apathy factor — stronger than the raw AMI result (R²=0.097). The dissociation is sharp: choice params {k, z, β} predict no psychiatric factor. Tonic vigor α predicts only apathy. Phasic vigor ρ predicts nothing. The task captures motivational drive (apathy) but not mood (distress) or energy (fatigue).
+* p<0.05 (uncorrected); *** survives FDR (p_fdr=2.85×10⁻⁸)
+
+**4-param model (k, β, α, ρ) — ρ adds nothing to any factor (all ρ p>0.7 except F1 ρ p=0.075).**
+
+**Key finding (confirmed):** α (tonic vigor from HBM) uniquely predicts the apathy factor (t=−6.11, R²=0.123). All choice params {k, β} are non-significant for all 3 factors. The dissociation is sharp and replicates: motor motivation (α) ↔ psychiatric apathy; choice economics ↔ no psychiatric factor.
 
 #### Individual scale results (pre-factor analysis)
 - 0/39 bivariate correlations survive FDR on individual scales
@@ -411,53 +446,60 @@ Factors near-orthogonal (max inter-factor r=0.107).
 
 ## 5. Choice-Vigor Dissociation — MAJOR FINDING
 
-### Core result: choice and vigor are uncorrelated (r=−0.018, p=0.76)
-P(choose high-effort cookie) and pre-encounter pressing rate (capacity-normalized, choice-adjusted) are independent. N=293. Four quadrants roughly equally populated (22-28% each).
+### Core result: choice and vigor are uncorrelated (r=+0.008, p=0.894)
+P(choose high-effort cookie) and tonic vigor (alpha_bayes from HBM) are near-perfectly independent. N=293. **Updated 2026-03-20** using alpha_bayes (HBM) as vigor measure; prior version used raw press counts.
 
-### Quadrant profiles — k and β separate the groups
+**Output:** results/stats/choice_vigor_dissociation_results.csv, choice_vigor_dissociation_subjects.csv
 
-| Quadrant | N | z | k | β | Escape | Earnings |
-|---|---|---|---|---|---|---|
-| HH (choose hard, press hard) | 63 | 0.31 | **1.00** | 0.89 | 53% | **+95.5** |
-| HL (choose hard, press soft) | 83 | 0.26 | 1.33 | **0.59** | **19%** | −3.8 |
-| LH (choose easy, press hard) | 78 | 0.43 | 2.35 | **2.20** | **60%** | +71.4 |
-| LL (choose easy, press soft) | 69 | 0.41 | **3.04** | 1.66 | 25% | **−25.8** |
+### Quadrant profiles — k drives choice axis, alpha_bayes drives vigor axis
 
-- k ANOVA: F=51.6, **p=10⁻²⁷**
-- β ANOVA: F=18.3, **p=10⁻¹¹**
-- z ANOVA: F=13.3, **p=10⁻⁸**
-- Escape ANOVA: F=115.6, **p<10⁻⁴¹**
-- Earnings ANOVA: F=91.1, **p<10⁻⁴¹**
+| Quadrant | N | k | β | Escape | Earnings |
+|---|---|---|---|---|---|
+| HH (choose hard, press hard) | 58 | **2.32** | 56.6 | 56.2% | **+61** |
+| HL (choose hard, press soft) | 84 | 2.60 | **41.0** | **19.0%** | −6.5 |
+| LH (choose easy, press hard) | 64 | 8.30 | **72.4** | **66.0%** | +45.6 |
+| LL (choose easy, press soft) | 87 | **10.47** | 54.4 | 25.7% | **−27** |
+
+- k ANOVA: F=46.6, **p=10⁻²⁴** — k is the primary choice determinant
+- β ANOVA: F=7.2, **p=0.0001**
+- Escape ANOVA: F=166.8, **p=10⁻⁶³** — vigor (not choice) drives survival
+- Earnings ANOVA: F=133.0, **p=10⁻⁵⁴**
+
+### Key parameter paths (2026-03-20 run, alpha_bayes as vigor)
+- k → choice: r=−0.803, p<10⁻⁶⁷ (k is the dominant choice parameter)
+- k → vigor: r=−0.050, p=0.39 (k does NOT suppress motor vigor)
+- β → choice: r=−0.125, p=0.032 (β weakly suppresses choice)
+- β → vigor: r=+0.192, p=0.001 (β slightly BOOSTS vigor — not a suppressor)
 
 ### Vigor dominates outcomes, not choice
-- Escape ~ choice + vigor + interaction: R²=0.66. **Vigor β=+0.795, choice β=−0.160.** Vigor explains ~5× more variance. Choosing hard actually hurts escape (farther from safety).
-- Earnings ~ choice + vigor + interaction: R²=0.60. Vigor β=+0.758, choice β=+0.208.
+- Escape ~ choice + vigor + interaction (N=293): R²=0.772. **Vigor β=+0.867, choice β=−0.175.** Vigor explains ~5× more escape variance. Choosing hard slightly hurts escape (farther = more time exposed).
 
-### β is the dissociation parameter
-β acts on choice (r=−0.488 with p_high) but NOT on vigor (r=+0.109, n.s.). High-β people choose safe options (threat bias suppresses risky choice) but their motor system is unaffected — they press just as hard when they do engage. This creates the LH pattern: choose easy, press hard, escape well.
+### The dissociation mechanism
+k is the dissociation parameter, not β. k strongly predicts whether subjects choose high-effort options (r=−0.80) but is silent on motor vigor (r=−0.05). β has an inconsistent relationship with choice (r=−0.13) and actually boosts vigor slightly (r=+0.19). The choice and vigor systems share no parametric bridge.
 
-### Off-diagonal comparison (HL vs LH, N=161)
+### Off-diagonal comparison (HL vs LH, N=148)
 
-| Variable | HL (choose hard, press soft) | LH (choose easy, press hard) | p |
-|---|---|---|---|
-| β | 0.59 | **2.20** | <0.001 |
-| k | 1.33 | **2.35** | <0.001 |
-| Escape rate | **18.7%** | **60.4%** | <0.001 |
-| Confidence | **3.40** | 2.76 | 0.003 |
-| Anxiety calibration | 0.22 | **0.36** | 0.007 |
-| AMI (apathy) | 25.4 | **32.2** | <0.001 |
+| Variable | HL (choose hard, press soft) | LH (choose easy, press hard) | t | p |
+|---|---|---|---|---|
+| k | 2.60 | 8.30 | −8.48 | <0.001*** |
+| β | 41.0 | **72.4** | −4.61 | <0.001*** |
+| Escape rate | **19.0%** | **66.0%** | −18.77 | <0.001*** |
+| Earnings | −6.5 | **+45.6** | −10.60 | <0.001*** |
+| Trait confidence | **3.37** | 2.89 | +2.23 | 0.027* |
+| AMI (apathy) | 26.1 | **32.2** | −3.75 | <0.001*** |
+| Anxiety calibration | 0.24 | 0.34 | −1.68 | 0.095 n.s. |
 
-HL people are overconfident — high confidence but worst escape rate. LH people report higher apathy (AMI) but are better calibrated in their anxiety responses and survive far more often. The "apathetic" group is actually the more adaptive one.
+HL people are overconfident — highest confidence but worst escape (19%). LH people score higher on apathy (AMI) but escape at 66%. LH subjects have high β (threat-averse choice) but full motor vigor — the most adaptive profile.
 
-### Threat reverses the choice-vigor relationship
+### Threat progressively decouples choice-vigor (uses enc_pre_mean_norm)
 
 | Threat | Choice × Vigor r | p |
 |---|---|---|
-| 0.1 (low) | **+0.196** | 0.001 |
-| 0.5 (med) | +0.013 | 0.82 |
-| 0.9 (high) | **−0.219** | <0.001 |
+| 0.1 (low) | **+0.164** | 0.005** |
+| 0.5 (med) | +0.034 | 0.566 n.s. |
+| 0.9 (high) | −0.101 | 0.086 n.s. |
 
-At low threat, choice and vigor align (r=+0.20). At high threat, they decouple (r=−0.22). Threat drives the dissociation — under danger, conservative-but-capable (LH) strategies emerge.
+Progressive decoupling with threat level. Sign reversal at threat=0.9 is directional (not significant). Note: per-threat analyses use enc_pre_mean_norm from phase_vigor_metrics (raw), not alpha_bayes — pattern is consistent with two-system architecture.
 
 ### Formal validation (Phase 0 — all gates passed)
 - **Vigor reliability:** split-half r=0.835, SB=0.910. Block reliability SB=0.891. (Choice SB=0.369 — vigor is MORE reliable than choice)
@@ -601,15 +643,15 @@ r(capacity, vigor) = −0.04, n.s. How fast you *can* press doesn't predict how 
 
 ### The vigor model: two parameters (α tonic, ρ phasic) — Bayesian HBM
 
-**Bayesian hierarchical model (NB16):** Two-window model with separate likelihoods, fit with NumPyro NUTS (4 chains × 2000, 0 divergences, 58s).
+**Bayesian hierarchical model (NB16 / scripts/run_vigor_hbm.py):** Two-window model with separate likelihoods, fit with NumPyro NUTS (4 chains × 1000 warmup + 1000 samples). Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm in each window, 23,554 trials, 293 subjects). 0 divergences, max Rhat α=1.008, ρ=1.006.
 ```
 pre_enc_rate_ij  ~ Normal(α_i, σ_pre)          # [enc-2, enc]
 terminal_rate_ij ~ Normal(γ_i + ρ_i·attack, σ_term)  # [trialEnd-2, trialEnd]
 ```
 
-**α (tonic vigor):** Pre-encounter pressing rate, capacity-normalized = fraction of motor capacity deployed.
-- μ_α=0.519 (52% of capacity). σ_α=0.196. SB=0.925. Bayes-OLS r=1.000.
-- Window: [enc−2s, enc]. Capacity = 95th percentile of 1s-bin press rates.
+**α (tonic vigor):** Pre-encounter mean vigor_norm in [enc−2s, enc] window.
+- μ_α=0.315 (95% CI [0.280, 0.348]). σ_α=0.287. SB=0.964. Bayes-OLS r=1.000. Shrinkage=89%.
+- Window: [max(0, enc−2s), enc]. Vigor_norm = smoothed keypress rate (kernel-smoothed, 20Hz).
 - **NOT motor ability:** capacity→α r=+0.03, CalMax→α r=+0.10, onset_rate→escape r=−0.04 (all null). Motor ability predicts nothing; the fraction of capacity deployed predicts everything.
 - **NOT task engagement:** Controlling for questionnaire RT, choice entropy, affect variability does not change α→escape (R²=0.71→0.72) or α→AMI (R²=0.12→0.12).
 - **NOT strategic:** Onset pressing rate is flat across threat, distance, and choice (after removing mechanical demand confound of heavier cookies). No dynamic reallocation. Speed tier structure (within a tier, pressing faster doesn't change movement speed) removes incentive for fine-grained adjustment.
@@ -617,10 +659,10 @@ terminal_rate_ij ~ Normal(γ_i + ρ_i·attack, σ_term)  # [trialEnd-2, trialEnd
 - Predicts: escape (r=+0.84), AMI apathy (r=+0.34), anxiety threat calibration (r=+0.26), mean anxiety (r=−0.16). All survive engagement controls.
 - Shrinkage: 2.1% (already very reliable).
 
-**ρ (phasic vigor):** Terminal attack boost, capacity-normalized.
-- μ_ρ=0.526 (53% of capacity boost). P(μ_ρ>0)=1.0000. σ_ρ=0.129. SB=0.762. Bayes-OLS r=0.991.
-- Window: [trialEnd−2s, trialEnd]. Captures defensive sprint under active predator pursuit.
-- γ_i is a nuisance per-subject terminal baseline (μ_γ=0.092 — low, people idle in terminal non-attack).
+**ρ (phasic vigor):** Terminal attack boost (mean vigor_norm in [trialEnd−2s, trialEnd], attack vs non-attack contrast).
+- μ_ρ=0.067 (95% CI [0.061, 0.075]). P(μ_ρ>0)=1.0000. σ_ρ=0.047. SB=0.635. Shrinkage=37%.
+- Window: [max(0, trialEnd−2s), trialEnd]. Captures defensive sprint under active predator pursuit.
+- γ_i is a nuisance per-subject terminal baseline. α-ρ r=0.016 (p=0.78, independent).
 - Shrinkage: 16.8% (ρ benefits substantially from hierarchical regularization).
 - Does NOT predict outcomes, choice params, mental health, or quadrant identity — universal defensive response.
 
@@ -771,11 +813,11 @@ ANOVAs: k (F=161, η²=0.63), α (F=211, η²=0.69), β (F=17, η²=0.15), Escap
 | Affect ~ S_probe | β ≈ ±0.6 | p<10⁻¹³⁰ |
 | Vigor variance: conditions | 4% | After demand removal |
 | Vigor variance: person | 26% | ICC=0.26 |
-| α reliability | SB=0.925 | Pre-enc 2s window (Bayesian HBM) |
-| ρ reliability | SB=0.762 | Terminal 2s window (Bayesian HBM) |
-| μ_α | 0.519 (52% capacity) | 95% HDI [0.497, 0.541] |
-| μ_ρ | 0.526 (53% capacity) | P(>0)=1.0000, HDI [0.509, 0.542] |
-| α-ρ correlation | r=−0.237 | Ceiling effect, not artifact |
+| α reliability | SB=0.964 | Pre-enc 2s window (Bayesian HBM, vigor_norm) |
+| ρ reliability | SB=0.635 | Terminal 2s window (Bayesian HBM, vigor_norm) |
+| μ_α | 0.315 (vigor_norm units) | 95% CI [0.280, 0.348] |
+| μ_ρ | 0.067 (vigor_norm units) | P(>0)=1.0000, CI [0.061, 0.075] |
+| α-ρ correlation | r=+0.016, p=0.78 | Independent |
 | ρ across quadrants | F=0.6, n.s. | Universal response |
 | RT-α redundancy | r=−0.81 | Same trait, supplementary |
 

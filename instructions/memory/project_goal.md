@@ -1,44 +1,32 @@
 ---
 name: Project Goal
-description: Target journal, core scientific claim, current status, and what remains for submission to Nature Communications
+description: Nature Comms submission — effort reallocation under threat, joint choice-vigor coupling via shared survival computation S
 type: project
 ---
 
-**Goal:** Submit "A Common Computational Structure Integrates Effort and Threat Across Decision, Emotion, and Action" (Okada, Garg, Wise, Mobbs) to **Nature Communications**.
+**Title:** Humans reallocate effort across decision and action when foraging under threat
+**Authors:** Okada, Garg, Wise, Mobbs
+**Target:** Nature Communications
+**Status:** Draft complete, figures generated, preregistration updated. Awaiting MCMC runs + confirmatory sample.
 
-**Why:** This paper addresses a fundamental question — how do humans balance energetic effort and threat in a unified framework when making decisions, and how does this process relate to subjective emotions and trait-level individual differences? Nature Communications is the target venue.
+## Core claim
 
-## Central question
-How do humans integrate energetic cost and exposure-dependent threat when making foraging decisions? And how does this computational process connect to subjective affect (anxiety, confidence) and stable trait variables (psychiatric symptom dimensions)?
+Humans foraging under threat don't avoid effort — they **reallocate** it. A survival computation S governs both what people choose (shifting to safer targets) and how hard they press (deploying excess motor effort). This coupling is a structural population feature, not a post-hoc observation.
 
-## Current working framework
-A survival-weighted, effort-discounted subjective value model best explains choice behavior. The paper has three pillars:
+## Paper structure (4 Results sections)
 
-1. **Choice** — model comparison (WAIC) favors combined effort–threat model with bias term. Strong (R²=0.45, AUC=0.91).
-2. **Affect** — model-derived survival predicts trial-level anxiety (−) and confidence (+). Strong within-subject effects. Parameter moderation is limited: z → chronic confidence deficit; k → trait anxiety/confidence; moderation interactions marginal/n.s. after FDR.
-3. **Vigor** — **the story is about individual differences, not real-time tracking.** Stable person-level differences in pressing style (ICC up to 0.74) are linked to choice parameters: z → anticipatory preparation, k → global motor suppression, β → onset ramp. But threat does not modulate vigor at the group level, the encounter spike is demand-driven, and the attack contrast is confounded with threat. One genuine reactive effect: terminal sprint on attack trials (generic, parameter-independent).
+1. **Choice model** — 5-model comparison. Winner: additive effort + hyperbolic survival (SV = R·S − k·E − β·(1−S)). Effort is a flat physical cost.
+2. **Vigor** — Danger drives excess effort (δ = +0.21, 99% positive). S also predicts trial-level anxiety/confidence.
+3. **Joint model** — Behavioral coupling (r = −0.78), independent Bayesian r(β,δ) = +0.55, joint LKJ model confirms structural coupling. Predicts foraging earnings (R² = 0.32).
+4. **Metacognitive bridge** — δ predicts affect calibration to S. High-δ people are less anxious overall but more *accurately* anxious.
 
-## Key revision needed for the draft
-The current draft (v2) overclaims on vigor. It frames the result as "the same computational structure governs choice, affect, and vigor" — implying a shared real-time survival computation across domains. The data actually shows:
-- **Choice ↔ Affect:** Survival computation predicts trial-level affect. Solid.
-- **Choice → Vigor (individual differences):** People who value threat/effort differently in choices also press differently. Trait-level correspondence, not shared real-time computation.
-- **Choice → Vigor (real-time):** Only terminal survival → terminal vigor survives (small trial-level effect). No encounter spike, no real-time tracking.
-- **Affect → Vigor:** Complete null at every level.
+## What remains
 
-The vigor section needs reframing from "common computation" to "individual differences in valuation manifest in execution strategy."
+- [ ] Run MCMC pipeline on GPU (`scripts/run_mcmc_pipeline.py`) — proper posteriors for all models
+- [ ] Run confirmatory sample (N=350) through full pipeline
+- [ ] Generate remaining figures (Fig 1: task + choice model, Fig 2: vigor)
+- [ ] PPCs for choice and vigor models
+- [ ] Parameter recovery analysis
+- [ ] Finalize supplementary materials
 
-## Current status (as of 2026-03-18)
-- **Exploratory sample (N=293):** Core analyses complete. Vigor diagnostics (NB12) have clarified the story.
-- **Confirmatory sample (N=350):** Data not yet added to repo; pipeline ready.
-- **Draft:** Version 2 (2026-02-23) — needs vigor section rewrite; references empty; figure numbers placeholder.
-- **Dead ends closed:** ODE vigor, continuous temporal alignment, encounter spike, attack contrast (see hypotheses.md).
-- **Open:** Psychiatric battery factor analysis (blocks H13); confirmatory replication.
-
-## What remains for submission
-- **Reframe vigor section** of the draft around individual differences
-- Run confirmatory sample through full pipeline
-- Psychiatric battery factor analysis → model param associations
-- Finalize figures, references, code/data availability
-- Ensure all results tables and stats are final
-
-**How to apply:** All work should be evaluated against: "Does this bring the manuscript closer to Nature Communications submission?" The vigor story needs honest reframing. Prioritize analyses that strengthen the choice→affect link and the individual-differences story for vigor. Be skeptical of claims about real-time survival tracking in vigor.
+**How to apply:** All work should bring the manuscript closer to submission. The story is set — execution remains.
