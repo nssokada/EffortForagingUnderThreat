@@ -1,0 +1,94 @@
+{
+  "hypothesis": "H2",
+  "description": "Survival computation predicts subjective affect",
+  "survival_formula": "S = (1-T) + T / (1 + lambda * D), lambda=2.0, D=distance+1",
+  "lambda": 2.0,
+  "H2a": {
+    "description": "S_z predicts affect (LMM, random subject intercepts, within-person z-scored)",
+    "anxiety": {
+      "beta": -0.2812,
+      "se": 0.0116,
+      "t": -24.1425,
+      "p": 8.941298846085827e-129,
+      "ci_lower": -0.3041,
+      "ci_upper": -0.2584,
+      "n_subjects": 293,
+      "n_observations": 5274
+    },
+    "confidence": {
+      "beta": 0.2803,
+      "se": 0.0118,
+      "t": 23.6702,
+      "p": 7.306365581852403e-124,
+      "ci_lower": 0.2571,
+      "ci_upper": 0.3036,
+      "n_subjects": 293,
+      "n_observations": 5272
+    }
+  },
+  "H2b": {
+    "description": "k_z moderates S_z -> affect: LMM with S_z + S_z:k_z interaction. k_z is between-subjects and collinear with random intercept (main effect not estimable); only S_z:k_z interaction is reported.",
+    "note_on_k_z_main_effect": "k_z is a between-subjects variable. In a random-intercept LMM it is collinear with the random effect; the main effect of k_z cannot be separately estimated. Only the S_z:k_z cross-level interaction is identified and reported.",
+    "anxiety": {
+      "S_z": {
+        "beta": -0.2812,
+        "se": 0.0116,
+        "t": -24.181,
+        "p": 3.524217409356049e-129,
+        "ci_lower": -0.304,
+        "ci_upper": -0.2584
+      },
+      "S_z:k_z": {
+        "beta": 0.0503,
+        "se": 0.0117,
+        "t": 4.3153,
+        "p": 1.5939867053381466e-05,
+        "ci_lower": 0.0274,
+        "ci_upper": 0.0731
+      },
+      "n_subjects": 293,
+      "n_observations": 5274
+    },
+    "confidence": {
+      "S_z": {
+        "beta": 0.2803,
+        "se": 0.0118,
+        "t": 23.6922,
+        "p": 4.33412325072319e-124,
+        "ci_lower": 0.2572,
+        "ci_upper": 0.3035
+      },
+      "S_z:k_z": {
+        "beta": -0.0403,
+        "se": 0.0119,
+        "t": -3.4033,
+        "p": 0.0006657132519335123,
+        "ci_lower": -0.0636,
+        "ci_upper": -0.0171
+      },
+      "n_subjects": 293,
+      "n_observations": 5272
+    }
+  },
+  "H2c": {
+    "description": "Cross-domain: per-subject OLS slope of choice/affect on threat. Negative choice slope = greater avoidance under threat. Positive anxiety slope = greater anxiety under threat. Negative confidence slope = greater confidence drop under threat.",
+    "note_on_signs": "r(choice_slope, anxiety_slope)=-0.386: more negative choice slope (more avoidance) pairs with more positive anxiety slope (more anxiety) — coherent greater threat sensitivity. r(choice_slope, confidence_slope)=+0.372: more negative choice slope pairs with more negative confidence slope (more confidence drop) — also coherent.",
+    "mean_slopes": {
+      "choice_threat_slope": -0.6049,
+      "anxiety_threat_slope": 1.7683,
+      "confidence_threat_slope": -1.772
+    },
+    "choice_vs_anxiety": {
+      "r": -0.3858,
+      "p": 7.756268842683569e-12,
+      "n": 293,
+      "interpretation": "Coherent cross-domain coupling: more threat-sensitive choosers are also more threat-sensitive in anxiety"
+    },
+    "choice_vs_confidence": {
+      "r": 0.3718,
+      "p": 4.866888819038777e-11,
+      "n": 293,
+      "interpretation": "Coherent cross-domain coupling: more threat-sensitive choosers show larger threat-induced confidence drops"
+    }
+  }
+}

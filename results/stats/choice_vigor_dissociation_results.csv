@@ -1,0 +1,21 @@
+test,label,r,p,n,stat_type,F,HL_mean,LH_mean,t,n_HL,n_LH
+overall_correlation,choice × vigor (overall),0.007826916066362162,0.8938734283092132,293.0,pearsonr,,,,,,
+beta_path,beta -> choice,-0.12516992184944495,0.03220670616607016,293.0,pearsonr,,,,,,
+beta_path,beta -> vigor,0.1916405853660439,0.0009774203805739607,293.0,pearsonr,,,,,,
+k_path,k -> choice,-0.8033047588743355,1.8577742481745448e-67,293.0,pearsonr,,,,,,
+k_path,k -> vigor,-0.050242857003147554,0.39150885639244043,293.0,pearsonr,,,,,,
+threat_level_correlation,choice × vigor at threat=0.1,0.16371770054580412,0.004963445525884823,293.0,pearsonr,,,,,,
+threat_level_correlation,choice × vigor at threat=0.5,0.033625731166356185,0.5664540597788048,293.0,pearsonr,,,,,,
+threat_level_correlation,choice × vigor at threat=0.9,-0.10063512885683225,0.08550509149587901,293.0,pearsonr,,,,,,
+quadrant_anova,k_by_quadrant,,1.3953573176614665e-24,293.0,f_oneway,46.57117202882779,,,,,
+quadrant_anova,beta_by_quadrant,,0.00010961664130571586,293.0,f_oneway,7.217467090480314,,,,,
+quadrant_anova,escape_by_quadrant,,9.575808226523684e-63,293.0,f_oneway,166.77694275644023,,,,,
+quadrant_anova,earnings_by_quadrant,,3.899223505375349e-54,293.0,f_oneway,132.9762381286806,,,,,
+off_diagonal_ttest,HL_vs_LH_kappa,,2.2135299723982433e-14,,ttest_ind,,2.597694053571429,8.295287540625,-8.484949165434262,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_beta,,8.727646793675155e-06,,ttest_ind,,40.952887035714284,72.349569734375,-4.609719937107578,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_escape_rate,,9.555757287020761e-41,,ttest_ind,,0.19022522586575766,0.6603653695143931,-18.767050994583247,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_total_earnings,,7.881632264635665e-20,,ttest_ind,,-6.5,45.5625,-10.601825503357624,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_trait_conf,,0.027146047797600478,,ttest_ind,,3.3743386243386246,2.885416666666667,2.231880204496799,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_trait_anx,,0.3678098647552693,,ttest_ind,,4.457671957671958,4.265625,0.9033846985506714,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_AMI_Total,,0.0002525939764725738,,ttest_ind,,26.11904761904762,32.1875,-3.7518334092756787,84.0,64.0
+off_diagonal_ttest,HL_vs_LH_anx_calib,,0.09498299016537481,,ttest_ind,,0.2379747237431586,0.3350030431772882,-1.6807313308021925,83.0,63.0

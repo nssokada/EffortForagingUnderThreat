@@ -1,0 +1,256 @@
+{
+  "dataset": {
+    "N_subjects": 293,
+    "N_trials": 13185,
+    "N_trials_total": 13185
+  },
+  "model_table": [
+    {
+      "model": "L4a_add",
+      "ELBO": -6259.712392578125,
+      "BIC": 18135.631163638383,
+      "dELBO": 0.0,
+      "dBIC": 0.0
+    },
+    {
+      "model": "L4a_add_norm",
+      "ELBO": -6262.624091796875,
+      "BIC": 18141.454562075884,
+      "dELBO": -2.9116992187500728,
+      "dBIC": 5.8233984375001455
+    },
+    {
+      "model": "L3_add",
+      "ELBO": -6275.436228027344,
+      "BIC": 18167.07883453682,
+      "dELBO": -15.723835449218312,
+      "dBIC": 31.447670898436627
+    },
+    {
+      "model": "L4d_add",
+      "ELBO": -6278.020300292968,
+      "BIC": 18172.24697906807,
+      "dELBO": -18.307907714843168,
+      "dBIC": 36.615815429686336
+    },
+    {
+      "model": "L4c_add",
+      "ELBO": -6299.925881347656,
+      "BIC": 18216.058141177447,
+      "dELBO": -40.21348876953107,
+      "dBIC": 80.42697753906396
+    },
+    {
+      "model": "L4a_hyp",
+      "ELBO": -6418.146364746094,
+      "BIC": 18452.49910797432,
+      "dELBO": -158.43397216796893,
+      "dBIC": 316.86794433593604
+    },
+    {
+      "model": "L3_survival",
+      "ELBO": -6449.34857421875,
+      "BIC": 18514.903526919632,
+      "dELBO": -189.6361816406252,
+      "dBIC": 379.2723632812485
+    },
+    {
+      "model": "L3b_surv_zi",
+      "ELBO": -6561.1539453125,
+      "BIC": 21527.643788150624,
+      "dELBO": -301.44155273437445,
+      "dBIC": 3392.012624512241
+    },
+    {
+      "model": "L2_TxD",
+      "ELBO": -6780.387238769531,
+      "BIC": 19176.9808560212,
+      "dELBO": -520.6748461914058,
+      "dBIC": 1041.3496923828134
+    },
+    {
+      "model": "L1_threat",
+      "ELBO": -6783.9178784179685,
+      "BIC": 19174.555300219283,
+      "dELBO": -524.2054858398433,
+      "dBIC": 1038.9241365808994
+    },
+    {
+      "model": "L0_effort",
+      "ELBO": -8297.617353515625,
+      "BIC": 19403.337896272315,
+      "dELBO": -2037.9049609375,
+      "dBIC": 1267.706732633931
+    }
+  ],
+  "H1a_additive_vs_multiplicative": {
+    "description": "Additive effort (L4a_add) vs multiplicative effort (L4a_hyp); hyperbolic S, \u03b1 in survival",
+    "additive_model": "L4a_add",
+    "multiplicative_model": "L4a_hyp",
+    "ELBO_additive": -6259.712392578125,
+    "ELBO_multiplicative": -6418.146364746094,
+    "delta_ELBO": 158.43397216796893,
+    "BIC_additive": 18135.631163638383,
+    "BIC_multiplicative": 18452.49910797432,
+    "delta_BIC": 316.86794433593604,
+    "winner": "additive",
+    "supported": true
+  },
+  "H1b_hyperbolic_vs_exponential_survival": {
+    "description": "Hyperbolic S (L3_add) vs exponential S (L3_survival); both no \u03b1; additive vs multiplicative effort respectively",
+    "hyperbolic_model": "L3_add",
+    "exponential_model": "L3_survival",
+    "ELBO_hyperbolic": -6275.436228027344,
+    "ELBO_exponential": -6449.34857421875,
+    "delta_ELBO": 173.91234619140596,
+    "BIC_hyperbolic": 18167.07883453682,
+    "BIC_exponential": 18514.903526919632,
+    "delta_BIC": 347.8246923828119,
+    "winner": "hyperbolic",
+    "supported": true,
+    "note": "L3_add=additive+hyperbolic vs L3_survival=multiplicative+exponential; confounded by effort form",
+    "full_winner_vs_exponential": {
+      "ELBO_L4a_add": -6259.712392578125,
+      "ELBO_L3_survival": -6449.34857421875,
+      "delta_ELBO": 189.63618164062518,
+      "delta_BIC": 379.27236328124854
+    }
+  },
+  "H1c_mechanistic_S_vs_conflated": {
+    "description": "Mechanistic S (separates P(attack)=T from P(escape)=f(D)) vs conflated (exponential S, T\u00b7D in exponent) vs feature model (T\u00d7D as covariate)",
+    "mechanistic_model": "L4a_add",
+    "conflated_model": "L3_survival",
+    "feature_model": "L2_TxD",
+    "ELBO_mechanistic": -6259.712392578125,
+    "ELBO_conflated": -6449.34857421875,
+    "ELBO_feature": -6780.387238769531,
+    "delta_ELBO_mech_vs_conflated": 189.63618164062518,
+    "delta_ELBO_mech_vs_feature": 520.6748461914058,
+    "delta_BIC_mech_vs_conflated": 379.27236328124854,
+    "delta_BIC_mech_vs_feature": 1041.349692382817,
+    "winner": "mechanistic",
+    "supported": true
+  },
+  "H1d_parameter_independence": {
+    "description": "k and \u03b2 are independently identifiable (low cross-parameter correlation)",
+    "N": 293,
+    "r_k_beta": -0.13808035669059326,
+    "p_k_beta": 0.01804028910138201,
+    "r_k_alpha": -0.05221927100309369,
+    "p_k_alpha": 0.37312400043216476,
+    "r_beta_alpha": 0.2638272561712581,
+    "p_beta_alpha": 4.693113433670336e-06,
+    "supported": true,
+    "note": "r < 0.3 and non-significant indicates independent identifiability"
+  },
+  "winning_model_fit": {
+    "model": "L4a_add",
+    "ELBO": -6259.712392578125,
+    "BIC": 18135.631163638383,
+    "N_trials": 13185,
+    "accuracy": 0.7613955252180508,
+    "AUC": 0.8631070377914617,
+    "pseudo_R2_mcfadden": 0.31506590624469855,
+    "tau_population": 0.437,
+    "lambda_population": 2.0,
+    "note": "Accuracy and AUC computed from per-subject L3_add parameters (k, \u03b2) with population \u03bb=2.0, \u03c4=0.437"
+  },
+  "parameter_distributions": {
+    "k_effort_discounting": {
+      "N": 293,
+      "mean": 6.1238811110580205,
+      "median": 4.2957473,
+      "sd": 6.343018137791141,
+      "q25": 2.2686858,
+      "q75": 7.162038,
+      "min": 0.6259044,
+      "max": 41.03947,
+      "t_vs_zero": 16.525880485763903,
+      "p_vs_zero": 9.12604195147941e-44
+    },
+    "beta_threat_bias": {
+      "N": 293,
+      "mean": 54.9031913549488,
+      "median": 41.188927,
+      "sd": 42.069397097212175,
+      "q25": 26.16354,
+      "q75": 68.778275,
+      "min": 9.943479,
+      "max": 246.1219,
+      "t_vs_zero": 22.339071154816654,
+      "p_vs_zero": 3.779596826664666e-65
+    },
+    "alpha_tonic_vigor": {
+      "N": 293,
+      "mean": 0.5193364215051195,
+      "median": 0.5387046,
+      "sd": 0.19365639701280044
+    }
+  },
+  "threat_distance_interaction": {
+    "description": "Logistic regression: choice ~ threat + distance_H + threat \u00d7 distance_H",
+    "coef_threat": -1.6374867714100032,
+    "coef_distance": -0.5486792754235965,
+    "coef_interact": -0.7339253051532713,
+    "pval_threat": 2.445276240537567e-22,
+    "pval_distance": 1.4513976863282493e-34,
+    "pval_interact": 4.22089027477233e-18,
+    "interpretation": "Threat \u00d7 distance interaction in choice behavior; captured by survival function S"
+  },
+  "choice_by_threat_distance": [
+    {
+      "threat": 0.1,
+      "distance_H": 1,
+      "p_choose_high": 0.8081911262798634,
+      "n": 1465
+    },
+    {
+      "threat": 0.1,
+      "distance_H": 2,
+      "p_choose_high": 0.6921501706484642,
+      "n": 1465
+    },
+    {
+      "threat": 0.1,
+      "distance_H": 3,
+      "p_choose_high": 0.5651877133105802,
+      "n": 1465
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 1,
+      "p_choose_high": 0.6334470989761092,
+      "n": 1465
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 2,
+      "p_choose_high": 0.38088737201365186,
+      "n": 1465
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 3,
+      "p_choose_high": 0.18771331058020477,
+      "n": 1465
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 1,
+      "p_choose_high": 0.39726962457337883,
+      "n": 1465
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 2,
+      "p_choose_high": 0.1378839590443686,
+      "n": 1465
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 3,
+      "p_choose_high": 0.07849829351535836,
+      "n": 1465
+    }
+  ]
+}
