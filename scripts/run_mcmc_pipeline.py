@@ -74,7 +74,7 @@ print()
 # ============================================================
 # Paths
 # ============================================================
-ROOT = Path("/workspace")
+ROOT = Path(__file__).resolve().parent.parent
 STAGE5 = ROOT / "data/exploratory_350/processed/stage5_filtered_data_20260320_191950"
 VIGOR_PROC = ROOT / "data/exploratory_350/processed/vigor_processed"
 STAT_DIR = ROOT / "results/stats"
