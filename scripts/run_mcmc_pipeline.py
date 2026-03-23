@@ -42,7 +42,7 @@ from jax import random
 # Parse arguments
 # ============================================================
 parser = argparse.ArgumentParser()
-parser.add_argument("--platform", default="gpu", choices=["cpu", "gpu"])
+parser.add_argument("--platform", default="cuda", choices=["cpu", "cuda", "gpu"])
 parser.add_argument("--num-chains", type=int, default=4)
 parser.add_argument("--num-warmup", type=int, default=1000)
 parser.add_argument("--num-samples", type=int, default=1000)
@@ -53,10 +53,9 @@ args = parser.parse_args()
 
 STAGES = [int(s) for s in args.stages.split(",")]
 
-numpyro.set_platform(args.platform)
-if args.platform == "gpu":
-    numpyro.set_host_device_count(1)
-    # Enable parallel chains on GPU
+platform = "cuda" if args.platform == "gpu" else args.platform
+numpyro.set_platform(platform)
+if platform == "cuda":
     numpyro.enable_x64(False)  # float32 on GPU is fine
 
 print("=" * 60)
@@ -237,7 +236,7 @@ def run_mcmc(model, model_args, model_kwargs, name, rng_seed=0):
         num_warmup=args.num_warmup,
         num_samples=args.num_samples,
         num_chains=args.num_chains,
-        chain_method="parallel" if args.platform == "gpu" else "sequential",
+        chain_method="parallel" if platform == "cuda" else "sequential",
         progress_bar=True,
     )
 
