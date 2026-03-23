@@ -1,7 +1,7 @@
 # Preregistration: Confirmatory Replication of Effort-Threat Integration in Human Foraging
 
 **Format:** AsPredicted (#XXXXXX)
-**Title:** A Common Computational Structure Integrates Effort and Threat Across Decision, Emotion, and Action — Confirmatory Sample
+**Title:** Humans Reallocate Effort Across Decision and Action When Foraging Under Threat — Confirmatory Sample
 **Authors:** Noah Okada, Ketika Garg, Toby Wise, Dean Mobbs
 **Affiliation:** Caltech
 **Date of preregistration:** [Date to be filled at submission]
@@ -18,46 +18,55 @@ Yes. The confirmatory sample (N=350, recruited via Prolific) has been collected 
 
 ## 1. Hypotheses
 
-We test four pre-specified hypotheses derived from the exploratory sample (N=293). Each hypothesis states an expected direction and minimum threshold. All tests are one-tailed where a directional prediction is made; two-tailed otherwise.
+We test six pre-specified hypotheses derived from the exploratory sample (N=293). Each hypothesis states an expected direction and minimum threshold. All tests are one-tailed where a directional prediction is made; two-tailed otherwise.
 
 ---
 
 ### H1 — The survival-weighted additive-effort choice model best explains foraging behavior
 
-**Statement:** Choice behavior is best explained by a model in which (a) energetic effort costs are subtracted additively from expected reward, (b) escape probability follows a hyperbolic function of distance scaled by a population-level hazard parameter λ, and (c) residual threat aversion enters as a subject-specific additive bias β. The winning model has subjective value:
+**Statement:** Choice behavior is best explained by a model in which (a) energetic effort costs are subtracted additively from expected reward, (b) escape probability follows a hyperbolic function of distance, and (c) residual threat aversion enters as a subject-specific additive bias β. The winning model has subjective value:
 
 ```
 SV = R · S − k · E − β · (1 − S)
-S  = (1 − T) + T / (1 + λ · D / α)
+S  = (1 − T) + T / (1 + λ · D)
 ```
 
-where R is reward magnitude (R_H = 5, R_L = 1), S is the trial-level survival probability, T is threat probability ∈ {0.1, 0.5, 0.9}, D is cookie distance ∈ {1, 2, 3}, E is normalized effort demand, k is subject-specific effort discounting, β is subject-specific threat bias (subjective capture cost), λ is a population-level hazard scaling parameter (fixed at λ = 2.0), α is subject-specific tonic vigor (from the vigor hierarchical Bayesian model, entering the survival function), and C = 5 is the fixed capture penalty.
+where R is reward magnitude (R_H = 5, R_L = 1), S is option-specific survival probability (computed separately for S_H and S_L using each option's distance), T is threat probability ∈ {0.1, 0.5, 0.9}, D is cookie distance ∈ {1, 2, 3}, E is normalized effort demand, k is subject-specific effort discounting, β is subject-specific threat bias (subjective capture cost), and λ is a population-level hazard parameter estimated from data (exploratory: λ ≈ 13.9).
 
 Choices are modeled via softmax on the value difference:
 
 ```
-p(choose H) = σ(ΔSV / τ)
+p(choose H) = σ(τ · (SV_H − SV_L))
 ```
 
 with τ a population-level inverse-temperature.
 
-**Operationalization of "best":** This model (L4a_add in the exploratory comparison scheme) must achieve the highest ELBO (Evidence Lower BOund from stochastic variational inference) and lowest BIC among all models in the comparison set defined below.
+**Operationalization of "best":** This model (M5 in the comparison scheme) must achieve the highest ELBO among all five models in the comparison set.
+
+**Models compared (5, each testing one structural question):**
+
+| Model | Structure | Question |
+|---|---|---|
+| M1 | SV = R·exp(−kE) | Does threat matter? |
+| M2 | SV = R·exp(−kE) − β·T·D | Mechanistic S or linear features? |
+| M3 | SV = R·exp(−kE)·S − β·(1−S), S=exp(−λTD) | Which survival kernel? |
+| M4 | SV = R·exp(−kE)·S − β·(1−S), S=(1−T)+T/(1+λD) | Which effort structure? |
+| M5 | SV = R·S − k·E − β·(1−S), S=(1−T)+T/(1+λD) | **Winner** |
 
 **Primary tests:**
-1. The full additive-effort model (L4a_add) achieves higher ELBO than the multiplicative-effort model (L4a_hyp) by ΔELBO > 0 (directional; exploratory ΔELBO = +158).
-2. The hyperbolic survival kernel achieves higher ELBO than the exponential survival kernel (L3_survival) by ΔELBO > 0 (directional; exploratory ΔELBO = +190 vs L3_survival).
-3. The combined effort–threat model substantially outperforms the effort-only baseline (L0_effort) by ΔELBO > 100 (exploratory: ΔELBO = +2038).
-4. Individual differences in z (hazard sensitivity) are not needed: the model with population-level z (L3_add) outperforms the model with per-subject z (L3b_surv_zi) by ΔELBO > 0 (exploratory: per-subject z hurts by −112 ELBO).
+1. Additive effort (M5) outperforms multiplicative effort (M4) by ΔELBO > 0 (exploratory: +158).
+2. Hyperbolic survival (M4) outperforms exponential survival (M3) by ΔELBO > 0 (exploratory: +174).
+3. The survival model (M5) substantially outperforms the effort-only baseline (M1) by ΔELBO > 100 (exploratory: +2,038).
 
-**Support criterion:** All four tests must be directionally consistent with exploratory findings. Criterion 1 (additive > multiplicative) and Criterion 2 (hyperbolic > exponential) are the primary confirmatory tests.
+**Support criterion:** All three tests must be directionally consistent. Tests 1 and 2 are the primary confirmatory tests.
 
-**Rejection criterion:** Either the multiplicative model or the exponential kernel outperforms the winning exploratory specification.
+**Rejection criterion:** Either multiplicative effort or exponential survival outperforms the winning specification.
 
 ---
 
 ### H2 — Model-derived survival predicts trial-level anxiety and confidence
 
-**Statement:** The survival probability S, computed from each participant's fitted parameters using the winning L3_add model (S = (1−T) + T/(1+λD), λ = 2.0), negatively predicts trial-level anxiety ratings and positively predicts trial-level confidence ratings at the within-subject level. This constitutes evidence that subjective affect tracks the same latent survival computation that governs choice.
+**Statement:** The survival probability S, computed from each participant's fitted parameters using the winning L3_add model (S = (1−T) + T/(1+λD), λ (estimated from confirmatory choice model fit)), negatively predicts trial-level anxiety ratings and positively predicts trial-level confidence ratings at the within-subject level. This constitutes evidence that subjective affect tracks the same latent survival computation that governs choice.
 
 **Primary tests:**
 1. Mixed-effects linear regression: `anxiety ~ S_probe_z + (1 + S_probe_z | subject)`. Test: β(S_probe_z) < 0, with |t| > 3.0 (exploratory: β = −0.605, t = −25.63).
@@ -66,7 +75,7 @@ with τ a population-level inverse-temperature.
 **Secondary test (parameter moderation):**
 3. k (effort discounting) negatively predicts mean anxiety and positively predicts mean confidence between subjects (between-subjects OLS: mean affect ~ k_z). Directional, p < 0.05 one-tailed (exploratory: k → anxiety β = +0.127, p = 0.032; k → confidence β = −0.154, p = 0.009).
 
-**S_probe computation:** For each probe trial, S_probe = (1 − T) + T / (1 + λ · D) with λ = 2.0 (population-level, fixed from exploratory fit). The subject-specific posterior mean k and β from the L3_add SVI fit are used only for the parameter moderation secondary tests; S_probe itself uses only population-level λ.
+**S_probe computation:** For each probe trial, S_probe = (1 − T) + T / (1 + λ · D) with λ (estimated from confirmatory choice model fit) (population-level, fixed from exploratory fit). The subject-specific posterior mean k and β from the L3_add SVI fit are used only for the parameter moderation secondary tests; S_probe itself uses only population-level λ.
 
 **Support criterion:** Both primary tests (H2.1 and H2.2) must be significant in the predicted direction. The secondary test is confirmatory for the anxiety direction only (k → higher mean anxiety).
 
@@ -76,26 +85,26 @@ with τ a population-level inverse-temperature.
 
 ### H3 — Danger drives excess motor vigor
 
-**Statement:** Lower survival probability S causes participants to press harder, expressed as an individual-specific danger mobilization parameter δ in a hierarchical Bayesian model of pressing rate. Specifically, each subject's terminal pressing rate (normalized vigor in the last 2 seconds of each trial) increases on attack trials relative to non-attack trials, with the magnitude of this increase (δ) being positive at the population level. This constitutes evidence that the motor system is recruited in proportion to imminence of danger.
+**Statement:** Lower survival probability S causes participants to press harder than the task requires, expressed as a positive population-mean danger mobilization parameter δ in a hierarchical Bayesian model of excess effort.
 
 **Vigor model:**
 ```
-pre_enc_rate[i,t]  ~ Normal(α_i, σ_pre)          # pre-encounter [enc−2s, enc]
-terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)   # terminal [trialEnd−2s, trialEnd]
+excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij
+ε_ij ~ Normal(0, σ)
 ```
 
-where vigor_norm is the capacity-normalized smoothed pressing rate. α_i is subject-specific tonic vigor (pre-encounter); ρ_i is subject-specific attack-driven terminal mobilization (δ in paper notation); γ_i is baseline terminal rate. All subject-level parameters have hierarchical Normal priors estimated via MCMC (NumPyro NUTS).
+where excess_ij is the difference between observed capacity-normalized vigor and the effort demand of the chosen option, S_ij = (1−T) + T/(1+λD_chosen) uses the distance of the chosen cookie and λ from the choice model, α_i is subject-specific baseline excess effort, and δ_i is subject-specific danger-responsive mobilization. All subject-level parameters have hierarchical normal priors estimated via MCMC (NumPyro NUTS) or SVI.
 
 **Primary tests:**
-1. Population mean μ_ρ > 0 (one-tailed). The posterior 95% credible interval for μ_ρ must exclude zero. (Exploratory: μ_ρ = 0.067, P(ρ > 0) = 1.0 for all subjects.)
-2. The proportion of subjects with posterior mean ρ_i > 0 must exceed 65% (exploratory: 100% of subjects).
+1. Population mean μ_δ > 0 (one-tailed). The posterior 95% credible interval for μ_δ must exclude zero. (Exploratory: μ_δ = +0.211, P(μ_δ > 0) = 1.0.)
+2. The proportion of subjects with posterior mean δ_i > 0 must exceed 80% (exploratory: 99%).
 
 **Secondary test:**
-3. The Spearman–Brown corrected split-half reliability for ρ must exceed 0.50 (exploratory: SB = 0.635, indicating modest but real individual differences in mobilization magnitude).
+3. σ_δ > 0.05, confirming that individual differences in danger mobilization are recoverable. (Exploratory: σ_δ = 0.115, shrinkage from OLS = 40.6%.)
 
 **Support criterion:** Both primary tests (H3.1 and H3.2) must be met.
 
-**Rejection criterion:** μ_ρ posterior includes zero, or fewer than 50% of subjects show ρ_i > 0.
+**Rejection criterion:** μ_δ posterior includes zero, or fewer than 65% of subjects show δ_i > 0.
 
 ---
 
@@ -123,36 +132,22 @@ Trial-level mixed-effects logistic regression: `escaped ~ vigor_z + choice_z + t
 
 ---
 
-### H5 — A joint hierarchical model recovers correlated choice-vigor parameters
+### H5 — Choice and vigor parameters are coupled across independently estimated Bayesian models
 
-**Statement:** A joint hierarchical Bayesian model in which choice and vigor share a common survival function $S$ and individual-difference parameters $[log(k_i), log(\beta_i), \alpha_i, \delta_i]$ are drawn from a multivariate normal with a full covariance matrix (LKJ Cholesky prior, $\eta = 2$) will recover: (a) a positive population-level correlation between threat bias $\beta$ and vigor mobilization $\delta$, and (b) a negative correlation between effort sensitivity $k$ and $\delta$.
+**Statement:** Individual differences in threat bias ($\beta$, from the choice model) and danger-responsive vigor mobilization ($\delta$, from the vigor model) are positively correlated, and individual differences in effort sensitivity ($k$) and $\delta$ are negatively correlated. These correlations emerge from models that share no parameters or data — only the survival function $S$ (evaluated at the choice-estimated $\lambda$) links them.
 
-**Model specification:**
-```
-Choice:  SV_H = R_H·S_H − k_i·E_H − β_i·(1−S_H)
-         SV_L = R_L·S_L − k_i·E_L − β_i·(1−S_L)
-         choice ~ Bernoulli(logit(τ·(SV_H − SV_L)))
+**Primary tests (independent Bayesian pipeline):**
+1. Pearson $r(log(\beta_{choice}), \delta_{vigor}) > 0$, $p < .001$ one-tailed. (Exploratory: $r = +0.55$, $p < 10^{-24}$)
+2. Pearson $r(log(k_{choice}), \delta_{vigor}) < 0$, $p < .01$ one-tailed. (Exploratory: $r = -0.28$, $p < 10^{-6}$)
 
-Vigor:   excess_ij = α_i + δ_i·(1−S_chosen) + ε_ij
-
-Subject: [log(k_i), log(β_i), α_i, δ_i] ~ MVN(μ, Σ)
-         Σ = diag(σ)·Ω·diag(σ), Ω ~ LKJCholesky(η=2)
-```
-
-The model is fit in two stages: (1) estimate $\lambda$ from choice-only data (SVI, AutoMultivariateNormal, 30,000 steps); (2) fix $\lambda$ and fit the full joint model.
-
-**Primary tests:**
-1. $\rho(\beta, \delta)$: posterior mean > 0 with 95% CI excluding zero. (Exploratory: $\rho = +0.295$ [+0.191, +0.393])
-2. $\rho(k, \delta)$: posterior mean < 0 with 95% CI excluding zero. (Exploratory: $\rho = -0.332$ [-0.440, -0.222])
-
-**Secondary tests:**
-3. $\sigma_\delta > 0.05$ (individual differences in $\delta$ are recoverable, not collapsed). (Exploratory: $\sigma_\delta = 0.153$, shrinkage = 25.6%)
-4. Joint model ELBO exceeds choice-only ELBO by $\Delta > 0$. (Exploratory: $\Delta = +1,648$)
-5. $\rho(\alpha, \delta) < 0$ with 95% CI excluding zero. (Exploratory: $\rho = -0.401$ [-0.498, -0.299])
+**Secondary tests (joint model robustness):**
+A joint hierarchical model with correlated random effects $[log(k_i), log(\beta_i), \alpha_i, \delta_i] \sim MVN(\mu, \Sigma)$, $\Omega \sim LKJCholesky(\eta=2)$, with $\lambda$ fixed from the choice model, must confirm:
+3. $\rho(\beta, \delta)$ posterior mean > 0 with 95% CI excluding zero.
+4. $\rho(k, \delta)$ posterior mean < 0 with 95% CI excluding zero.
 
 **Support criterion:** Both primary tests (H5.1, H5.2) must be met.
 
-**Rejection criterion:** Either $\rho(\beta, \delta) \leq 0$ or $\rho(k, \delta) \geq 0$ with credible intervals including zero.
+**Rejection criterion:** $r(log(\beta), \delta) \leq 0$ or $r(log(k), \delta) \geq 0$.
 
 ---
 
@@ -222,9 +217,9 @@ After applying exclusion criteria (see Section 5), the confirmatory sample is ex
 
 ### 3.0 General Principles
 
-1. **Same code, same parameters:** All analysis scripts used for the exploratory sample will be applied without modification to the confirmatory sample, except for file path arguments pointing to the confirmatory data directory. Fixed parameters (λ = 2.0, R_H = 5, R_L = 1, C = 5, effort tiers) are inherited from the exploratory fit and are not re-estimated.
+1. **Same code, same parameters:** All analysis scripts used for the exploratory sample will be applied without modification to the confirmatory sample, except for file path arguments. Fixed constants (R_H = 5, R_L = 1, C = 5, effort tiers) are carried forward. Population parameters (λ, τ) are re-estimated from the confirmatory data.
 
-2. **Sequential procedure:** Steps are executed in order: (1) preprocessing → (2) choice model fitting → (3) vigor HBM → (4) affect LMMs → (5) dissociation tests. Outputs from each step feed subsequent steps; no step is modified in light of results from subsequent steps.
+2. **Sequential procedure:** Steps are executed in order: (1) preprocessing → (2) choice model fitting (→ λ, k, β) → (3) vigor HBM with λ from step 2 (→ α, δ) → (4) cross-domain correlations → (5) affect LMMs → (6) joint model robustness check. Outputs from each step feed subsequent steps; no step is modified in light of results from subsequent steps.
 
 3. **No peeking:** The preregistration will be locked on AsPredicted before the confirmatory data are first opened for any analysis. A timestamped copy will be referenced in the paper.
 
@@ -262,7 +257,7 @@ The 5-stage preprocessing pipeline (`scripts/preprocessing/pipeline.py`) will be
 | L4a_add | Additive effort, hyperbolic survival, α in survival kernel (full winning model) |
 | L4a_hyp | Multiplicative effort, hyperbolic survival, α in survival kernel |
 
-**Fixed parameters:** λ = 2.0 (from exploratory population-level fit), R_H = 5, R_L = 1, C = 5, E_L = 0.4.
+**Fixed parameters:** λ (estimated from confirmatory choice model fit) (from exploratory population-level fit), R_H = 5, R_L = 1, C = 5, E_L = 0.4.
 
 **Model fit metrics recorded for each model:**
 - ELBO (final value at convergence, reported as negative free energy)
@@ -327,7 +322,7 @@ terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)
 ```
 S_probe[i,t] = (1 − T[t]) + T[t] / (1 + λ · D[t])
 ```
-with T = `p_threat`, D = `distance` + 1 (converting 0-indexed to 1-indexed distance level), λ = 2.0 (fixed, population-level from exploratory).
+with T = `p_threat`, D = `distance` + 1 (converting 0-indexed to 1-indexed distance level), λ (estimated from confirmatory choice model fit) (fixed, population-level from exploratory).
 
 Note: S_probe uses only population-level λ; no subject-specific parameters enter S_probe. This is the most conservative test.
 
@@ -597,7 +592,7 @@ S(T, D, α_i) = (1 − T) + T / (1 + λ · D / α_i)
 ```
 - T ∈ {0.1, 0.5, 0.9}: trial-level threat probability
 - D ∈ {1, 2, 3}: option distance level
-- λ = 2.0: population-level hazard scaling (fixed from exploratory)
+- λ (estimated from confirmatory choice model fit): population-level hazard scaling (fixed from exploratory)
 - α_i: subject-specific tonic vigor (pre-encounter pressing rate; from HBM, not estimated by SVI)
 
 **Subjective value (additive effort):**
