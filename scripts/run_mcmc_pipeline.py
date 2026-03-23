@@ -134,10 +134,13 @@ print(f"  N = {N_subj} subjects, {len(merged):,} trials")
 # ============================================================
 # Model definitions
 # ============================================================
+LAMBDA_FIXED = 14.0  # Fixed from SVI consensus (both AutoNormal and AutoMVN agree)
+
+
 def choice_model(si, T, dH, dL, eH, eL, ch=None):
-    """L3_add: additive effort, hyperbolic survival, option-specific S."""
+    """L3_add: additive effort, hyperbolic survival, option-specific S. λ fixed."""
     tau = numpyro.sample("tau", dist.LogNormal(0, 1))
-    lam = numpyro.sample("lam", dist.LogNormal(0, 1))
+    lam = numpyro.deterministic("lam", jnp.array(LAMBDA_FIXED))
     mu_logk = numpyro.sample("mu_logk", dist.Normal(0, 1))
     sd_logk = numpyro.sample("sd_logk", dist.HalfNormal(1))
     mu_logb = numpyro.sample("mu_logb", dist.Normal(0, 1))
