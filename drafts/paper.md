@@ -62,7 +62,7 @@ The coherent shift predicted foraging outcomes. A regression of total reward on 
 
 If the survival computation links motor output and subjective experience, individuals who mobilize vigor under danger should also show more accurate affective tracking of $S$. We tested this by computing each participant's within-subject slope of anxiety and confidence ratings on $S$ and correlating these with $\delta$.
 
-Higher $\delta$ predicted steeper anxiety-to-$S$ coupling ($r = -0.217$, $p < .001$) and steeper confidence-to-$S$ coupling ($r = +0.259$, $p < .001$; Fig. 4a–b). Threat bias $\beta$ showed the same pattern ($|r| > 0.20$, $p < .001$). Effort sensitivity $k$ did not predict calibration ($|r| < 0.08$). Notably, higher $\delta$ was associated with *lower* mean anxiety ($r = -0.189$, $p = .001$; Fig. 4c). Individuals who press hardest under threat are not chronically anxious — their anxiety is better *calibrated*, rising steeply when $S$ is low but sitting at a lower baseline. This tonic-phasic dissociation in affect mirrors the $\alpha$-$\delta$ structure in the motor domain.
+Higher $\delta$ predicted steeper anxiety-to-$S$ coupling ($r = -0.311$, $p < .001$) and steeper confidence-to-$S$ coupling ($r = +0.325$, $p < .001$; Fig. 4a–b). Threat bias $\beta$ showed the same pattern ($|r| > 0.28$, $p < .001$). Effort sensitivity $k$ predicted calibration in the expected direction ($r = +0.20$ for anxiety, $p < .001$): individuals who weight effort cost heavily show less differentiated affect. Notably, higher $\delta$ was associated with *lower* mean anxiety ($r = -0.194$, $p < .001$; Fig. 4c). Individuals who press hardest under threat are not chronically anxious — their anxiety is better *calibrated*, rising steeply when $S$ is low but sitting at a lower baseline. This tonic-phasic dissociation in affect mirrors the $\alpha$-$\delta$ structure in the motor domain.
 
 ---
 
@@ -183,7 +183,7 @@ The authors declare no competing interests.
 
 **Fig. 3 | A joint model reveals coordinated effort reallocation.** **a**, As threat increases, P(choose high) decreases while excess effort increases — a coordinated shift. **b**, Per-subject choice shift and vigor shift are anti-correlated ($r = -0.671$). **c**, Forest plot of posterior correlations from the joint hierarchical model (LKJ prior); all 95% CIs exclude zero. The key coupling: $\rho(\beta, \delta) = +0.295$ [0.191, 0.393]. **d–e**, Independently estimated $\beta$ (from choice-only model) and $\delta$ (from OLS) confirm the coupling ($r = +0.53$) and the complementary effort-avoidance pattern ($r = -0.43$). **f**, Regression forest plot: all four parameters independently predict foraging earnings ($R^2 = 0.321$).
 
-**Fig. 4 | Vigor mobilization tracks affective accuracy.** **a–b**, $\delta$ predicts steeper within-subject anxiety-to-$S$ coupling ($r = -0.22$) and confidence-to-$S$ coupling ($r = +0.25$). **c**, Higher $\delta$ is associated with lower mean anxiety ($r = -0.19$): individuals who mobilize vigor under danger are not chronically anxious but more accurately anxious.
+**Fig. 4 | Vigor mobilization tracks affective accuracy.** **a–b**, $\delta$ predicts steeper within-subject anxiety-to-$S$ coupling ($r = -0.31$) and confidence-to-$S$ coupling ($r = +0.33$). **c**, Higher $\delta$ is associated with lower mean anxiety ($r = -0.19$): individuals who mobilize vigor under danger are not chronically anxious but more accurately anxious.
 
 ---
 

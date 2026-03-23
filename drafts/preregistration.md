@@ -156,8 +156,8 @@ A joint hierarchical model with correlated random effects $[log(k_i), log(\beta_
 **Statement:** Individual differences in danger-responsive vigor mobilization ($\delta$) predict how tightly participants' subjective affect tracks the survival computation $S$. Specifically, higher $\delta$ is associated with steeper within-subject slopes of anxiety on $S$ (more negative) and confidence on $S$ (more positive).
 
 **Primary tests:**
-1. Pearson $r(\delta, \text{anxiety slope on } S) < 0$, $p < .05$ one-tailed. (Exploratory: $r = -0.217$, $p = .0002$)
-2. Pearson $r(\delta, \text{confidence slope on } S) > 0$, $p < .05$ one-tailed. (Exploratory: $r = +0.259$, $p < .0001$)
+1. Pearson $r(\delta, \text{anxiety slope on } S) < 0$, $p < .05$ one-tailed. (Exploratory: $r = -0.311$, $p < .001$)
+2. Pearson $r(\delta, \text{confidence slope on } S) > 0$, $p < .05$ one-tailed. (Exploratory: $r = +0.325$, $p < .001$)
 
 **Secondary test:**
 3. $r(\delta, \text{mean anxiety}) < 0$: high-$\delta$ individuals report lower average anxiety despite stronger anxiety-$S$ coupling. (Exploratory: $r = -0.189$, $p = .001$)
