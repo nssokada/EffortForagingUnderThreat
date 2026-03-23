@@ -73,8 +73,8 @@ Vigor dominates outcomes: vigor β = +0.867 vs choice β = −0.175 in escape re
 
 | Calibration measure | δ correlation | p | β correlation | p |
 |---|---|---|---|---|
-| Anxiety slope on S | −0.217 | 0.0002 | −0.200 | 0.0006 |
-| Confidence slope on S | +0.259 | <0.0001 | +0.227 | 0.0001 |
+| Anxiety slope on S | −0.311 | <0.001 | −0.28 | <0.001 |
+| Confidence slope on S | +0.325 | <0.001 | +0.28 | <0.001 |
 
 - k does NOT predict calibration (|r| < 0.08)
 - δ × mean anxiety: r = −0.189, p = .001 (high δ = LESS mean anxiety)
