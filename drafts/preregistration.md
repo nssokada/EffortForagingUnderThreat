@@ -247,30 +247,28 @@ The 5-stage preprocessing pipeline (`scripts/preprocessing/pipeline.py`) will be
 
 **Models compared (same 7-model set as exploratory):**
 
-| Model | Description |
-|-------|-------------|
-| L0_effort | Effort-only, no threat (baseline) |
-| L2_TxD | Threat × distance feature model (no mechanistic survival) |
-| L3_add | Additive effort, hyperbolic survival, no α (primary parameter source) |
-| L3_survival | Multiplicative effort, exponential survival |
-| L3b_surv_zi | Per-subject z, multiplicative |
-| L4a_add | Additive effort, hyperbolic survival, α in survival kernel (full winning model) |
-| L4a_hyp | Multiplicative effort, hyperbolic survival, α in survival kernel |
+| Model | Structure | Question |
+|---|---|---|
+| M1 | SV = R·exp(−kE) | Does threat matter? |
+| M2 | SV = R·exp(−kE) − β·T·D | Mechanistic S or linear features? |
+| M3 | SV = R·exp(−kE)·S − β·(1−S), S=exp(−λTD) | Which survival kernel? |
+| M4 | SV = R·exp(−kE)·S − β·(1−S), S=(1−T)+T/(1+λD) | Which effort structure? |
+| M5 | SV = R·S − k·E − β·(1−S), S=(1−T)+T/(1+λD) | **Winner** |
 
-**Fixed parameters:** λ (estimated from confirmatory choice model fit) (from exploratory population-level fit), R_H = 5, R_L = 1, C = 5, E_L = 0.4.
+All models use option-specific S (S_H ≠ S_L computed from each option's distance). Per-subject k_i and β_i use non-centered parameterization with log-normal priors. λ and τ are population-level, estimated from data.
 
-**Model fit metrics recorded for each model:**
-- ELBO (final value at convergence, reported as negative free energy)
-- BIC (computed from model log-likelihood at SVI MAP estimate + standard penalty)
-- Prediction accuracy (proportion correct choices predicted by argmax of softmax)
+**Fixed constants:** R_H = 5, R_L = 1, C = 5, E_L = 0.4.
+
+**Inference:** SVI with NumPyro (AutoNormal guide, 15,000 steps, Adam lr = 0.003) or MCMC (NUTS, 4 chains × 1,000 warmup + 1,000 samples). Both methods will be applied; MCMC results are primary if convergence criteria are met (all Rhat ≤ 1.05, ESS ≥ 100).
+
+**Model fit metrics:** ELBO (from SVI) and/or WAIC (from MCMC). Prediction accuracy (proportion correct).
 
 **Primary comparison for H1:**
-- ΔELBO(L4a_add − L4a_hyp): must be > 0 (additive > multiplicative)
-- ΔELBO(L4a_add − L3_survival): must be > 0 (hyperbolic > exponential survival kernel)
+- ΔELBO(M5 − M4): must be > 0 (additive > multiplicative effort)
+- ΔELBO(M4 − M3): must be > 0 (hyperbolic > exponential survival)
+- ΔELBO(M5 − M1): must be > 100 (survival model > effort-only baseline)
 
-**Subject-level parameters extracted from L3_add** (no α): posterior mean k_i (effort discounting) and β_i (threat bias), for use in H2 secondary tests and H4 regressions.
-
-**α extracted from vigor HBM** (Section 3.3 below): posterior mean α_i (tonic pre-encounter pressing rate), for use in L4a_add and the dissociation analyses.
+**Subject-level parameters extracted from M5:** posterior mean k_i (effort discounting) and β_i (threat bias), plus population λ, for use in all downstream analyses (H2–H6).
 
 **No new model structures will be introduced** on the confirmatory sample; the comparison set is closed.
 
@@ -278,39 +276,39 @@ The 5-stage preprocessing pipeline (`scripts/preprocessing/pipeline.py`) will be
 
 ### 3.3 Analysis Plan for H3 — Vigor Hierarchical Bayesian Model
 
-**Vigor operationalization:** Capacity-normalized smoothed pressing rate from `smoothed_vigor_ts.parquet` (20 Hz kernel-smoothed keypress timeseries). Normalization: each subject's pressing rate divided by their 95th percentile 1-second-bin rate (f_max_i from `effort_ts.parquet`).
+**Vigor operationalization:** Capacity-normalized smoothed pressing rate from `smoothed_vigor_ts.parquet` (20 Hz kernel-smoothed keypress timeseries). Normalization: each subject's pressing rate divided by their calibration maximum (f_max_i). Trial-level vigor is the mean capacity-normalized rate across the trial. *Excess effort* = trial vigor − effort demand of chosen option.
 
-**Two-window model (identical to exploratory):**
+**Excess effort model:**
 
 ```
-pre_enc_rate[i,t]  ~ Normal(α_i,          σ_pre)
-terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)
+excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij
+ε_ij ~ Normal(0, σ)
 ```
 
-- **α_i** (tonic vigor): mean capacity-normalized pressing rate in window [enc − 2s, enc] per trial.
-- **ρ_i** (attack mobilization, δ in paper notation): additional pressing rate on attack vs. non-attack trials in window [trialEnd − 2s, trialEnd].
-- **γ_i**: baseline terminal rate (non-attack trials).
-- σ_pre, σ_term: residual standard deviations (population-level).
+where S_ij = (1−T) + T/(1+λ·D_chosen) uses the distance of the chosen cookie and λ from the choice model (Section 3.2).
+
+- **α_i** (baseline excess effort): how much the participant presses above demand on average.
+- **δ_i** (danger mobilization): how much excess effort increases as survival probability decreases.
+- **σ**: residual standard deviation (population-level).
 
 **Hierarchical priors:**
 ```
-μ_α ~ Normal(0.3, 0.5),  σ_α ~ HalfNormal(0.2)
+μ_α ~ Normal(0, 1),    σ_α ~ HalfNormal(1)
 α_i ~ Normal(μ_α, σ_α)
-μ_ρ ~ Normal(0.05, 0.1), σ_ρ ~ HalfNormal(0.1)
-ρ_i ~ Normal(μ_ρ, σ_ρ)
-μ_γ ~ Normal(0.3, 0.5),  σ_γ ~ HalfNormal(0.2)
-γ_i ~ Normal(μ_γ, σ_γ)
+μ_δ ~ Normal(0, 1),    σ_δ ~ HalfNormal(1)
+δ_i ~ Normal(μ_δ, σ_δ)
+σ   ~ HalfNormal(1)
 ```
 
-**Inference:** NumPyro NUTS, 4 chains × 1,000 warmup + 1,000 sampling iterations, target_accept = 0.95. Convergence criterion: all Rhat ≤ 1.05, all effective sample sizes ≥ 100.
+**Inference:** NumPyro NUTS (4 chains × 1,000 warmup + 1,000 sampling, target_accept = 0.90) or SVI (AutoNormal, 10,000 steps). MCMC preferred if convergence criteria met (Rhat ≤ 1.05, ESS ≥ 100).
 
 **Preregistered tests for H3:**
-1. P(μ_ρ > 0 | data) > 0.975 (95% one-sided posterior credibility).
-2. Proportion of subjects with posterior mean ρ_i > 0 must exceed 65%.
+1. P(μ_δ > 0 | data) > 0.975 (95% one-sided posterior credibility). (Exploratory: P = 1.0.)
+2. Proportion of subjects with posterior mean δ_i > 0 must exceed 80%. (Exploratory: 99%.)
 
-**Split-half reliability (secondary):** Odd/even block split on trial indices; compute Spearman–Brown corrected correlation. Reported but not used as inclusion/exclusion criterion.
+**Secondary:** σ_δ > 0.05 (individual differences recoverable; exploratory: σ_δ = 0.115).
 
-**Encounter time alignment note:** encounterTime used for vigor windows is trial-start-relative (from `processed_trials.pkl`, Stage 2 output), not effort-onset-relative. This corrects a frame-alignment bug identified in the exploratory analysis; the same correction is applied identically to the confirmatory sample.
+**Data filtering:** Probe trials excluded from vigor alignment using `feelings.csv` trialNumber per subject.
 
 ---
 
@@ -322,7 +320,7 @@ terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)
 ```
 S_probe[i,t] = (1 − T[t]) + T[t] / (1 + λ · D[t])
 ```
-with T = `p_threat`, D = `distance` + 1 (converting 0-indexed to 1-indexed distance level), λ (estimated from confirmatory choice model fit) (fixed, population-level from exploratory).
+with T = `p_threat`, D = `distance` + 1 (converting 0-indexed to 1-indexed distance level), λ = population-level estimate from the confirmatory choice model (Section 3.2).
 
 Note: S_probe uses only population-level λ; no subject-specific parameters enter S_probe. This is the most conservative test.
 
@@ -584,16 +582,15 @@ Any analysis that deviates from the preregistered plan will be labeled as an unp
 
 ## Appendix A — Model Equations (Complete Specification)
 
-### Winning choice model: L4a_add
+### Winning choice model (M5)
 
-**Survival function:**
+**Survival function (option-specific):**
 ```
-S(T, D, α_i) = (1 − T) + T / (1 + λ · D / α_i)
+S_o(T, D_o) = (1 − T) + T / (1 + λ · D_o)
 ```
 - T ∈ {0.1, 0.5, 0.9}: trial-level threat probability
-- D ∈ {1, 2, 3}: option distance level
-- λ (estimated from confirmatory choice model fit): population-level hazard scaling (fixed from exploratory)
-- α_i: subject-specific tonic vigor (pre-encounter pressing rate; from HBM, not estimated by SVI)
+- D_o ∈ {1, 2, 3}: option-specific distance level (D_L = 1 always; D_H varies)
+- λ: population-level hazard scaling (estimated from data; exploratory ≈ 13.9)
 
 **Subjective value (additive effort):**
 ```
@@ -606,33 +603,45 @@ SV_o = R_o · S_o − k_i · E_o − β_i · (1 − S_o)
 
 **Choice rule:**
 ```
-p(choose H) = σ(ΔSV / τ) = σ((SV_H − SV_L) / τ)
+p(choose H) = σ(τ · (SV_H − SV_L))
 ```
-- τ > 0: population-level inverse temperature (half-normal prior)
+- τ > 0: population-level inverse temperature (log-normal prior)
 
-**Hierarchical priors (L3_add, without α):**
+**Hierarchical priors:**
 ```
-log k_i ~ Normal(μ_k, σ_k);   μ_k ~ Normal(0, 1);  σ_k ~ HalfNormal(0.5)
-log β_i ~ Normal(μ_β, σ_β);   μ_β ~ Normal(0, 1);  σ_β ~ HalfNormal(0.5)
-τ ~ HalfNormal(1.0)
-```
-
-### Vigor HBM
-
-**Pre-encounter window ([enc − 2s, enc], vigor_norm):**
-```
-pre_enc_rate[i,t] ~ Normal(α_i, σ_pre)
-α_i ~ Normal(μ_α, σ_α);  μ_α ~ Normal(0.3, 0.5);  σ_α ~ HalfNormal(0.2)
-σ_pre ~ HalfNormal(0.3)
+log k_i ~ Normal(μ_k, σ_k);   μ_k ~ Normal(0, 1);  σ_k ~ HalfNormal(1)
+log β_i ~ Normal(μ_β, σ_β);   μ_β ~ Normal(0, 1);  σ_β ~ HalfNormal(1)
+λ ~ LogNormal(0, 1)
+τ ~ LogNormal(0, 1)
 ```
 
-**Terminal window ([trialEnd − 2s, trialEnd], vigor_norm):**
+### Vigor HBM (excess effort model)
+
+**Trial-level excess effort:**
 ```
-terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)
-γ_i ~ Normal(μ_γ, σ_γ);  μ_γ ~ Normal(0.3, 0.5);  σ_γ ~ HalfNormal(0.2)
-ρ_i ~ Normal(μ_ρ, σ_ρ);  μ_ρ ~ Normal(0.05, 0.1); σ_ρ ~ HalfNormal(0.1)
-σ_term ~ HalfNormal(0.3)
+excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij
+ε_ij ~ Normal(0, σ)
 ```
+- S_ij = (1−T) + T/(1+λ·D_chosen): survival for chosen option, λ from choice model
+- α_i: baseline excess effort (hierarchical Normal prior)
+- δ_i: danger-responsive mobilization (hierarchical Normal prior)
+- σ: residual SD (HalfNormal prior)
+
+**Hierarchical priors:**
+```
+α_i ~ Normal(μ_α, σ_α);  μ_α ~ Normal(0, 1);  σ_α ~ HalfNormal(1)
+δ_i ~ Normal(μ_δ, σ_δ);  μ_δ ~ Normal(0, 1);  σ_δ ~ HalfNormal(1)
+σ ~ HalfNormal(1)
+```
+
+### Joint model (robustness check for H5)
+
+```
+[log(k_i), log(β_i), α_i, δ_i] ~ MVN(μ, Σ)
+Σ = diag(σ) · Ω · diag(σ),  Ω ~ LKJCholesky(η = 2)
+```
+
+Choice and vigor likelihoods as above, with λ fixed from the choice-only fit.
 
 ---
 
@@ -641,21 +650,21 @@ terminal_rate[i,t] ~ Normal(γ_i + ρ_i · attack[t], σ_term)
 | Symbol | Meaning | Source | Notes |
 |--------|---------|--------|-------|
 | T | Threat probability | `behavior.csv`: `attackingProb` | ∈ {0.1, 0.5, 0.9} |
-| D | Distance level | `behavior.csv`: `distance_H` | ∈ {1, 2, 3} |
-| E | Effort fraction | `behavior.csv`: `effort_H` | ∈ {0.6, 0.8, 1.0} |
-| R_H | High-effort reward | Fixed | 5 points |
-| R_L | Low-effort reward | Fixed | 1 point |
+| D | Distance level | `behavior.csv`: `distance_H` / `distance_L` | H ∈ {1, 2, 3}; L = 1 always |
+| E | Effort fraction | `behavior.csv`: `effort_H` / `effort_L` | H ∈ {0.6, 0.8, 1.0}; L = 0.4 |
+| R_H, R_L | Reward | Fixed | 5, 1 points |
 | C | Capture penalty | Fixed | 5 points |
-| λ | Hazard scaling | Fixed from exploratory | 2.0 |
-| k_i | Effort discounting | L3_add SVI posterior mean | Per-subject |
-| β_i | Threat bias / capture cost | L3_add SVI posterior mean | Per-subject |
-| α_i | Tonic vigor | Vigor HBM posterior mean | Pre-encounter |
-| ρ_i | Attack mobilization | Vigor HBM posterior mean | Terminal window, attack vs. non-attack |
-| S_probe | Trial-level survival (probe) | Computed from T, D, λ | (1−T)+T/(1+λD) |
-| vigor_norm | Capacity-normalized pressing rate | `smoothed_vigor_ts.parquet` | rate / 95th-pct 1s-bin rate per subject |
-| f_max_i | Calibration maximum | `effort_ts.parquet` | Max presses across calibration trials |
-| ICC | Intraclass correlation | Computed from LMM variance components | Trait vs. state partitioning |
+| λ | Hazard scaling | Estimated from choice model | Population-level (exploratory ≈ 13.9) |
+| τ | Inverse temperature | Estimated from choice model | Population-level |
+| k_i | Effort discounting | Choice model posterior mean | Per-subject |
+| β_i | Threat bias | Choice model posterior mean | Per-subject |
+| α_i | Baseline excess effort | Vigor model posterior mean | Per-subject |
+| δ_i | Danger mobilization | Vigor model posterior mean | Per-subject |
+| S | Survival probability | (1−T)+T/(1+λD) | Option-specific |
+| excess | Excess effort | vigor_norm − effort_chosen | Trial-level |
+| vigor_norm | Capacity-normalized pressing rate | `smoothed_vigor_ts.parquet` | rate / f_max_i per subject |
+| f_max_i | Calibration maximum | Preprocessing | Max presses across calibration trials |
 
 ---
 
-*This preregistration was prepared based on exploratory analyses completed on 2026-03-20 and will be submitted to AsPredicted before the confirmatory data are opened for any analysis. All findings reported in Section 4 were derived exclusively from the exploratory sample (N=293).*
+*This preregistration was prepared based on exploratory analyses completed on 2026-03-22 and will be submitted to AsPredicted before the confirmatory data are opened for any analysis. All findings reported in Section 4 were derived exclusively from the exploratory sample (N=293).*
