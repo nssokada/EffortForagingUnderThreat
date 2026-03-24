@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Effort Reallocation Under Threat — Results Overview</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #0f1117; color: #e4e4e7; }
+
+  .slide {
+    min-height: 100vh;
+    padding: 60px 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid #2a2a35;
+  }
+
+  .slide-title {
+    font-size: 2.4em;
+    font-weight: 700;
+    color: #f8f8fa;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+
+  .slide-subtitle {
+    font-size: 1.1em;
+    color: #9ca3af;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 50px;
+    align-items: center;
+  }
+
+  .two-col.wide-right {
+    grid-template-columns: 2fr 3fr;
+  }
+
+  .two-col.wide-left {
+    grid-template-columns: 3fr 2fr;
+  }
+
+  ul { list-style: none; padding: 0; }
+
+  li {
+    padding: 10px 0;
+    font-size: 1.15em;
+    line-height: 1.5;
+    color: #d1d5db;
+    border-bottom: 1px solid #1f2029;
+  }
+
+  li:last-child { border-bottom: none; }
+
+  .stat {
+    color: #f472b6;
+    font-weight: 600;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .stat-blue {
+    color: #60a5fa;
+    font-weight: 600;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .stat-green {
+    color: #34d399;
+    font-weight: 600;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .stat-amber {
+    color: #fbbf24;
+    font-weight: 600;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  .highlight {
+    background: linear-gradient(135deg, #1e1b2e, #2d1f3d);
+    border-left: 3px solid #a855f7;
+    padding: 20px 24px;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 1.2em;
+    line-height: 1.6;
+  }
+
+  .equation {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    background: #1a1a24;
+    padding: 16px 24px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    margin: 16px 0;
+    color: #e2e8f0;
+    border: 1px solid #2a2a35;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+    border: 1px solid #2a2a35;
+  }
+
+  .fig-caption {
+    font-size: 0.85em;
+    color: #6b7280;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+  }
+
+  th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #1a1a24;
+    color: #9ca3af;
+    font-size: 0.9em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 2px solid #2a2a35;
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #1f2029;
+    font-size: 1.05em;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+  }
+
+  .tag-confirmed { background: #064e3b; color: #34d399; }
+  .tag-new { background: #1e1b4b; color: #818cf8; }
+  .tag-null { background: #1c1917; color: #a8a29e; }
+
+  .slide-number {
+    position: fixed;
+    bottom: 20px;
+    right: 30px;
+    color: #4b5563;
+    font-size: 0.9em;
+  }
+
+  h3 {
+    font-size: 1.4em;
+    color: #f8f8fa;
+    margin: 30px 0 16px 0;
+    font-weight: 600;
+  }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, #a855f7, transparent);
+    margin: 30px 0;
+    max-width: 200px;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide" style="justify-content: center; text-align: center;">
+  <div class="slide-title" style="font-size: 2.8em; margin-bottom: 20px;">
+    Humans Reallocate Effort Across<br>Decision and Action When<br>Foraging Under Threat
+  </div>
+  <div class="slide-subtitle" style="font-size: 1.3em;">
+    Noah Okada, Ketika Garg, Toby Wise, Dean Mobbs
+  </div>
+  <div style="margin-top: 40px; color: #6b7280;">
+    Exploratory sample: N = 293 &nbsp;|&nbsp; Confirmatory sample: N = 350 (collected, not analyzed)
+  </div>
+</div>
+
+<!-- SLIDE 2: The Question -->
+<div class="slide">
+  <div class="slide-title">The Question</div>
+  <div class="slide-subtitle">Two literatures that haven't talked to each other</div>
+  <div class="two-col">
+    <div>
+      <h3>Effort literature</h3>
+      <ul>
+        <li>Studies <strong>choice</strong> — which option to select</li>
+        <li>Effort discounting, parabolic/hyperbolic costs</li>
+        <li>Threat → avoidance, freezing, withdrawal</li>
+      </ul>
+      <h3>Threat literature</h3>
+      <ul>
+        <li>Studies <strong>defensive action</strong> — how to respond</li>
+        <li>Threat imminence continuum</li>
+        <li>Flight, freeze, fight responses</li>
+      </ul>
+    </div>
+    <div>
+      <div class="highlight">
+        In ecological foraging, choice and action are <strong>inseparable</strong>.
+        The decision to pursue distant food commits the forager to sustained effort
+        in a threat-exposed environment.
+      </div>
+      <div class="highlight" style="border-left-color: #f472b6;">
+        <strong>Prediction:</strong> If humans optimize their foraging policy,
+        choice and vigor should adjust <em>coherently</em> —
+        choose safer targets while pressing harder on them.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Result 1 — Choice Model -->
+<div class="slide">
+  <div class="slide-title">Result 1: A Survival-Weighted Value Model Governs Choice</div>
+  <div class="slide-subtitle">H1 — 5 models compared, each testing one structural question</div>
+  <div class="two-col wide-right">
+    <div>
+      <div class="equation">
+        SV = R · S − k · E − β · (1 − S)<br><br>
+        S = (1−T) + T / (1 + λD)
+      </div>
+      <ul>
+        <li>Additive effort beats multiplicative: <span class="stat">ΔELBO = +158</span></li>
+        <li>Hyperbolic beats exponential survival: <span class="stat">ΔELBO = +174</span></li>
+        <li>Survival model beats effort-only: <span class="stat">ΔELBO = +2,038</span></li>
+        <li>Accuracy: <span class="stat-blue">76.1%</span>, AUC: <span class="stat-blue">0.863</span></li>
+        <li>k and β weakly correlated (r = −0.14) — distinct dimensions</li>
+      </ul>
+      <div class="divider"></div>
+      <p style="color: #9ca3af;">Effort is a <strong>flat physical cost</strong>, not a reward discount.
+      S separates attack probability from escape probability.</p>
+    </div>
+    <div>
+      <table>
+        <tr><th>Model</th><th>Structure</th><th>ΔELBO</th></tr>
+        <tr><td>M1</td><td>Effort only</td><td style="color:#6b7280;">−2,038</td></tr>
+        <tr><td>M2</td><td>Feature-based (T×D)</td><td style="color:#6b7280;">−521</td></tr>
+        <tr><td>M3</td><td>Multiplicative × exponential</td><td style="color:#6b7280;">−174</td></tr>
+        <tr><td>M4</td><td>Multiplicative × hyperbolic</td><td style="color:#6b7280;">−158</td></tr>
+        <tr style="background:#1a1a2e;"><td><strong>M5</strong></td><td><strong>Additive × hyperbolic</strong></td><td><span class="stat-green">Winner</span></td></tr>
+      </table>
+      <div style="margin-top: 20px;">
+        <p><strong>Key parameters:</strong></p>
+        <table>
+          <tr><th>Param</th><th>Meaning</th><th>Value</th></tr>
+          <tr><td>k</td><td>Effort sensitivity</td><td>M = 6.2, SD = 6.8</td></tr>
+          <tr><td>β</td><td>Threat bias</td><td>M = 81.8, SD = 81.7</td></tr>
+          <tr><td>λ</td><td>Hazard scaling (fixed)</td><td>14.0</td></tr>
+          <tr><td>τ</td><td>Inverse temperature</td><td>0.76</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Result 2 — Vigor -->
+<div class="slide">
+  <div class="slide-title">Result 2: Danger Drives Excess Motor Vigor</div>
+  <div class="slide-subtitle">H3 — The same S that governs choice also drives motor effort beyond task demands</div>
+  <div class="two-col wide-right">
+    <div>
+      <ul>
+        <li>Population δ = <span class="stat">+0.211</span> (MCMC validated)</li>
+        <li><span class="stat">98.3%</span> of participants show positive δ</li>
+        <li>Safest → most dangerous: excess effort shifts by <span class="stat-blue">~20%</span> of motor capacity</li>
+        <li>Survives within constant-demand trials (ruling out demand confound)</li>
+        <li>Threat × distance interaction mirrors S structure</li>
+        <li>Split-half reliability: SB ρ = 0.451</li>
+      </ul>
+      <div class="divider"></div>
+      <h3>S also predicts affect</h3>
+      <ul>
+        <li>S → anxiety: <span class="stat">z = −24.1</span>, p < .001</li>
+        <li>S → confidence: <span class="stat-blue">z = +23.7</span>, p < .001</li>
+        <li>Cross-domain: choice shift × anxiety shift <span class="stat">r = −0.39</span></li>
+      </ul>
+    </div>
+    <div>
+      <img src="../results/figs/paper/fig_vigor_timecourse.png" alt="Vigor time course">
+      <div class="fig-caption">
+        <strong>A:</strong> Excess effort by threat level (encounter-aligned).
+        <strong>B:</strong> Attack effect at T=0.9.
+        <strong>C:</strong> The reallocation pattern — easy-choice vigor rises while hard-choice vigor falls.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Result 3 — The Coupling -->
+<div class="slide">
+  <div class="slide-title">Result 3: Coordinated Effort Reallocation</div>
+  <div class="slide-subtitle">H5 — Choice and vigor are coupled through a shared survival computation</div>
+  <div class="two-col wide-right">
+    <div>
+      <div class="highlight">
+        As threat increases, people <strong>choose safer targets</strong> while
+        <strong>pressing harder</strong> on them — a coordinated strategy shift,
+        not two independent responses.
+      </div>
+      <h3>Evidence pyramid</h3>
+      <table>
+        <tr><th>Level</th><th>Statistic</th><th>Robust to λ?</th></tr>
+        <tr><td>Behavioral</td><td>r = <span class="stat">−0.67</span></td><td><span class="tag tag-confirmed">Yes</span></td></tr>
+        <tr><td>MCMC point est.</td><td>r = <span class="stat">+0.53</span></td><td><span class="tag tag-confirmed">Yes</span></td></tr>
+        <tr><td>Posterior bootstrap</td><td>r = <span class="stat">+0.32</span> [0.23, 0.40]</td><td><span class="tag tag-confirmed">Yes</span></td></tr>
+      </table>
+      <div class="divider"></div>
+      <ul>
+        <li>β × δ: <span class="stat">+0.32 [0.23, 0.40]</span> — threat aversion → vigor mobilization</li>
+        <li>k × δ: <span class="stat-blue">−0.25 [−0.32, −0.18]</span> — effort avoidance → less vigor</li>
+        <li>α × δ: r = −0.01, n.s. — tonic and phasic are independent</li>
+        <li>Predicts earnings: <span class="stat-green">R² = 0.321</span>, all 4 params contribute</li>
+      </ul>
+    </div>
+    <div>
+      <img src="../results/figs/paper/fig4_coherent_shift.png" alt="Coherent shift">
+      <div class="fig-caption">
+        <strong>A:</strong> Dual-axis threat response. <strong>B:</strong> Choice-vigor shift coupling.
+        <strong>C:</strong> β vs δ from independent models. <strong>D:</strong> Strategy quadrants.
+        <strong>E:</strong> Regression forest plot.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Result 4 — Metacognition -->
+<div class="slide">
+  <div class="slide-title">Result 4: Vigor Mobilization Tracks Affective Accuracy</div>
+  <div class="slide-subtitle">H6 — People who press harder under danger also have better calibrated feelings</div>
+  <div class="two-col wide-right">
+    <div>
+      <ul>
+        <li>δ × anxiety-S slope: <span class="stat">r = −0.31</span>, p < .001</li>
+        <li>δ × confidence-S slope: <span class="stat-blue">r = +0.33</span>, p < .001</li>
+        <li>β shows same pattern (|r| > 0.28)</li>
+        <li>k predicts calibration in expected direction (r = +0.20)</li>
+        <li>α does NOT predict calibration</li>
+      </ul>
+      <div class="divider"></div>
+      <div class="highlight" style="border-left-color: #34d399;">
+        <strong>"Adaptive, not anxious"</strong><br>
+        Higher δ is associated with <em>lower</em> mean anxiety (r = −0.19).
+        High-δ people are not chronically anxious — their anxiety is
+        <strong>better calibrated</strong>: steep when danger is real, low when it isn't.
+      </div>
+      <p style="color: #9ca3af; margin-top: 16px;">
+        This tonic-phasic dissociation in affect mirrors the α-δ structure in the motor domain.
+      </p>
+    </div>
+    <div>
+      <img src="../results/figs/paper/fig_s_metacognition.pdf" alt="Metacognition"
+           onerror="this.src='../results/figs/paper/fig_s_metacognition.pdf'">
+      <div class="fig-caption">
+        <strong>A-B:</strong> Anxiety/confidence by survival level.
+        <strong>C-D:</strong> δ predicts calibration slopes.
+        <strong>E:</strong> Parameter-calibration correlations.
+        <strong>F:</strong> "Adaptive, not anxious."
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Mental Health -->
+<div class="slide">
+  <div class="slide-title">Supplementary: Mental Health — A Performance Phenotype</div>
+  <div class="slide-subtitle">Bayesian regressions with ROPE equivalence testing</div>
+  <div class="two-col wide-right">
+    <div>
+      <h3>The one bridge: α → Apathy</h3>
+      <ul>
+        <li>α → F3 (Apathy): <span class="stat-green">R² = 0.12</span>, t = −6.11, p < .001</li>
+        <li>Driven by AMI Social subscale (r = +0.18)</li>
+        <li>Consistent with dopaminergic effort literature</li>
+      </ul>
+      <div class="divider"></div>
+      <h3>Everything else: null <span class="tag tag-null">ROPE confirmed</span></h3>
+      <ul>
+        <li>δ → all 3 factors: all p > 0.19</li>
+        <li>β × δ coupling → all factors: all p > 0.60</li>
+        <li>Calibration → all factors: all p_fdr > 0.27</li>
+        <li>STAI-Trait × strategy quadrant: χ² = 4.25, p = 0.64</li>
+        <li>Depressed (PHQ≥10) show <em>same</em> coupling as controls</li>
+      </ul>
+      <div class="highlight" style="border-left-color: #fbbf24;">
+        The reallocation system predicts <strong>foraging performance</strong>,
+        not psychopathology. The threat-responsive optimization is orthogonal
+        to clinical dimensions in this sample.
+      </div>
+    </div>
+    <div>
+      <img src="../results/figs/paper/fig_s_mental_health.pdf" alt="Mental health"
+           onerror="this.src='../results/figs/paper/fig_s_mental_health.pdf'">
+      <div class="fig-caption">
+        <strong>A:</strong> Factor loadings. <strong>B:</strong> Bayesian forest plot.
+        <strong>C:</strong> Per-scale heatmap. <strong>D:</strong> α → Apathy posterior.
+        <strong>E:</strong> ROPE equivalence testing.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Model Validation -->
+<div class="slide">
+  <div class="slide-title">Model Validation</div>
+  <div class="slide-subtitle">MCMC convergence, PPCs, and parameter recovery</div>
+  <div class="two-col">
+    <div>
+      <h3>MCMC Validation</h3>
+      <ul>
+        <li>Choice model: <span class="stat-green">Rhat = 1.00</span>, ESS > 9,000, 0 divergences</li>
+        <li>Vigor model: <span class="stat-green">Rhat = 1.00</span>, ESS > 15,000, 0 divergences</li>
+        <li>SVI vs MCMC agreement: k r=0.997, α r=0.998, δ r=0.998</li>
+        <li>λ fixed at 14.0 (weakly identified from 3 distance levels)</li>
+      </ul>
+      <h3>Parameter Recovery</h3>
+      <ul>
+        <li>k: <span class="stat-green">r = 0.86</span> (excellent)</li>
+        <li>α: <span class="stat-green">r = 0.94</span> (excellent)</li>
+        <li>δ: <span class="stat-amber">r = 0.67</span> (good)</li>
+        <li>β: <span class="stat">r = 0.40</span> (limited by 45 trials)</li>
+        <li>Cross-domain: true ρ=0.55 → recovered 0.20 (60% attenuation)</li>
+        <li>→ Observed r = 0.53 <strong>underestimates</strong> true coupling</li>
+      </ul>
+    </div>
+    <div>
+      <img src="../results/figs/paper/fig_s_ppc.png"
+           onerror="this.src='../results/figs/paper/fig_s_ppc.pdf'" alt="PPCs">
+      <div class="fig-caption">
+        Choice PPC (9 conditions within HDI), calibration, and vigor PPC by threat level.
+      </div>
+      <div style="height: 20px;"></div>
+      <img src="../results/figs/paper/fig_s_recovery.pdf" alt="Recovery">
+      <div class="fig-caption">
+        Parameter recovery and cross-domain correlation attenuation.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 9: Preregistered Hypotheses -->
+<div class="slide">
+  <div class="slide-title">Preregistered Hypotheses (H1–H6)</div>
+  <div class="slide-subtitle">Confirmatory sample: N = 350, collected, not analyzed</div>
+  <table style="max-width: 1100px;">
+    <tr><th style="width:60px;">H</th><th>Hypothesis</th><th>Primary test</th><th>Exploratory result</th></tr>
+    <tr>
+      <td><span class="stat">H1</span></td>
+      <td>Additive effort + hyperbolic survival wins</td>
+      <td>ΔELBO > 0 (M5 vs M4, M3)</td>
+      <td><span class="stat-green">+158, +174</span></td>
+    </tr>
+    <tr>
+      <td><span class="stat">H2</span></td>
+      <td>S predicts trial-level anxiety and confidence</td>
+      <td>β(S) with |t| > 3.0</td>
+      <td><span class="stat-green">z = −24, +24</span></td>
+    </tr>
+    <tr>
+      <td><span class="stat">H3</span></td>
+      <td>Danger drives excess vigor (μ_δ > 0)</td>
+      <td>95% CI excludes zero; >80% δ > 0</td>
+      <td><span class="stat-green">μ_δ = +0.21, 98%</span></td>
+    </tr>
+    <tr>
+      <td><span class="stat">H4</span></td>
+      <td>Choice-vigor coupling under threat</td>
+      <td>Shift anti-correlation; vigor predicts escape</td>
+      <td><span class="stat-green">r = −0.67; β = +0.87</span></td>
+    </tr>
+    <tr>
+      <td><span class="stat">H5</span></td>
+      <td>β and δ covary across independent models</td>
+      <td>r(log(β), δ) > 0, p < .001</td>
+      <td><span class="stat-green">r = +0.53, bootstrap +0.32</span></td>
+    </tr>
+    <tr>
+      <td><span class="stat">H6</span></td>
+      <td>δ predicts affect calibration to S</td>
+      <td>r(δ, anxiety slope) < 0, p < .05</td>
+      <td><span class="stat-green">r = −0.31</span></td>
+    </tr>
+  </table>
+  <div class="highlight" style="margin-top: 40px;">
+    All six hypotheses are directionally confirmed in the exploratory sample.
+    The confirmatory sample (N = 350) will test them with pre-registered thresholds
+    on <strong>AsPredicted</strong> before data are opened.
+  </div>
+</div>
+
+<!-- SLIDE 10: The Story -->
+<div class="slide" style="text-align: center;">
+  <div class="slide-title" style="font-size: 2.2em; max-width: 900px; margin: 0 auto 30px auto;">
+    Effort Under Threat Is Not Avoidance —<br>It's Coordinated Reallocation
+  </div>
+  <div style="max-width: 800px; margin: 0 auto; text-align: left;">
+    <div class="highlight" style="border-left-color: #f472b6; font-size: 1.15em;">
+      A single survival computation <strong>S</strong> integrating attack probability
+      with escape distance governs:
+    </div>
+    <table style="margin: 30px auto; max-width: 700px;">
+      <tr>
+        <td style="text-align:center; padding: 20px;">
+          <div style="font-size: 2em;">🎯</div>
+          <strong>Choice</strong><br>
+          <span style="color:#9ca3af;">What to pursue</span><br>
+          <span class="stat">k, β</span>
+        </td>
+        <td style="text-align:center; padding: 20px;">
+          <div style="font-size: 2em;">😰</div>
+          <strong>Affect</strong><br>
+          <span style="color:#9ca3af;">How it feels</span><br>
+          <span class="stat-blue">calibration</span>
+        </td>
+        <td style="text-align:center; padding: 20px;">
+          <div style="font-size: 2em;">💪</div>
+          <strong>Vigor</strong><br>
+          <span style="color:#9ca3af;">How hard to try</span><br>
+          <span class="stat-green">α, δ</span>
+        </td>
+      </tr>
+    </table>
+    <div style="text-align: center; color: #9ca3af; font-size: 1.1em; margin-top: 20px;">
+      The coupling across these channels is what makes foraging adaptive —<br>
+      and it's a performance phenotype, not a clinical one.
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
