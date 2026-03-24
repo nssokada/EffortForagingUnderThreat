@@ -10,6 +10,14 @@ When foraging under predation risk, how do humans trade off energy expenditure a
 
 We will test this using a virtual foraging task where subjects choose between food items varying in reward, effort cost, and predation risk, then physically execute their foraging bout by pressing keys under threat of capture by a virtual predator.
 
+The computational framework estimates four per-subject parameters from independently fit hierarchical Bayesian models:
+
+- **k** — effort sensitivity: how strongly effort cost deters choice (from choice model)
+- **β** — threat bias: how strongly danger deters choice beyond expected value (from choice model)
+- **α** — baseline vigor: tonic pressing rate above task demand (from vigor model)
+- **δ** — danger mobilization: how much excess effort increases with model-derived danger, 1 − S (from vigor model)
+- **S** — survival probability: S = (1 − T) + T/(1 + λD), integrating threat probability T and distance D (shared across models)
+
 Specific hypotheses are as follows:
 
 ---
@@ -66,11 +74,11 @@ Specific hypotheses are as follows:
 
 ### IV. Individuals who mobilize vigor under danger will show more accurate subjective threat appraisal
 
-**7.** δ will predict steeper within-subject affective slopes on survival probability S — higher δ associated with more negative anxiety slopes on S and more positive confidence slopes on S.
+**7.** Individual differences in danger mobilization (δ, from the vigor model) will predict the accuracy of subjective threat appraisal: higher δ will be associated with more negative within-subject anxiety slopes on S and more positive confidence slopes on S.
 
 7a. *(Secondary)* Higher δ will be associated with lower mean anxiety, consistent with adaptive calibration rather than chronic anxiousness.
 
-**8.** Threat-sensitive choice (β) will show the same affective calibration pattern as δ, but effort sensitivity (k) will predict calibration significantly less than δ.
+**8.** Threat bias in choice (β, from the choice model) will show the same affective calibration pattern as δ, but effort sensitivity (k, also from the choice model) will predict calibration significantly less than δ.
 
 8a. β will predict steeper affective slopes on S, paralleling the δ effect.
 
