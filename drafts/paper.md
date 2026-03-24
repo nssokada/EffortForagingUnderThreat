@@ -18,7 +18,7 @@ In humans, two relevant literatures have developed in parallel. The effort-based
 
 This integration leads to a specific prediction. If humans optimize their foraging policy under threat — rather than simply avoiding effort when frightened — then choice and vigor should adjust *coherently*. Under high threat, the optimal strategy is to *reallocate* effort: choose closer, safer targets while simultaneously pressing harder to ensure escape. This contrasts with accounts that treat threat as a general suppressor of motivation^15,16^, which would predict reduced vigor alongside reduced ambition.
 
-Here we test this prediction using a virtual foraging task where participants made effort-based decisions under varying predation risk, then physically executed each bout. We develop a joint computational model in which a survival probability function governs both choice and vigor, and test whether the cross-domain coupling constitutes a coherent optimization that predicts foraging outcomes.
+Here we test this prediction using a virtual foraging task where participants made effort-based decisions under varying predation risk, then physically executed each bout. We develop independent computational models of choice and vigor linked by a common survival probability function, and test whether the cross-domain coupling constitutes a coherent optimization that predicts foraging outcomes.
 
 ---
 
