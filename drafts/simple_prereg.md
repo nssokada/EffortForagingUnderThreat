@@ -76,8 +76,6 @@ Specific hypotheses are as follows:
 
 **7.** Individual differences in danger mobilization (δ, from the vigor model) will predict the accuracy of subjective threat appraisal: higher δ will be associated with more negative within-subject anxiety slopes on S and more positive confidence slopes on S.
 
-7a. *(Secondary)* Higher δ will be associated with lower mean anxiety, consistent with adaptive calibration rather than chronic anxiousness.
-
 **8.** Threat bias in choice (β, from the choice model) will show the same affective calibration pattern as δ, but effort sensitivity (k, also from the choice model) will predict calibration significantly less than δ.
 
 8a. β will predict steeper affective slopes on S, paralleling the δ effect.
