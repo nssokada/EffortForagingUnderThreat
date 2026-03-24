@@ -97,7 +97,7 @@ where excess_ij is the difference between observed capacity-normalized vigor and
 
 **Primary tests:**
 1. Population mean μ_δ > 0 (one-tailed). The posterior 95% credible interval for μ_δ must exclude zero. (Exploratory: μ_δ = +0.211, P(μ_δ > 0) = 1.0.)
-2. The proportion of subjects with posterior mean δ_i > 0 must exceed 80% (exploratory: 99%).
+2. The proportion of subjects with posterior mean δ_i > 0 must exceed 80% (exploratory: 98.3%).
 
 **Secondary test:**
 3. σ_δ > 0.05, confirming that individual differences in danger mobilization are recoverable. (Exploratory: σ_δ = 0.115, shrinkage from OLS = 40.6%.)
