@@ -62,8 +62,6 @@ Specific hypotheses are as follows:
 
 6c. β and δ will jointly predict closer approximation to the optimal policy.
 
-6d. *(Secondary)* A joint hierarchical model with correlated random effects (LKJ prior) will confirm that all pairwise correlation credible intervals exclude zero.
-
 ---
 
 ### IV. Individuals who mobilize vigor under danger will show more accurate subjective threat appraisal
