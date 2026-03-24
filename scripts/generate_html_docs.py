@@ -304,6 +304,15 @@ def generate_discovery_html(images):
     toc = """<div class="toc">
 <h2>Table of Contents</h2>
 <ul>
+<li><a href="#0-task-behavior-model-free-descriptive-statistics">0. Task behavior: Model-free descriptive statistics</a>
+<ul>
+<li><a href="#task-completion">Task completion</a></li>
+<li><a href="#choice-behavior">Choice behavior</a></li>
+<li><a href="#outcomes">Outcomes</a></li>
+<li><a href="#motor-vigor">Motor vigor</a></li>
+<li><a href="#affect-ratings">Affect ratings</a></li>
+</ul>
+</li>
 <li><a href="#1-choice-survival-weighted-value-governs-foraging-decisions">1. Choice: Survival-weighted value governs foraging decisions</a></li>
 <li><a href="#2-vigor-affect-s-governs-motor-effort-and-subjective-experience">2. Vigor + Affect: S governs motor effort and subjective experience</a>
 <ul>
