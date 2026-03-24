@@ -38,6 +38,10 @@ Capacity-normalized pressing rate (vigor_norm) averaged 0.686 across participant
 
 On the 0-7 rating scale, mean anxiety was 4.40 (SD = 1.31) and mean confidence was 3.17 (SD = 1.35). Both ratings were strongly modulated by threat level. Anxiety increased from 3.72 (SD = 1.64) at T = 0.1 to 4.35 (SD = 1.39) at T = 0.5 to 5.13 (SD = 1.55) at T = 0.9, a 1.41-point increase across the threat range. Confidence showed the mirror pattern, decreasing from 3.91 (SD = 1.57) at T = 0.1 to 3.11 (SD = 1.49) at T = 0.5 to 2.49 (SD = 1.67) at T = 0.9. These raw patterns confirm that threat level drives robust and symmetric shifts in subjective anxiety and confidence even before model-based survival signals are considered.
 
+### Deviation from optimal policy
+
+We computed the expected-value-maximizing choice for each trial given the task's reward (+5 or +1) and penalty (−R − 5 for capture) structure. Participants matched the optimal policy on 69.8% of trials (SD = 12.0% across subjects, range: 40–93%). The dominant error was excessive caution: choosing the safe option when the risky option had higher expected value (2,813 trials) versus the reverse (1,174 trials). Per-trial expected value loss averaged 0.54 points (SD = 0.32). The optimal policy prescribes choosing high at T = 0.1 (all distances), at T = 0.5/D ≤ 2, and choosing low at T = 0.9 (all distances) and T = 0.5/D = 3.
+
 ---
 
 ## 1. Choice: Survival-weighted value governs foraging decisions
@@ -87,6 +91,14 @@ Bootstrap attenuation (0.53 → 0.32) reflects β measurement noise; true coupli
 
 ### SVI joint model (robustness, Supp Note 2)
 All 6 pairwise ρ CIs exclude zero at every λ tested. Direction invariant; magnitude λ-dependent.
+
+### Optimality
+- Participants matched the EV-optimal choice on 69.8% of trials (SD = 12.0%)
+- k → suboptimality: r = −0.69 (effort avoidance causes over-caution)
+- β → optimality: r = +0.44 (threat-sensitive people make better choices)
+- δ → optimality: r = +0.66 (vigor mobilizers are more optimal)
+- Psychiatric measures → optimality: all |r| < 0.07 (null)
+- EV loss per trial: M = 0.54 points, driven by k (r = +0.56), offset by β (r = −0.62)
 
 ### Outcome prediction
 - All 4 params → total reward: R² = 0.321 (α t=7.21, δ t=6.71, k t=−3.97, all p < .001)
