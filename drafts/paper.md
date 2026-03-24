@@ -78,6 +78,8 @@ This constitutes a rational policy. At low threat, the optimal strategy is to pu
 
 The survival function $S$ predicted behavior across three domains: choice, affect ($|z| > 23$), and vigor ($t = 11.85$). This convergence is noteworthy because $S$ is not merely threat probability — it integrates attack likelihood with escape distance via a hyperbolic function that separates these components. The finding that $\delta$ predicts affect calibration extends the reallocation story: individuals who mobilize vigor under danger also experience more differentiated affective responses — their anxiety tracks $S$ more tightly, despite lower baseline anxiety. This lower-tonic, steeper-phasic pattern parallels the $\alpha$-$\delta$ dissociation in the motor domain and suggests parallel organizational principles across affective and motor systems.
 
+The reallocation architecture maps onto hierarchical control frameworks^19^ in which a shared state estimate feeds both a high-level policy controller and a low-level motor controller. Here, $S$ serves as the state estimate — integrating threat and distance into a survival signal — that modulates both choice (via $\beta$) and vigor (via $\delta$). The $\beta$–$\delta$ coupling reflects shared gain modulation across these levels: threat sensitivity scales both evaluative and motor responses through a common survival signal. As the survival constraint tightens, the optimal policy shifts from reward-maximizing (high-value targets, adequate effort) to survival-maximizing (safe targets, maximum effort) — a form of constrained optimization in which the control objective itself changes with the state estimate^20^. The phasic encounter response ($+0.14$ excess effort on attack trials) further suggests that the motor controller operates as a feedback loop, ramping gain in response to the predator perturbation.
+
 These individual differences are orthogonal to psychiatric symptomatology. Bayesian regressions with equivalence testing found no credible associations between any model parameter or their coupling and three psychiatric dimensions (distress, fatigue, apathy; Supplementary Fig. S2). The one exception was tonic baseline vigor ($\alpha$), which uniquely predicted apathy ($R^2 = 0.12$, $p < .001$) — consistent with the dopaminergic effort literature^8^. The reallocation system is a performance phenotype, not a clinical one.
 
 ### Limitations
@@ -156,6 +158,8 @@ Analysis scripts are available in the study repository. The computational modeli
 16. Hare, T. A. et al. Biological substrates of emotional reactivity and regulation in adolescence. *Biol. Psychiatry* **63**, 927–934 (2008).
 17. Maier, S. F. & Seligman, M. E. P. Learned helplessness at fifty. *Psychol. Rev.* **123**, 349–367 (2016).
 18. Phan, D., Pradhan, N. & Jankowiak, M. Composable effects for flexible and accelerated probabilistic programming in NumPyro. *Preprint at* arXiv:1912.11554 (2019).
+19. Todorov, E. Optimality principles in sensorimotor control. *Nat. Neurosci.* **7**, 907–915 (2004).
+20. Shadmehr, R. & Krakauer, J. W. A computational neuroanatomy for motor control. *Exp. Brain Res.* **185**, 359–381 (2008).
 
 ---
 
