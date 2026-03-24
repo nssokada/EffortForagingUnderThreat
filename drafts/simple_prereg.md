@@ -50,9 +50,9 @@ Specific hypotheses are as follows:
 
 4c. The model-derived survival probability S will predict trial-level anxiety (negatively) and confidence (positively) within subjects.
 
-**5.** The population-mean danger mobilization parameter δ will be positive, with individual differences reliably recoverable.
+**5.** Danger will drive excess motor effort at the population level, with meaningful individual variation in the strength of this response.
 
-5a. More than 80% of participants will show δ > 0, with σ_δ > 0.05.
+5a. The population-mean effect will be positive with a credible interval excluding zero.
 
 **6.** Computational parameters governing the effort–danger trade-off will covary across independently estimated models.
 
