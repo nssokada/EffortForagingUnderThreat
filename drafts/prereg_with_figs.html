@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preregistration + Supporting Evidence</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; background: #fff; color: #1a1a1a; max-width: 1200px; margin: 0 auto; padding: 40px 60px; line-height: 1.6; }
+  h1 { font-size: 1.8em; font-weight: 700; margin: 40px 0 10px; color: #111; border-bottom: 2px solid #D4145A; padding-bottom: 8px; }
+  h2 { font-size: 1.4em; font-weight: 600; margin: 30px 0 10px; color: #222; }
+  h3 { font-size: 1.1em; font-weight: 600; margin: 20px 0 8px; color: #333; }
+  p, li { font-size: 0.95em; color: #333; margin-bottom: 6px; }
+  ul { padding-left: 20px; margin-bottom: 12px; }
+  code { background: #f4f4f4; padding: 2px 6px; border-radius: 3px; font-size: 0.9em; }
+  pre { background: #f8f8f8; padding: 14px 18px; border-radius: 6px; overflow-x: auto; font-size: 0.88em; margin: 12px 0; border: 1px solid #e5e5e5; }
+  .stat { color: #D4145A; font-weight: 600; font-family: monospace; }
+  .stat-b { color: #1A93FF; font-weight: 600; font-family: monospace; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th { text-align: left; padding: 8px 10px; background: #f5f5f5; font-size: 0.85em; border-bottom: 2px solid #ddd; }
+  td { padding: 7px 10px; border-bottom: 1px solid #eee; font-size: 0.9em; }
+  .evidence { background: #fafafa; border: 1px solid #e5e5e5; border-radius: 8px; padding: 20px; margin: 16px 0; }
+  .evidence h3 { color: #D4145A; margin-top: 0; }
+  .evidence img { max-width: 100%; border: 1px solid #e0e0e0; border-radius: 4px; margin: 10px 0; }
+  .evidence .caption { font-size: 0.8em; color: #888; margin-top: 4px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75em; font-weight: 600; background: #dcfce7; color: #166534; }
+  hr { border: none; height: 1px; background: #e5e5e5; margin: 30px 0; }
+  .header-meta { color: #666; font-size: 0.9em; margin-bottom: 20px; }
+  .discovery { background: #fffbeb; border-left: 3px solid #f59e0b; padding: 12px 16px; margin: 12px 0; border-radius: 4px; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<h1 style="border-bottom-color: #111;">Preregistration: Confirmatory Replication</h1>
+<div class="header-meta">
+  <strong>Title:</strong> Humans Reallocate Effort Across Decision and Action When Foraging Under Threat<br>
+  <strong>Authors:</strong> Okada, Garg, Wise, Mobbs (Caltech)<br>
+  <strong>Confirmatory:</strong> N=350 (collected, not analyzed) &nbsp;|&nbsp; <strong>Exploratory:</strong> N=293<br>
+  <strong>Format:</strong> AsPredicted
+</div>
+
+<hr>
+
+<!-- H1 -->
+<h1>H1 — Survival-weighted additive-effort model wins</h1>
+
+<div class="two-col">
+<div>
+<pre>SV = R · S − k · E − β · (1 − S)
+S  = (1 − T) + T / (1 + λ · D)</pre>
+
+<h3>5-model comparison</h3>
+<table>
+<tr><th>Model</th><th>Structure</th><th>Question</th></tr>
+<tr><td>M1</td><td>SV = R·exp(−kE)</td><td>Does threat matter?</td></tr>
+<tr><td>M2</td><td>SV = R·exp(−kE) − β·T·D</td><td>Mechanistic S or features?</td></tr>
+<tr><td>M3</td><td>Mult × exponential S</td><td>Which kernel?</td></tr>
+<tr><td>M4</td><td>Mult × hyperbolic S</td><td>Which effort structure?</td></tr>
+<tr><td><strong>M5</strong></td><td><strong>Additive × hyperbolic S</strong></td><td><strong>Winner</strong></td></tr>
+</table>
+
+<h3>Primary tests</h3>
+<ul>
+<li>M5 > M4 (additive > mult): <span class="stat">ΔELBO = +158</span></li>
+<li>M4 > M3 (hyp > exp): <span class="stat">ΔELBO = +174</span></li>
+<li>M5 > M1 (survival > effort-only): <span class="stat">ΔELBO = +2,038</span></li>
+</ul>
+
+<h3>Parameters (MCMC-validated)</h3>
+<ul>
+<li>k: median = 4.25, M = 6.22</li>
+<li>β: median = 53.5, M = 81.8</li>
+<li>k–β: r = −0.02 (independent)</li>
+<li>λ = 14.0 (fixed), τ = 0.76</li>
+</ul>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence</h3>
+<img src="../results/figs/paper/fig_s_ppc.png">
+<div class="caption">PPCs: all 9 conditions within HDI. Calibration near diagonal. Vigor PPC tracks threat.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- H2 -->
+<h1>H2 — S predicts trial-level anxiety and confidence</h1>
+
+<div class="two-col">
+<div>
+<h3>Primary tests</h3>
+<ul>
+<li>Anxiety ~ S_probe: <span class="stat">β = −0.281, z = −24.1</span></li>
+<li>Confidence ~ S_probe: <span class="stat-b">β = +0.280, z = +23.7</span></li>
+</ul>
+
+<h3>Secondary (parameter moderation)</h3>
+<ul>
+<li>k → mean anxiety: β = +0.127, p = .032</li>
+<li>k → mean confidence: β = −0.154, p = .009</li>
+</ul>
+
+<div class="discovery">
+<strong>Cross-domain:</strong> Choice threat shift × anxiety shift r = −0.386; × confidence shift r = +0.372
+</div>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence (panels A–B)</h3>
+<img src="../results/figs/paper/fig_s_metacognition.pdf">
+<div class="caption">A: Anxiety decreases with S. B: Confidence increases with S. 3 threat levels.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- H3 -->
+<h1>H3 — Danger drives excess motor vigor</h1>
+
+<div class="two-col">
+<div>
+<pre>excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij</pre>
+
+<h3>Primary tests</h3>
+<ul>
+<li>μ_δ = <span class="stat">+0.211</span> [0.19, 0.23], P(>0) = 1.0</li>
+<li><span class="stat">98.3%</span> of subjects δ > 0</li>
+</ul>
+
+<h3>Secondary</h3>
+<ul>
+<li>σ_δ = 0.146 (individual differences recoverable)</li>
+<li>Within-choice control: z = 3.54, p < .001</li>
+<li>Threat × distance interaction: z = −2.12, p = .034</li>
+<li>Split-half SB ρ = 0.451</li>
+</ul>
+
+<h3>MCMC validation</h3>
+<ul>
+<li>Rhat = 1.00, ESS > 15,000, 0 divergences</li>
+</ul>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence</h3>
+<img src="../results/figs/paper/fig_vigor_timecourse.png">
+<div class="caption">A: Onset excess effort by threat. B: Encounter attack spike (+0.14). C: β × δ coupling (r = +0.53).</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- H4 -->
+<h1>H4 — Choice and vigor shift coherently under threat</h1>
+
+<div class="two-col">
+<div>
+<h3>H4.1 — Population independence</h3>
+<ul><li>P(choose high) × α: r = +0.008, p = .894 <span class="tag">confirmed</span></li></ul>
+
+<h3>H4.2 — k dominates choice</h3>
+<ul><li>Choice ~ k + β + α: adj.R² = 0.823, k dominant</li></ul>
+
+<h3>H4.3 — Threat reverses coupling</h3>
+<ul>
+<li>r(choice, vigor | T=0.1) = +0.196</li>
+<li>r(choice, vigor | T=0.9) = −0.219</li>
+<li>Fisher z = 5.07, p < .0001 <span class="tag">confirmed</span></li>
+</ul>
+
+<h3>H4.4 — Vigor predicts escape</h3>
+<ul><li>Vigor β = +0.091, p = 10⁻⁷⁷; Choice β = −0.177</li></ul>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence</h3>
+<img src="../results/figs/paper/fig4_coherent_shift.png">
+<div class="caption">A: Dual-axis shift. B: Choice-vigor coupling (r = −0.78). C: β vs δ. D: Quadrants. E: Regression.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- H5 -->
+<h1>H5 — β and δ coupled across independent Bayesian models</h1>
+
+<div class="two-col">
+<div>
+<h3>Primary tests (independent pipeline)</h3>
+<table>
+<tr><th>Pair</th><th>MCMC r</th><th>Bootstrap r</th><th>95% CI</th></tr>
+<tr><td><strong>log(β) × δ</strong></td><td><span class="stat">+0.53</span></td><td><span class="stat">+0.32</span></td><td>[+0.23, +0.40]</td></tr>
+<tr><td><strong>log(k) × δ</strong></td><td><span class="stat-b">−0.33</span></td><td><span class="stat-b">−0.25</span></td><td>[−0.32, −0.18]</td></tr>
+</table>
+
+<h3>Behavioral coupling</h3>
+<ul>
+<li>Full: r = −0.78</li>
+<li>Cross-validated (odd/even): r = −0.55</li>
+</ul>
+
+<h3>Secondary (SVI joint model)</h3>
+<ul><li>All 6 ρ CIs exclude zero at every λ tested (Supp Note 2)</li></ul>
+
+<h3>Outcome prediction</h3>
+<ul><li>4 params → reward: R² = <span class="stat">0.321</span></li></ul>
+
+<div class="discovery">
+<strong>Recovery note:</strong> β recovery r = 0.40 → true coupling attenuated ~60%. Observed r = +0.53 is conservative.
+</div>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence</h3>
+<img src="../results/figs/paper/fig5_joint_model.png">
+<div class="caption">A: ELBO convergence. B: LKJ posterior correlations. C–D: Independent β vs δ, k vs δ. E: δ validation.</div>
+</div>
+<div class="evidence" style="margin-top:12px;">
+<h3>Parameter recovery</h3>
+<img src="../results/figs/paper/fig_s_recovery.pdf">
+<div class="caption">A–D: True vs recovered params. E–F: Cross-domain recovery attenuation.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- H6 -->
+<h1>H6 — δ predicts metacognitive accuracy</h1>
+
+<div class="two-col">
+<div>
+<h3>Primary tests</h3>
+<ul>
+<li>δ × anxiety-S slope: <span class="stat">r = −0.311</span>, p < .001</li>
+<li>δ × confidence-S slope: <span class="stat-b">r = +0.325</span>, p < .001</li>
+</ul>
+
+<h3>Secondary</h3>
+<ul>
+<li>β shows same pattern (|r| > 0.28)</li>
+<li>k predicts calibration (r = +0.20)</li>
+<li>α does NOT predict calibration</li>
+</ul>
+
+<div class="discovery">
+<strong>"Adaptive, not anxious":</strong> δ × mean anxiety r = −0.194. High-δ people have lower tonic anxiety but steeper phasic response. Calibrated, not chronically anxious.
+</div>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence (panels C–F)</h3>
+<img src="../results/figs/paper/fig_s_metacognition.pdf">
+<div class="caption">C: δ → anxiety calibration. D: δ → confidence calibration. E: Parameter bars. F: Adaptive, not anxious.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<!-- MENTAL HEALTH -->
+<h1>Supplementary: Mental health (null, ROPE-confirmed)</h1>
+
+<div class="two-col">
+<div>
+<h3>The one bridge: α → Apathy</h3>
+<ul>
+<li>α → F3 (Apathy): R² = 0.12, p < .001</li>
+<li>Driven by AMI Social (r = +0.18)</li>
+</ul>
+
+<h3>Everything else: null</h3>
+<ul>
+<li>δ, β, coupling → all 3 factors: null</li>
+<li>Calibration → all factors: null</li>
+<li>Depressed (PHQ≥10) show same coupling as controls</li>
+<li>ROPE: P(|effect| < 0.1) > 0.70 for most associations</li>
+</ul>
+
+<div class="discovery">
+<strong>Interpretation:</strong> The reallocation system predicts foraging performance, not psychopathology. It's a performance phenotype.
+</div>
+</div>
+<div>
+<div class="evidence">
+<h3>Supporting evidence</h3>
+<img src="../results/figs/paper/fig_s_mental_health.pdf">
+<div class="caption">A: Factor loadings. B: Bayesian forest. C: Per-scale heatmap. D: α → Apathy. E: ROPE testing.</div>
+</div>
+</div>
+</div>
+
+<hr>
+
+<h1 style="border-bottom-color: #666;">Summary: All hypotheses confirmed in exploratory sample</h1>
+
+<table>
+<tr><th>H</th><th>Claim</th><th>Key statistic</th><th>Status</th></tr>
+<tr><td>H1</td><td>Additive + hyperbolic wins</td><td>ΔELBO = +158, +174</td><td><span class="tag">confirmed</span></td></tr>
+<tr><td>H2</td><td>S predicts affect</td><td>z = −24, +24</td><td><span class="tag">confirmed</span></td></tr>
+<tr><td>H3</td><td>μ_δ > 0</td><td>+0.211 [0.19, 0.23], 98%</td><td><span class="tag">confirmed</span></td></tr>
+<tr><td>H4</td><td>Choice-vigor coupled</td><td>r = −0.78, CV r = −0.55</td><td><span class="tag">confirmed</span></td></tr>
+<tr><td>H5</td><td>r(β, δ) > 0</td><td>+0.53, bootstrap +0.32 [.23,.40]</td><td><span class="tag">confirmed</span></td></tr>
+<tr><td>H6</td><td>δ predicts calibration</td><td>r = −0.31, +0.33</td><td><span class="tag">confirmed</span></td></tr>
+</table>
+
+<p style="margin-top:20px; color:#666;">Preregistration to be submitted to AsPredicted before confirmatory data (N=350) are opened.</p>
+
+</body>
+</html>
