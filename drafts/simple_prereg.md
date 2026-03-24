@@ -14,70 +14,64 @@ Specific hypotheses are as follows:
 
 ---
 
-**People will adjust both what they choose and how hard they press in response to threat.**
+### I. Threat will shift choice, vigor, and subjective experience
 
-1. Participants will choose the high-reward, high-effort option less often as threat increases.
-    a. This effect will be modulated by distance: threat will amplify distance-driven avoidance (threat × distance interaction).
-    b. Participants will choose the high option less often as distance increases.
+**1.** Threat will reduce high-effort choice, amplify distance-driven avoidance, and increase excess motor effort — while shifting anxiety upward and confidence downward.
 
-2. Participants will press harder than the task demands when danger is high.
-    a. Excess effort (pressing rate minus demand of chosen option) will increase with threat level.
-    b. This effect will survive within constant-demand trials (i.e., when participants chose the low-effort option), ruling out a demand-driven confound.
+1a. High-effort choice will decrease with threat probability and with escape distance, with a threat × distance interaction.
 
-3. Participants will report higher anxiety and lower confidence as threat increases.
-    a. Trial-level anxiety ratings will increase with threat probability.
-    b. Trial-level confidence ratings will decrease with threat probability.
+1b. Excess effort (pressing rate minus chosen option's demand) will increase with threat, surviving within constant-demand trials.
+
+1c. Trial-level anxiety will increase and confidence will decrease with threat probability.
 
 ---
 
-**These adjustments will be coherently coupled across individuals — not two independent responses to threat.**
+### II. These adjustments will be coherently coupled across individuals, not independent threat responses
 
-4. Choice shift and vigor shift under threat will be anti-correlated across individuals: participants who shift choices most toward safety will also show the largest increase in excess effort.
-    a. This coupling will remain significant when computed from independent trial halves (odd vs. even), controlling for shared condition variance.
+**2.** Choice shift and vigor shift under threat will be inversely correlated across individuals: participants who shift choices most toward safety will show the largest increase in excess effort. This coupling will remain significant when computed from independent trial halves (odd vs. even), ruling out shared condition variance.
 
-5. The reallocation strategy will approximate the expected-value-maximizing policy.
-    a. Participants who reallocate more (greater choice shift + greater vigor shift) will achieve higher foraging earnings.
-    b. The dominant deviation from optimal will be excessive caution — choosing safe when risky is EV-positive — rather than the reverse.
+**3.** The reallocation strategy will approximate the expected-value-maximizing policy.
 
----
+3a. Participants who reallocate more will achieve higher foraging earnings.
 
-**A survival-weighted value model will best explain choice behavior.**
-
-6. Choices will be best explained by a model in which effort enters as an additive physical cost and survival probability follows a hyperbolic function of distance.
-    a. Additive effort will outperform multiplicative effort discounting.
-    b. A hyperbolic survival kernel will outperform an exponential kernel.
-    c. The survival model will substantially outperform an effort-only baseline.
-
-7. The model-derived survival probability S will predict trial-level anxiety and confidence within subjects.
-    a. S will predict anxiety negatively (lower survival → higher anxiety).
-    b. S will predict confidence positively (higher survival → higher confidence).
+3b. The dominant deviation from optimal will be excessive caution rather than the reverse.
 
 ---
 
-**A hierarchical Bayesian model of excess effort will recover individual differences in danger-responsive vigor mobilization.**
+### III. A survival-weighted value model will best explain choice, and a hierarchical Bayesian model will recover individual differences in vigor mobilization
 
-8. The population-mean danger mobilization parameter δ will be positive, with more than 80% of participants showing δ > 0.
-    a. Individual differences in δ will be recoverable (σ_δ > 0.05).
+**4.** Choices will be best explained by a model in which effort enters as an additive physical cost and survival probability follows a hyperbolic function of distance.
 
-9. Threat bias in choice (β) will positively correlate with vigor mobilization (δ) across independently estimated Bayesian models, and effort sensitivity (k) will negatively correlate with δ.
-    a. The β–δ coupling will have a 95% posterior bootstrap credible interval excluding zero.
-    b. The k–δ coupling will have a 95% posterior bootstrap credible interval excluding zero.
-    c. β and δ will predict greater closeness to the optimal policy.
-    d. A joint hierarchical model with correlated random effects (LKJ prior) will confirm that all pairwise correlation credible intervals exclude zero.
+4a. Additive effort will outperform multiplicative effort discounting.
+
+4b. A hyperbolic survival kernel will outperform an exponential kernel.
+
+4c. The model-derived survival probability S will predict trial-level anxiety (negatively) and confidence (positively) within subjects.
+
+**5.** The population-mean danger mobilization parameter δ will be positive, with individual differences reliably recoverable.
+
+5a. More than 80% of participants will show δ > 0, with σ_δ > 0.05.
+
+**6.** Computational parameters governing the effort–danger trade-off will covary across independently estimated models.
+
+6a. Threat bias in choice (β) will positively correlate with vigor mobilization (δ); effort sensitivity (k) will negatively correlate with δ.
+
+6b. Both couplings will have 95% posterior bootstrap credible intervals excluding zero.
+
+6c. β and δ will jointly predict closer approximation to the optimal policy.
+
+6d. *(Secondary)* A joint hierarchical model with correlated random effects (LKJ prior) will confirm that all pairwise correlation credible intervals exclude zero.
 
 ---
 
-**Individuals who mobilize vigor under danger will also show more accurate subjective threat appraisal.**
+### IV. Individuals who mobilize vigor under danger will show more accurate subjective threat appraisal
 
-10. δ will predict steeper within-subject anxiety slopes on S (more negative) and steeper confidence slopes on S (more positive).
-    a. Higher δ will be associated with lower mean anxiety — adaptive calibration, not chronic anxiousness.
-    b. β will show the same pattern as δ (threat-sensitive people have better calibrated affect).
-    c. Effort sensitivity k will not predict calibration accuracy.
+**7.** δ will predict steeper within-subject affective slopes on survival probability S — higher δ associated with more negative anxiety slopes on S and more positive confidence slopes on S.
 
----
+7a. *(Secondary)* Higher δ will be associated with lower mean anxiety, consistent with adaptive calibration rather than chronic anxiousness.
 
-**The computational parameters governing reallocation will be orthogonal to self-reported psychiatric symptomatology.**
+**8.** Threat-sensitive choice (β) will show the same affective calibration pattern as δ, but effort sensitivity (k) will predict calibration significantly less than δ.
 
-11. No model parameter (k, β, δ) or their coupling will predict psychiatric factor scores (distress, fatigue, apathy) after correction for multiple comparisons.
-    a. Tonic baseline vigor (α) will uniquely predict the apathy/amotivation factor.
-    b. Participants above clinical cutoffs for depression (PHQ-9 ≥ 10) and anxiety (DASS Anxiety ≥ 8) will show the same β–δ coupling as participants below cutoffs.
+8a. β will predict steeper affective slopes on S, paralleling the δ effect.
+
+8b. The correlation between k and affective calibration will be significantly weaker than the δ–calibration correlation (tested via difference in dependent correlations).
