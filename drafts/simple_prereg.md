@@ -74,10 +74,8 @@ Specific hypotheses are as follows:
 
 ### IV. Individuals who mobilize vigor under danger will show more accurate subjective threat appraisal
 
-**7.** Individual differences in danger mobilization (δ, from the vigor model) will predict the accuracy of subjective threat appraisal: higher δ will be associated with more negative within-subject anxiety slopes on S and more positive confidence slopes on S.
+**7.** Participants whose motor effort is more danger-responsive (higher δ) will also show tighter affective tracking of survival probability S.
 
-**8.** Threat bias in choice (β, from the choice model) will show the same affective calibration pattern as δ, but effort sensitivity (k, also from the choice model) will predict calibration significantly less than δ.
+7a. δ will predict steeper within-subject anxiety slopes on S (more negative) and confidence slopes on S (more positive).
 
-8a. β will predict steeper affective slopes on S, paralleling the δ effect.
-
-8b. The correlation between k and affective calibration will be significantly weaker than the δ–calibration correlation (tested via difference in dependent correlations).
+7b. Threat bias β will show the same pattern, but effort sensitivity k will not — dissociating threat-responsive parameters from effort cost sensitivity.
