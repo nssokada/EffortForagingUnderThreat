@@ -31,7 +31,7 @@ SV = R · S − k · E − β · (1 − S)
 S  = (1 − T) + T / (1 + λ · D)
 ```
 
-where R is reward magnitude (R_H = 5, R_L = 1), S is option-specific survival probability (computed separately for S_H and S_L using each option's distance), T is threat probability ∈ {0.1, 0.5, 0.9}, D is cookie distance ∈ {1, 2, 3}, E is normalized effort demand, k is subject-specific effort discounting, β is subject-specific threat bias (subjective capture cost), and λ is a population-level hazard parameter estimated from data (exploratory: λ ≈ 13.9).
+where R is reward magnitude (R_H = 5, R_L = 1), S is option-specific survival probability (computed separately for S_H and S_L using each option's distance), T is threat probability ∈ {0.1, 0.5, 0.9}, D is cookie distance ∈ {1, 2, 3}, E is normalized effort demand, k is subject-specific effort discounting, β is subject-specific threat bias (subjective capture cost), and λ is a population-level hazard parameter estimated from data (exploratory: λ ≈ 14.0).
 
 Choices are modeled via softmax on the value difference:
 
@@ -66,7 +66,7 @@ with τ a population-level inverse-temperature.
 
 ### H2 — Model-derived survival predicts trial-level anxiety and confidence
 
-**Statement:** The survival probability S, computed from each participant's fitted parameters using the winning L3_add model (S = (1−T) + T/(1+λD), λ (estimated from confirmatory choice model fit)), negatively predicts trial-level anxiety ratings and positively predicts trial-level confidence ratings at the within-subject level. This constitutes evidence that subjective affect tracks the same latent survival computation that governs choice.
+**Statement:** The survival probability S, computed from each participant's fitted parameters using the winning model M5 (S = (1−T) + T/(1+λD), λ estimated from confirmatory choice model fit), negatively predicts trial-level anxiety ratings and positively predicts trial-level confidence ratings at the within-subject level. This constitutes evidence that subjective affect tracks the same latent survival computation that governs choice.
 
 **Primary tests:**
 1. Mixed-effects linear regression: `anxiety ~ S_probe_z + (1 + S_probe_z | subject)`. Test: β(S_probe_z) < 0, with |t| > 3.0 (exploratory: β = −0.605, t = −25.63).
@@ -75,7 +75,7 @@ with τ a population-level inverse-temperature.
 **Secondary test (parameter moderation):**
 3. k (effort discounting) negatively predicts mean anxiety and positively predicts mean confidence between subjects (between-subjects OLS: mean affect ~ k_z). Directional, p < 0.05 one-tailed (exploratory: k → anxiety β = +0.127, p = 0.032; k → confidence β = −0.154, p = 0.009).
 
-**S_probe computation:** For each probe trial, S_probe = (1 − T) + T / (1 + λ · D) with λ (estimated from confirmatory choice model fit) (population-level, fixed from exploratory fit). The subject-specific posterior mean k and β from the L3_add SVI fit are used only for the parameter moderation secondary tests; S_probe itself uses only population-level λ.
+**S_probe computation:** For each probe trial, S_probe = (1 − T) + T / (1 + λ · D) with λ (estimated from confirmatory choice model fit) (population-level, fixed from exploratory fit). The subject-specific posterior mean k and β from the M5 SVI fit are used only for the parameter moderation secondary tests; S_probe itself uses only population-level λ.
 
 **Support criterion:** Both primary tests (H2.1 and H2.2) must be significant in the predicted direction. The secondary test is confirmatory for the anxiety direction only (k → higher mean anxiety).
 
@@ -100,7 +100,7 @@ where excess_ij is the difference between observed capacity-normalized vigor and
 2. The proportion of subjects with posterior mean δ_i > 0 must exceed 80% (exploratory: 98.3%).
 
 **Secondary test:**
-3. σ_δ > 0.05, confirming that individual differences in danger mobilization are recoverable. (Exploratory: σ_δ = 0.115, shrinkage from OLS = 40.6%.)
+3. σ_δ > 0.05, confirming that individual differences in danger mobilization are recoverable. (Exploratory: σ_δ = 0.146, shrinkage from OLS = 40.6%.)
 
 **Support criterion:** Both primary tests (H3.1 and H3.2) must be met.
 
@@ -137,8 +137,8 @@ Trial-level mixed-effects logistic regression: `escaped ~ vigor_z + choice_z + t
 **Statement:** Individual differences in threat bias ($\beta$, from the choice model) and danger-responsive vigor mobilization ($\delta$, from the vigor model) are positively correlated, and individual differences in effort sensitivity ($k$) and $\delta$ are negatively correlated. These correlations emerge from models that share no parameters or data — only the survival function $S$ (evaluated at the choice-estimated $\lambda$) links them.
 
 **Primary tests (independent Bayesian pipeline):**
-1. Pearson $r(log(\beta_{choice}), \delta_{vigor}) > 0$, $p < .001$ one-tailed. (Exploratory: $r = +0.55$, $p < 10^{-24}$)
-2. Pearson $r(log(k_{choice}), \delta_{vigor}) < 0$, $p < .01$ one-tailed. (Exploratory: $r = -0.28$, $p < 10^{-6}$)
+1. Pearson $r(log(\beta_{choice}), \delta_{vigor}) > 0$, $p < .001$ one-tailed. (Exploratory: $r = +0.53$, $p < 10^{-22}$)
+2. Pearson $r(log(k_{choice}), \delta_{vigor}) < 0$, $p < .01$ one-tailed. (Exploratory: $r = -0.33$, $p < 10^{-8}$)
 
 **Secondary tests (joint model robustness):**
 A joint hierarchical model with correlated random effects $[log(k_i), log(\beta_i), \alpha_i, \delta_i] \sim MVN(\mu, \Sigma)$, $\Omega \sim LKJCholesky(\eta=2)$, with $\lambda$ fixed from the choice model, must confirm:
@@ -160,7 +160,7 @@ A joint hierarchical model with correlated random effects $[log(k_i), log(\beta_
 2. Pearson $r(\delta, \text{confidence slope on } S) > 0$, $p < .05$ one-tailed. (Exploratory: $r = +0.325$, $p < .001$)
 
 **Secondary test:**
-3. $r(\delta, \text{mean anxiety}) < 0$: high-$\delta$ individuals report lower average anxiety despite stronger anxiety-$S$ coupling. (Exploratory: $r = -0.189$, $p = .001$)
+3. $r(\delta, \text{mean anxiety}) < 0$: high-$\delta$ individuals report lower average anxiety despite stronger anxiety-$S$ coupling. (Exploratory: $r = -0.194$, $p < .001$)
 
 **Support criterion:** Both primary tests are significant in the predicted direction.
 
@@ -206,7 +206,7 @@ The confirmatory sample (N = 350) was determined to match the original planned c
 
 - **H1 (model comparison):** Model comparison via ELBO difference does not require a conventional power analysis; the effect sizes observed (ΔELBO = +158 additive vs. multiplicative; ΔELBO = +190 hyperbolic vs. exponential) are large relative to model complexity differences and are expected to replicate with N > 200.
 - **H2 (affect LMM):** Exploratory effect sizes were very large (t = ±25.6 for S → anxiety/confidence). With N = 350 subjects × 18 probes/type = 6,300 observations per probe type, the test is heavily powered. Even a 50% reduction in effect size (t ≈ 12) would be detectable with near-certainty.
-- **H3 (vigor mobilization):** The key statistic is the population posterior for μ_ρ. With N = 350 subjects and approximately 15 attack trials per subject on average (N_attacks ≈ 5,250 observations), the HBM posterior will be well-constrained. The exploratory P(μ_ρ > 0) = 1.0 with N = 293 leaves substantial margin for reduction.
+- **H3 (vigor mobilization):** The key statistic is the population posterior for μ_δ. With N = 350 subjects and approximately 15 attack trials per subject on average (N_attacks ≈ 5,250 observations), the HBM posterior will be well-constrained. The exploratory P(μ_δ > 0) = 1.0 with N = 293 leaves substantial margin for reduction.
 - **H4 (dissociation):** The key correlations (H4.3 Fisher z = 5.07, H4.4 vigor β = +0.091 at N > 10,000 attack trials) are powered at N = 350. The Fisher z test comparing per-threat correlations requires only that the directional pattern holds; with N = 350, detecting a difference between r = +0.196 and r = −0.219 requires N > 80 (power > 0.99).
 
 After applying exclusion criteria (see Section 5), the confirmatory sample is expected to yield approximately 280–330 analyzable participants, sufficient for all preregistered tests.
@@ -245,7 +245,7 @@ The 5-stage preprocessing pipeline (`scripts/preprocessing/pipeline.py`) will be
 
 **Inference method:** Stochastic variational inference (SVI) in NumPyro with the Adam optimizer (learning rate = 0.01, 30,000 steps per model). Same as exploratory.
 
-**Models compared (same 7-model set as exploratory):**
+**Models compared (same 5-model set as exploratory):**
 
 | Model | Structure | Question |
 |---|---|---|
@@ -304,9 +304,9 @@ where S_ij = (1−T) + T/(1+λ·D_chosen) uses the distance of the chosen cookie
 
 **Preregistered tests for H3:**
 1. P(μ_δ > 0 | data) > 0.975 (95% one-sided posterior credibility). (Exploratory: P = 1.0.)
-2. Proportion of subjects with posterior mean δ_i > 0 must exceed 80%. (Exploratory: 99%.)
+2. Proportion of subjects with posterior mean δ_i > 0 must exceed 80%. (Exploratory: 98.3%.)
 
-**Secondary:** σ_δ > 0.05 (individual differences recoverable; exploratory: σ_δ = 0.115).
+**Secondary:** σ_δ > 0.05 (individual differences recoverable; exploratory: σ_δ = 0.146).
 
 **Data filtering:** Probe trials excluded from vigor alignment using `feelings.csv` trialNumber per subject.
 
@@ -343,7 +343,7 @@ where `_z` denotes z-scoring across all observations. Reported: fixed-effect β,
 mean_anxiety    ~ k_z + β_z    # OLS, N = confirmatory final sample
 mean_confidence ~ k_z + β_z
 ```
-Parameters k_i and β_i are posterior means from the L3_add SVI fit. Directional test: β(k_z → mean_anxiety) > 0 and β(k_z → mean_confidence) < 0. p < 0.05 one-tailed.
+Parameters k_i and β_i are posterior means from the M5 SVI fit. Directional test: β(k_z → mean_anxiety) > 0 and β(k_z → mean_confidence) < 0. p < 0.05 one-tailed.
 
 ---
 
@@ -404,7 +404,19 @@ Pre-specified expectations (from exploratory findings):
 
 ## 4. Exploratory Findings from Sample 1 That Motivated These Hypotheses
 
-All four hypotheses were generated and refined based on the exploratory sample (N=293). The key findings motivating each hypothesis are summarized below.
+All six hypotheses were generated and refined based on the exploratory sample (N=293). The key findings motivating each hypothesis are summarized below (H5 and H6 exploratory evidence is presented in Section 1 of each respective hypothesis).
+
+### Behavioral descriptives (N=293, 13,185 choice trials)
+
+The exploratory sample completed 81 events per participant (45 choice trials + 36 affect probes), yielding 13,185 choice observations and 10,546 probe ratings. Participants chose the high-effort/high-reward option on 43.1% of trials (SD = 20.3%). Both threat and distance strongly reduced high-effort choices: threat effect (T=0.1 vs T=0.9) = 0.484, Cohen's d = 1.63, t(292) = 27.82, p < 10^-83; distance effect (D=1 vs D=3) = 0.336, Cohen's d = 1.57, t(292) = 26.80, p < 10^-80. The 3 x 3 table of P(choose high-effort):
+
+| | D = 1 | D = 2 | D = 3 |
+|---|---|---|---|
+| **T = 0.1** | 0.808 | 0.692 | 0.565 |
+| **T = 0.5** | 0.633 | 0.381 | 0.188 |
+| **T = 0.9** | 0.397 | 0.138 | 0.078 |
+
+The overall capture rate was 31.7%, scaling from 11.5% (T=0.1) to 48.7% (T=0.9). Mean anxiety was 4.40 (SD=1.31) and mean confidence was 3.17 (SD=1.35) on the 0-7 scale, both strongly modulated by threat level. Capacity-normalized vigor averaged 0.686 (SD=0.164), with a modest threat-driven decrease.
 
 ### H1 — Motivated by choice model comparison results (N=293, NB03-unified)
 
@@ -534,7 +546,7 @@ The PLS analysis relating encounter-window pressing features (dist_pre, dist_tra
 
 **7.4 Parameter recovery simulation**
 
-Parameter recovery for the L3_add model (simulate data from known parameters → recover via SVI → compare) will be reported to validate model identifiability. Not testable as a confirmatory hypothesis but essential methodological evidence.
+Parameter recovery for the M5 model (simulate data from known parameters → recover via SVI → compare) will be reported to validate model identifiability. Not testable as a confirmatory hypothesis but essential methodological evidence.
 
 **7.5 Two-way (choice × vigor) ANOVA on psychiatric outcomes**
 
@@ -590,7 +602,7 @@ S_o(T, D_o) = (1 − T) + T / (1 + λ · D_o)
 ```
 - T ∈ {0.1, 0.5, 0.9}: trial-level threat probability
 - D_o ∈ {1, 2, 3}: option-specific distance level (D_L = 1 always; D_H varies)
-- λ: population-level hazard scaling (estimated from data; exploratory ≈ 13.9)
+- λ: population-level hazard scaling (estimated from data; exploratory ≈ 14.0)
 
 **Subjective value (additive effort):**
 ```
@@ -654,7 +666,7 @@ Choice and vigor likelihoods as above, with λ fixed from the choice-only fit.
 | E | Effort fraction | `behavior.csv`: `effort_H` / `effort_L` | H ∈ {0.6, 0.8, 1.0}; L = 0.4 |
 | R_H, R_L | Reward | Fixed | 5, 1 points |
 | C | Capture penalty | Fixed | 5 points |
-| λ | Hazard scaling | Estimated from choice model | Population-level (exploratory ≈ 13.9) |
+| λ | Hazard scaling | Estimated from choice model | Population-level (exploratory ≈ 14.0) |
 | τ | Inverse temperature | Estimated from choice model | Population-level |
 | k_i | Effort discounting | Choice model posterior mean | Per-subject |
 | β_i | Threat bias | Choice model posterior mean | Per-subject |

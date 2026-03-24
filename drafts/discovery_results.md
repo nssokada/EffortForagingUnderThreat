@@ -6,6 +6,40 @@
 
 ---
 
+## 0. Task behavior: Model-free descriptive statistics
+
+### Task completion
+
+The exploratory sample comprised N = 293 participants who each completed 81 events: 45 choice trials and 36 affect probe trials, yielding 13,185 choice observations and 10,546 probe ratings (5,274 anxiety, 5,272 confidence). All participants completed the full task with no missing choice trials.
+
+### Choice behavior
+
+Participants chose the high-effort/high-reward option on 43.1% of trials (SD = 20.3% across subjects), reflecting a population-level preference for the safer, low-effort option. This proportion decreased sharply with threat: from 68.9% at T = 0.1, to 40.1% at T = 0.5, to 20.5% at T = 0.9. It also decreased with the distance of the high-effort option: 61.3% at D = 1, 40.4% at D = 2, 27.7% at D = 3. A logistic regression confirmed main effects of threat (beta = -3.11, z = -44.80, p < 10^-300) and distance (beta = -0.92, z = -33.90, p < 10^-251), as well as a significant threat x distance interaction (beta = -0.73, z = -8.67, p = 4.2 x 10^-18), indicating that distance-driven avoidance was amplified under higher threat.
+
+The full 3 x 3 table of P(choose high-effort) by threat and distance:
+
+| | D = 1 | D = 2 | D = 3 |
+|---|---|---|---|
+| **T = 0.1** | 0.808 | 0.692 | 0.565 |
+| **T = 0.5** | 0.633 | 0.381 | 0.188 |
+| **T = 0.9** | 0.397 | 0.138 | 0.078 |
+
+The most dangerous condition (T = 0.9, D = 3) reduced high-effort choice to 7.8%, a tenfold decrease from the safest condition (T = 0.1, D = 1; 80.8%).
+
+### Outcomes
+
+The overall escape rate was 68.3%, with strong threat dependence: 88.5% at T = 0.1, 65.2% at T = 0.5, and 51.3% at T = 0.9. Capture rates were nearly identical for high-effort (32.0%) and low-effort (31.5%) choices, indicating that choosing the high-reward option did not substantially alter capture risk conditional on the trial's threat and distance configuration. Mean points per trial were 0.27 (SD = 1.05), reflecting the high penalty for capture (-5 points) relative to cookie rewards (+1 or +5 points).
+
+### Motor vigor
+
+Capacity-normalized pressing rate (vigor_norm) averaged 0.686 across participants (SD = 0.164), indicating that participants pressed at roughly 69% of their individual maximum capacity. Vigor showed a modest but consistent decrease with threat: M = 0.700 at T = 0.1, M = 0.678 at T = 0.5, and M = 0.675 at T = 0.9. Individual differences in vigor were substantial (SD = 0.164), spanning from participants who barely pressed above threshold to those who sustained near-maximal effort throughout.
+
+### Affect ratings
+
+On the 0-7 rating scale, mean anxiety was 4.40 (SD = 1.31) and mean confidence was 3.17 (SD = 1.35). Both ratings were strongly modulated by threat level. Anxiety increased from 3.72 (SD = 1.64) at T = 0.1 to 4.35 (SD = 1.39) at T = 0.5 to 5.13 (SD = 1.55) at T = 0.9, a 1.41-point increase across the threat range. Confidence showed the mirror pattern, decreasing from 3.91 (SD = 1.57) at T = 0.1 to 3.11 (SD = 1.49) at T = 0.5 to 2.49 (SD = 1.67) at T = 0.9. These raw patterns confirm that threat level drives robust and symmetric shifts in subjective anxiety and confidence even before model-based survival signals are considered.
+
+---
+
 ## 1. Choice: Survival-weighted value governs foraging decisions
 
 **Winning model (M5):** SV = R·S − k·E − β·(1−S), S = (1−T) + T/(1+λD)
