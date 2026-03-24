@@ -28,7 +28,9 @@ Specific hypotheses are as follows:
 
 ### II. These adjustments will be coherently coupled across individuals, not independent threat responses
 
-**2.** Choice shift and vigor shift under threat will be inversely correlated across individuals: participants who shift choices most toward safety will show the largest increase in excess effort. This coupling will remain significant when computed from independent trial halves (odd vs. even), ruling out shared condition variance.
+**2**. Choice shift and vigor shift under threat will be inversely correlated across individuals.
+2a. Participants who shift choices most toward safety will show the largest increase in excess effort.
+2b. This coupling will remain significant when computed from independent trial halves (odd vs. even), ruling out shared condition variance.
 
 **3.** The reallocation strategy will approximate the expected-value-maximizing policy.
 
@@ -38,7 +40,7 @@ Specific hypotheses are as follows:
 
 ---
 
-### III. A survival-weighted value model will best explain choice, and a hierarchical Bayesian model will recover individual differences in vigor mobilization
+### III. A shared survival computation will link choice and vigor through independently estimated hierarchical models
 
 **4.** Choices will be best explained by a model in which effort enters as an additive physical cost and survival probability follows a hyperbolic function of distance.
 
