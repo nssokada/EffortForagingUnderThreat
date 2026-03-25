@@ -51,15 +51,13 @@ def embed_png(filename):
 
 
 def fmt_p(p):
-    """Format p-value per spec: approx 0 when p < 1e-16 or p == 0,
-    < 10^N with <sup> for other small values, else = .NNN."""
+    """Format p-value: < .0001 for very small, else = .NNN."""
     if p is None:
         return "N/A"
-    if p == 0 or p < 1e-16:
-        return "&asymp; 0"
+    if p == 0 or p < 0.0001:
+        return "< .0001"
     if p < 0.001:
-        exp = int(math.floor(math.log10(p)))
-        return f"< 10<sup>{exp}</sup>"
+        return "< .001"
     return f"= {p:.3f}"
 
 
@@ -67,11 +65,13 @@ def fmt_p_katex(p):
     """Format p-value for KaTeX inline math."""
     if p is None:
         return "\\text{N/A}"
-    if p == 0 or p < 1e-16:
-        return "\\approx 0"
+    if p == 0 or p < 0.0001:
+        return "< .0001"
     if p < 0.001:
         exp = int(math.floor(math.log10(p)))
-        return f"< 10^{{{exp}}}"
+        return "< .0001"
+    if p < 0.001:
+        return "< .001"
     return f"= {p:.3f}"
 
 
