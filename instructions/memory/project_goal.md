@@ -22,7 +22,7 @@ Humans foraging under threat don't avoid effort — they **reallocate** it. A su
 
 ## What remains
 
-- [ ] Run MCMC pipeline on GPU (`scripts/run_mcmc_pipeline.py`) — proper posteriors for all models
+- [x] ~~Run MCMC pipeline on GPU~~ — DONE. Choice, vigor, and joint MCMC outputs in `results/stats/mcmc_*.csv`
 - [ ] Run confirmatory sample (N=350) through full pipeline
 - [ ] Generate remaining figures (Fig 1: task + choice model, Fig 2: vigor)
 - [ ] PPCs for choice and vigor models

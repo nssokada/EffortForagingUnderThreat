@@ -25,7 +25,7 @@ All memory files for the EffortForagingUnderThreat project.
 |------|------|-------------|
 | [task_design.md](task_design.md) | reference | Full task mechanics: arena, effort tiers, predator dynamics, probe structure |
 | [open_questions.md](open_questions.md) | questions | Remaining questions: vigor vs distance, α-δ independence, MCMC resolution |
-| [hypotheses.md](hypotheses.md) | hypotheses | All hypotheses with status — PARTIALLY OUTDATED, see drafts/preregistration.md for H1-H6 |
+| [hypotheses.md](hypotheses.md) | hypotheses | All hypotheses with status + numbering concordance (prereg H1-H7 ↔ internal H#s, updated 2026-03-24) |
 
 ## Deprecated (kept for history, not authoritative)
 
@@ -36,6 +36,6 @@ All memory files for the EffortForagingUnderThreat project.
 ## Key external documents
 
 - `drafts/paper.md` — current paper draft (4 Results sections, tightened 2026-03-22)
-- `drafts/preregistration.md` — confirmatory preregistration (H1-H6, updated 2026-03-22)
+- `drafts/preregistration.md` — confirmatory preregistration (H1-H7 in 4 sections, updated 2026-03-24 to match simple_prereg numbering)
 - `drafts/discovery_results.md` — clean summary of all findings (updated 2026-03-22)
 - `scripts/run_mcmc_pipeline.py` — full MCMC pipeline for GPU execution

@@ -8,17 +8,11 @@ type: issues
 
 ## BLOCKING
 
-*None currently blocking the draft. MCMC and confirmatory sample are the remaining execution items.*
+*None currently blocking the draft. Confirmatory sample is the main remaining execution item.*
 
 ---
 
 ## MAJOR OPEN WORK
-
-### MCMC pipeline not yet run on GPU
-- **Script:** `scripts/run_mcmc_pipeline.py`
-- **Issue:** All current fits use SVI (variational inference). Full MCMC (NUTS) needed for proper posteriors, Rhat/ESS diagnostics, and reviewer credibility.
-- **Resolution:** Run on GPU machine. Stage 1+2 ~1 hour, Stage 3 ~2-4 hours.
-- **Commands:** `python3 scripts/run_mcmc_pipeline.py --platform gpu`
 
 ### Confirmatory sample (N=350) not started
 - **Issue:** Raw data exists in `data/confirmatory_350/raw/` but not preprocessed.

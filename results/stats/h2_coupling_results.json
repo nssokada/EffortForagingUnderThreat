@@ -1,0 +1,38 @@
+{
+  "dataset": {
+    "N_subjects": 293
+  },
+  "H2a": {
+    "r": -0.4999265493014782,
+    "p_two_tailed": 6.222645587542825e-20,
+    "p_one_tailed": 3.1113227937714127e-20,
+    "N": 293,
+    "delta_choice_mean": -0.4839590443686007,
+    "delta_choice_sd": 0.297741030595632,
+    "delta_vigor_mean": 0.22884392713094892,
+    "delta_vigor_sd": 0.11141855606245897,
+    "supported": true
+  },
+  "H2b": {
+    "split1_choice_odd_vigor_even": {
+      "r": -0.45430876380227625,
+      "p_two_tailed": 2.5065047969017163e-16,
+      "p_one_tailed": 1.2532523984508581e-16,
+      "N": 293,
+      "pass": true
+    },
+    "split2_choice_even_vigor_odd": {
+      "r": -0.3898172492807651,
+      "p_two_tailed": 4.524913829039668e-12,
+      "p_one_tailed": 2.262456914519834e-12,
+      "N": 293,
+      "pass": true
+    },
+    "supported": true
+  },
+  "H2_overall": {
+    "H2a_supported": true,
+    "H2b_supported": true,
+    "overall": true
+  }
+}

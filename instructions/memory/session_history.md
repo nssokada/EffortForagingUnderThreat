@@ -4,6 +4,38 @@ Chronological log of work sessions. Most recent first.
 
 ---
 
+## Session 2026-03-24
+
+### Prereg rewrite (via Discord with Noah)
+
+**Hypothesis numbering overhaul:**
+- Switched from old detailed prereg (H1-H6) to simple prereg numbering (H1-H7 in 4 sections)
+- H1 = threat shifts behavior (new), H2 = coupling (new), H3 = optimality (new), H4 = choice model (old H1+H2), H5 = vigor (old H3), H6 = cross-model coupling (old H5), H7 = metacognition (old H6)
+- Updated `preregistration.md`, `hypotheses.md`, `MEMORY.md`
+
+**AsPredicted format prereg:**
+- Rewrote full prereg in AsPredicted template format (`prereg_aspredicted.md`)
+- Sections: Hypothesis, DV, Conditions, Analyses, Exclusions, Sample Size, Other
+
+**H1 analysis decisions (confirmed with Noah):**
+- Switched from ANOVAs to LMMs throughout H1 for consistency
+- H1a: logistic LMM on trial-level choice + monotonicity via all-pairwise adjacent t-tests (p < 0.01)
+- H1b: linear LMM with effort_chosen_z covariate (constant-demand control built in) — NEEDS VERIFICATION on exploratory data
+- H1c: linear LMMs for anxiety and confidence with threat + distance
+- Justification: Barr et al. 2013, Jaeger 2008, consistent with H4c approach
+
+**Figures:**
+- Wrote `scripts/plotting/plot_h1_figure.py` (3-panel: choice/vigor/affect by distance × threat)
+- Cannot run — devcontainer lacks scientific Python
+- Updated Dockerfile to include miniconda + effort_foraging_threat env — needs rebuild
+
+**Blocked on:**
+- Devcontainer rebuild (for running any Python analysis)
+- H1b verification (must confirm before submitting prereg)
+- Continuing H2-H7 walkthrough with Noah
+
+---
+
 ## Session 2026-03-20
 
 ### Completed

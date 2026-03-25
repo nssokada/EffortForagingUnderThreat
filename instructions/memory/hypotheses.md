@@ -6,6 +6,35 @@ Status key: ✅ Supported | ❌ Refuted | ⚠️ Partial | 🔲 Untested | 🚫 
 
 ---
 
+## Numbering Concordance (updated 2026-03-24)
+
+The preregistration (`drafts/preregistration.md`) now uses the simple prereg (`drafts/simple_prereg.md`) numbering (H1-H7 in 4 sections). The hypothesis numbers in THIS file (H1-H39) are the **internal exploratory tracking numbers** and do NOT map 1:1 to the preregistered hypotheses.
+
+**Preregistered hypothesis → internal tracking number mapping:**
+
+| Prereg H# | Section | Description | Internal H# (this file) |
+|---|---|---|---|
+| **Prereg H1** (1a,1b,1c) | I | Threat shifts choice, vigor, affect | Behavioral descriptives (no single H#) |
+| **Prereg H2** (2a,2b) | II | Coherent choice-vigor coupling | H32 (threat reverses coupling) |
+| **Prereg H3** (3a,3b) | II | Optimality of reallocation | H31 (vigor dominates escape) |
+| **Prereg H4** (4a,4b,4c) | III | Choice model + S predicts affect | H1, H2, H3 (model comparison) + H4 (affect LMM) |
+| **Prereg H5** (5a) | III | Danger drives vigor (HBM) | H6 (vigor-survival) |
+| **Prereg H6** (6a,6b,6c) | III | Cross-model parameter coupling | H30, H34, H35 (dissociation + coupling) |
+| **Prereg H7** (7a,7b) | IV | Vigor predicts metacognition | H19, H20, H21 (calibration) |
+
+**Previous detailed prereg → new prereg mapping:**
+
+| Old prereg | New prereg | Notes |
+|---|---|---|
+| Old H1 (model comparison) | Prereg H4 (4a, 4b) | Same tests, renumbered |
+| Old H2 (affect LMMs) | Prereg H4c | Folded into H4 as sub-hypothesis |
+| Old H3 (vigor HBM) | Prereg H5 (5a) | Same tests, renumbered |
+| Old H4 (choice-vigor dissociation) | Prereg H2 + quadrant analysis | Dissociation tests split: coupling → H2, independence/escape → exploratory |
+| Old H5 (parameter coupling) | Prereg H6 (6a, 6b, 6c) | Same tests, renumbered |
+| Old H6 (metacognition) | Prereg H7 (7a, 7b) | Same tests, renumbered |
+
+---
+
 ## H1 — Effort and threat are integrated into a unified value computation
 **Statement:** Humans combine energetic cost and exposure-dependent threat into a single subjective value signal when making foraging decisions, rather than treating these dimensions independently.
 **Test:** Compare effort-only, threat-only, and combined models via WAIC.

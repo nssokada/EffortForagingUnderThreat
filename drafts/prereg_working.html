@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preregistration — Effort Reallocation Under Threat</title>
+<style>
+  :root {
+    --ink: #374151;
+    --heading: #111827;
+    --accent: #1A93FF;
+    --ruby: #D4145A;
+    --slate: #9CA3AF;
+    --bg: #FAFBFC;
+    --card-bg: #FFFFFF;
+    --border: #E5E7EB;
+    --code-bg: #F3F4F6;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: var(--ink);
+    background: var(--bg);
+    line-height: 1.65;
+    font-size: 15px;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+  h1 { font-size: 1.7em; color: var(--heading); margin: 0 0 8px; line-height: 1.3; }
+  h2 { font-size: 1.3em; color: var(--heading); margin: 48px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.1em; color: var(--heading); margin: 32px 0 12px; }
+  h4 { font-size: 1.0em; color: var(--ruby); margin: 24px 0 8px; }
+  h5 { font-size: 0.95em; color: var(--ink); margin: 16px 0 6px; font-weight: 600; }
+  p { margin: 8px 0; }
+  .meta { color: var(--slate); font-size: 0.9em; margin-bottom: 32px; }
+  .meta strong { color: var(--ink); }
+
+  .section-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: white;
+    font-size: 0.75em;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-bottom: 8px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .section-badge.ruby { background: var(--ruby); }
+  .section-badge.green { background: #059669; }
+  .section-badge.amber { background: #D97706; }
+
+  .hyp-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 16px 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  }
+  .hyp-card h4 { margin-top: 0; }
+
+  .statement {
+    background: #EFF6FF;
+    border-left: 3px solid var(--accent);
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    margin: 10px 0;
+    font-style: italic;
+  }
+
+  .test-list { margin: 8px 0 8px 20px; }
+  .test-list li { margin: 4px 0; }
+
+  .criterion {
+    font-size: 0.9em;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+  }
+  .criterion.support { background: #ECFDF5; border-left: 3px solid #059669; }
+  .criterion.reject { background: #FEF2F2; border-left: 3px solid var(--ruby); }
+
+  code {
+    background: var(--code-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 14px 18px;
+    border-radius: 8px;
+    overflow-x: auto;
+    font-size: 0.88em;
+    line-height: 1.5;
+    margin: 10px 0;
+    font-family: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 12px 0;
+    font-size: 0.9em;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  th { background: var(--code-bg); font-weight: 600; color: var(--heading); }
+  tr:hover td { background: #F9FAFB; }
+
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin: 24px 0; }
+  .toc h3 { margin-top: 0; }
+  .toc ul { margin: 8px 0 0 20px; }
+  .toc li { margin: 4px 0; }
+  .toc a { color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .exploratory-num {
+    display: inline-block;
+    background: #FEF3C7;
+    color: #92400E;
+    font-size: 0.8em;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<h1>Preregistration: Confirmatory Replication of Effort-Threat Integration in Human Foraging</h1>
+<div class="meta">
+  <strong>Format:</strong> AsPredicted (#XXXXXX)<br>
+  <strong>Title:</strong> Humans Reallocate Effort Across Decision and Action When Foraging Under Threat — Confirmatory Sample<br>
+  <strong>Authors:</strong> Noah Okada, Ketika Garg, Toby Wise, Dean Mobbs<br>
+  <strong>Affiliation:</strong> Caltech<br>
+  <strong>Date:</strong> [To be filled at submission]<br>
+  <strong>Confirmatory sample:</strong> N=350 (collected, not analyzed)<br>
+  <strong>Exploratory sample:</strong> N=293 (basis for all hypotheses)
+</div>
+
+<div class="hyp-card">
+  <strong>Have the data been collected already?</strong>
+  <p>Yes. The confirmatory sample (N=350, Prolific) has been collected but <strong>has not been analyzed in any form</strong>. No preprocessing, model fitting, or statistical tests have been performed. All hypotheses below derive exclusively from the exploratory sample (N=293).</p>
+</div>
+
+<div class="toc">
+  <h3>Table of Contents</h3>
+  <ul>
+    <li><a href="#hypotheses">1. Hypotheses (H1–H7)</a></li>
+    <li><a href="#design">2. Study Design</a></li>
+    <li><a href="#analysis">3. Analysis Plan</a></li>
+    <li><a href="#exploratory-evidence">4. Exploratory Evidence</a></li>
+    <li><a href="#exclusions">5. Exclusion Criteria</a></li>
+    <li><a href="#sample-size">6. Sample Size Justification</a></li>
+    <li><a href="#not-prereg">7. Not Preregistered</a></li>
+    <li><a href="#inference">8. Inference Approach</a></li>
+    <li><a href="#deviations">9. Deviations Protocol</a></li>
+    <li><a href="#sharing">10. Sharing &amp; Transparency</a></li>
+    <li><a href="#appendix-a">Appendix A — Model Equations</a></li>
+    <li><a href="#appendix-b">Appendix B — Variable Glossary</a></li>
+    <li><a href="#appendix-c">Appendix C — Numbering Concordance</a></li>
+  </ul>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="hypotheses">1. Hypotheses</h2>
+
+<p>We test seven pre-specified hypotheses organized into four sections, derived from the exploratory sample (N=293). The computational framework estimates four per-subject parameters from independently fit hierarchical Bayesian models:</p>
+
+<ul style="margin: 10px 0 10px 20px;">
+  <li><strong>k</strong> — effort sensitivity (choice model)</li>
+  <li><strong>β</strong> — threat bias (choice model)</li>
+  <li><strong>α</strong> — baseline vigor (vigor model)</li>
+  <li><strong>δ</strong> — danger mobilization (vigor model)</li>
+  <li><strong>S</strong> — survival probability: S = (1 − T) + T/(1 + λD)</li>
+</ul>
+
+<!-- ── SECTION I ── -->
+<span class="section-badge">Section I</span>
+<h3>Threat will shift choice, vigor, and subjective experience</h3>
+
+<div class="hyp-card">
+  <h4>H1 — Threat shifts choice, vigor, and affect</h4>
+  <div class="statement">Threat will reduce high-effort choice, amplify distance-driven avoidance, and increase excess motor effort — while shifting anxiety upward and confidence downward.</div>
+
+  <h5>H1a — High-effort choice decreases with threat and distance</h5>
+  <p><strong>Primary tests:</strong></p>
+  <ol class="test-list">
+    <li>3×3 RM-ANOVA (threat × distance) on P(choose high). Main effect of threat: F &gt; 100 <span class="exploratory-num">expl: F &gt; 500</span></li>
+    <li>Main effect of distance: F &gt; 100 <span class="exploratory-num">expl: F &gt; 500</span></li>
+    <li>Threat × distance interaction: F &gt; 10, p &lt; 0.001</li>
+  </ol>
+
+  <h5>H1b — Excess effort increases with threat</h5>
+  <ol class="test-list">
+    <li>RM-ANOVA on excess effort across threat levels: F &gt; 5, p &lt; 0.01</li>
+    <li>Within constant-demand trials, excess effort still increases with threat: t &gt; 2.0, p &lt; 0.05 one-tailed</li>
+  </ol>
+
+  <h5>H1c — Affect shifts with threat</h5>
+  <ol class="test-list">
+    <li>RM-ANOVA: anxiety increases across threat levels. F &gt; 50, p &lt; 0.001</li>
+    <li>RM-ANOVA: confidence decreases across threat levels. F &gt; 50, p &lt; 0.001</li>
+  </ol>
+
+  <div class="criterion support"><strong>Support:</strong> All three sub-tests (H1a, H1b, H1c) must show predicted directional effects at p &lt; 0.001.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> Any of H1a, H1b, or H1c fails to show the predicted directional effect.</div>
+</div>
+
+<!-- ── SECTION II ── -->
+<span class="section-badge ruby">Section II</span>
+<h3>Coherent coupling and optimality</h3>
+
+<div class="hyp-card">
+  <h4>H2 — Choice shift and vigor shift are coherently coupled</h4>
+  <div class="statement">Participants who shift choices most toward safety under high threat will show the largest increase in excess effort.</div>
+
+  <h5>H2a — Choice-vigor coupling across individuals</h5>
+  <p>Pearson r(Δchoice, Δvigor) &lt; 0, p &lt; 0.01 one-tailed.</p>
+  <p>Where Δchoice = P(choose high | T=0.9) − P(choose high | T=0.1) and Δvigor = excess_effort(T=0.9) − excess_effort(T=0.1).</p>
+
+  <h5>H2b — Split-half robustness</h5>
+  <p>Pearson r(Δchoice_odd, Δvigor_even) &lt; 0, p &lt; 0.05 one-tailed. Same for reversed split.</p>
+
+  <div class="criterion support"><strong>Support:</strong> H2a must be significant. H2b provides robustness confirmation.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> The correlation in H2a is non-negative (r ≥ 0).</div>
+</div>
+
+<div class="hyp-card">
+  <h4>H3 — The reallocation strategy approximates the optimal policy</h4>
+  <div class="statement">Participants who reallocate more will achieve higher foraging earnings. The dominant deviation from optimal will be excessive caution.</div>
+
+  <h5>H3a — Reallocation predicts earnings</h5>
+  <p>Pearson r(reallocation_index, total_earnings) &gt; 0, p &lt; 0.01 one-tailed.</p>
+  <p>Reallocation index = |Δchoice_i| + |Δvigor_i| (standardized).</p>
+
+  <h5>H3b — Dominant deviation is excessive caution</h5>
+  <p>Among suboptimal trials, proportion of "too cautious" errors exceeds 50%. One-sample t-test: t &gt; 2.0, p &lt; 0.05.</p>
+
+  <div class="criterion support"><strong>Support:</strong> Both H3a and H3b directionally consistent.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> Reallocation uncorrelated or negatively correlated with earnings.</div>
+</div>
+
+<!-- ── SECTION III ── -->
+<span class="section-badge green">Section III</span>
+<h3>A shared survival computation links choice and vigor</h3>
+
+<div class="hyp-card">
+  <h4>H4 — The survival-weighted additive-effort choice model best explains foraging behavior</h4>
+  <div class="statement">Choice behavior is best explained by a model with (a) additive effort costs, (b) hyperbolic survival function, and (c) subject-specific threat bias β.</div>
+
+  <pre>SV = R · S − k · E − β · (1 − S)
+S  = (1 − T) + T / (1 + λ · D)</pre>
+
+  <table>
+    <tr><th>Model</th><th>Structure</th><th>Question</th></tr>
+    <tr><td>M1</td><td>SV = R·exp(−kE)</td><td>Does threat matter?</td></tr>
+    <tr><td>M2</td><td>SV = R·exp(−kE) − β·T·D</td><td>Mechanistic S or linear features?</td></tr>
+    <tr><td>M3</td><td>SV = R·exp(−kE)·S − β·(1−S), S=exp(−λTD)</td><td>Which survival kernel?</td></tr>
+    <tr><td>M4</td><td>SV = R·exp(−kE)·S − β·(1−S), S=(1−T)+T/(1+λD)</td><td>Which effort structure?</td></tr>
+    <tr><td><strong>M5</strong></td><td><strong>SV = R·S − k·E − β·(1−S)</strong></td><td><strong>Winner</strong></td></tr>
+  </table>
+
+  <h5>H4a — Additive effort outperforms multiplicative</h5>
+  <p>ΔELBO(M5 − M4) &gt; 0 <span class="exploratory-num">expl: +158</span></p>
+
+  <h5>H4b — Hyperbolic survival outperforms exponential</h5>
+  <p>ΔELBO(M4 − M3) &gt; 0 <span class="exploratory-num">expl: +174</span></p>
+  <p>Additional: ΔELBO(M5 − M1) &gt; 100 <span class="exploratory-num">expl: +2,038</span></p>
+
+  <h5>H4c — Model-derived S predicts trial-level anxiety and confidence</h5>
+  <ol class="test-list">
+    <li><code>anxiety ~ S_probe_z + (1 + S_probe_z | subject)</code> → β &lt; 0, |t| &gt; 3.0 <span class="exploratory-num">expl: β = −0.605, t = −25.63</span></li>
+    <li><code>confidence ~ S_probe_z + (1 + S_probe_z | subject)</code> → β &gt; 0, |t| &gt; 3.0 <span class="exploratory-num">expl: β = +0.612, t = +25.65</span></li>
+  </ol>
+  <p><strong>Secondary:</strong> k → mean anxiety (positive) and k → mean confidence (negative), OLS, p &lt; 0.05 one-tailed.</p>
+
+  <div class="criterion support"><strong>Support:</strong> H4a + H4b directionally consistent; both H4c primary tests significant.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> Multiplicative or exponential outperforms winner, or H4c betas wrong direction.</div>
+</div>
+
+<div class="hyp-card">
+  <h4>H5 — Model-derived danger drives excess motor vigor</h4>
+  <div class="statement">Lower survival S causes participants to press harder, expressed as positive population-mean δ in a hierarchical Bayesian model.</div>
+
+  <pre>excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij
+ε_ij ~ Normal(0, σ)</pre>
+
+  <h5>H5a — Population-mean danger mobilization is positive</h5>
+  <ol class="test-list">
+    <li>P(μ_δ &gt; 0 | data) &gt; 0.975 (95% one-sided credibility) <span class="exploratory-num">expl: P = 1.0</span></li>
+    <li>Proportion of subjects with δ_i &gt; 0 must exceed 80% <span class="exploratory-num">expl: 98.3%</span></li>
+  </ol>
+  <p><strong>Secondary:</strong> σ_δ &gt; 0.05 <span class="exploratory-num">expl: σ_δ = 0.146</span></p>
+
+  <div class="criterion support"><strong>Support:</strong> Both primary tests met.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> μ_δ posterior includes zero, or &lt;65% subjects show δ &gt; 0.</div>
+</div>
+
+<div class="hyp-card">
+  <h4>H6 — Choice and vigor parameters are coupled across independent models</h4>
+  <div class="statement">β (threat bias) and δ (danger mobilization) are positively correlated; k (effort sensitivity) and δ are negatively correlated — from models sharing no parameters or data.</div>
+
+  <h5>H6a — β-δ and k-δ couplings</h5>
+  <ol class="test-list">
+    <li>r(log(β), δ) &gt; 0, p &lt; .001 one-tailed <span class="exploratory-num">expl: r = +0.53</span></li>
+    <li>r(log(k), δ) &lt; 0, p &lt; .01 one-tailed <span class="exploratory-num">expl: r = −0.33</span></li>
+  </ol>
+
+  <h5>H6b — Joint model CIs exclude zero</h5>
+  <p>Joint LKJ model: ρ(β,δ) &gt; 0 and ρ(k,δ) &lt; 0, both with 95% CI excluding zero.</p>
+
+  <h5>H6c — β and δ jointly predict optimality</h5>
+  <p>OLS: <code>optimality ~ β_z + δ_z + k_z</code>. Both β and δ significant predictors (p &lt; 0.05).</p>
+
+  <div class="criterion support"><strong>Support:</strong> Both H6a primary tests met.</div>
+  <div class="criterion reject"><strong>Rejection:</strong> r(log(β), δ) ≤ 0 or r(log(k), δ) ≥ 0.</div>
+</div>
+
+<!-- ── SECTION IV ── -->
+<span class="section-badge amber">Section IV</span>
+<h3>Vigor mobilization predicts metacognitive accuracy</h3>
+
+<div class="hyp-card">
+  <h4>H7 — Individuals who mobilize vigor under danger show more accurate threat appraisal</h4>
+  <div class="statement">Higher δ predicts tighter affective tracking of S. β shows the same pattern, but k does not — dissociating threat-responsive from effort-cost parameters.</div>
+
+  <h5>H7a — δ predicts affect-S slopes</h5>
+  <ol class="test-list">
+    <li>r(δ, anxiety slope on S) &lt; 0, p &lt; .05 one-tailed <span class="exploratory-num">expl: r = −0.311</span></li>
+    <li>r(δ, confidence slope on S) &gt; 0, p &lt; .05 one-tailed <span class="exploratory-num">expl: r = +0.325</span></li>
+  </ol>
+  <p><strong>Secondary:</strong> r(δ, mean anxiety) &lt; 0 <span class="exploratory-num">expl: r = −0.194</span></p>
+
+  <h5>H7b — Dissociation: β predicts, k does not</h5>
+  <ol class="test-list">
+    <li>r(β, anxiety slope on S) &lt; 0, p &lt; .05 one-tailed</li>
+    <li>r(k, anxiety slope on S) is non-significant (p &gt; .05, two-tailed)</li>
+  </ol>
+
+  <div class="criterion support"><strong>Support:</strong> Both H7a tests significant. H7b shows dissociation (β significant, k not).</div>
+</div>
+
+<!-- ================================================================ -->
+<h2 id="design">2. Study Design</h2>
+
+<h3>Participants</h3>
+<p><strong>Confirmatory sample:</strong> N = 350 via Prolific (desktop only). ~40–50 min sessions. $10/hr base + performance bonuses.</p>
+<p><strong>Blinding:</strong> Preregistration locked on AsPredicted before confirmatory data are opened.</p>
+
+<h3>Task Design</h3>
+<p>Virtual foraging task (Unity WebGL). Circular arena with safe zone at center. Cookies at radial distances D ∈ {1, 2, 3}.</p>
+<ul style="margin: 8px 0 8px 20px;">
+  <li><strong>Options:</strong> Low-effort (E=0.4, D=1, R=1) vs high-effort (E∈{0.6,0.8,1.0}, D∈{1,2,3}, R=5)</li>
+  <li><strong>Effort:</strong> Press S+D+F keys → movement speed (≥100%/≥50%/≥25%/&lt;25% = full/half/quarter/zero)</li>
+  <li><strong>Threat:</strong> T ∈ {0.1, 0.5, 0.9}. Predator approaches slowly, then strikes at 4× player speed</li>
+  <li><strong>Penalties:</strong> Capture = lose cookie reward + 5 points</li>
+  <li><strong>Structure:</strong> 3 blocks × 27 trials = 81 events (45 choice + 36 probe)</li>
+  <li><strong>Probes:</strong> Anxiety / confidence ratings (0–7) on forced-choice trials</li>
+  <li><strong>Psychiatric battery:</strong> DASS-21, PHQ-9, OASIS, STAI-T, AMI, MFIS, STICSA</li>
+</ul>
+
+<h3>Sample Size Justification</h3>
+<p>N=350 matches planned design. Expected N ≈ 280–330 after exclusions. Weakest test (H2a, moderate r) requires N &gt; 200 for power &gt; 0.95 at α = 0.01. All other tests based on very large effects (d &gt; 1.5, t &gt; 25, P(δ&gt;0) = 1.0).</p>
+
+<!-- ================================================================ -->
+<h2 id="analysis">3. Analysis Plan</h2>
+
+<h3>3.0 General Principles</h3>
+<ol style="margin: 8px 0 8px 20px;">
+  <li><strong>Same code, same parameters.</strong> Scripts from exploratory applied without modification (except file paths). Population parameters re-estimated.</li>
+  <li><strong>Sequential procedure:</strong> Preprocessing → H1 descriptives → H4 choice model (→ λ,k,β) → H4c affect → H5 vigor HBM (→ α,δ) → H2,H3,H6 coupling → H7 metacognition.</li>
+  <li><strong>No peeking.</strong> Preregistration locked before data opened.</li>
+  <li><strong>Thresholds:</strong> α = 0.05 two-tailed unless specified. FDR (BH) within each hypothesis family. Bayesian: 95% CI excluding zero.</li>
+</ol>
+
+<h3>3.1 Preprocessing</h3>
+<p>5-stage pipeline (<code>scripts/preprocessing/pipeline.py</code>): parse JSON → score questionnaires → extract keypresses → apply exclusions → merge files.</p>
+<p><strong>Outputs:</strong> <code>behavior.csv</code>, <code>feelings.csv</code>, <code>psych.csv</code>, <code>subject_mapping.csv</code>.</p>
+
+<h3>3.2 H1 — Behavioral Descriptives</h3>
+<p><strong>H1a:</strong> 3×3 RM-ANOVA on P(choose high) per cell. Pairwise: T=0.1 vs T=0.9; D=1 vs D=3.</p>
+<p><strong>H1b:</strong> Per-subject excess effort by threat level → RM-ANOVA. Within constant-demand: subset + paired t-test.</p>
+<p><strong>H1c:</strong> Per-subject mean anxiety/confidence by threat → RM-ANOVA. Pairwise T=0.1 vs T=0.9.</p>
+
+<h3>3.3 H4 — Choice Model Comparison &amp; Affect</h3>
+<p><strong>Inference:</strong> SVI (NumPyro, Adam lr=0.01, 30K steps) and/or MCMC (NUTS, 4×1000+1000, Rhat ≤ 1.05).</p>
+<p><strong>Fixed constants:</strong> R_H=5, R_L=1, C=5, E_L=0.4.</p>
+<p><strong>H4a/H4b:</strong> ΔELBO comparisons. <strong>H4c:</strong> LMMs via statsmodels REML. S_probe uses only population λ.</p>
+
+<h3>3.4 H5 — Vigor HBM</h3>
+<p>NumPyro NUTS (4 chains, target_accept=0.90) or SVI. λ fixed from choice model. Probe trials excluded.</p>
+
+<h3>3.5 H2, H3, H6 — Coupling, Optimality, Cross-Model</h3>
+<p><strong>H2:</strong> Pearson r(Δchoice, Δvigor). Split-half robustness.</p>
+<p><strong>H3:</strong> Reallocation index vs earnings. Optimal policy from known task parameters.</p>
+<p><strong>H6:</strong> r(log(β),δ) and r(log(k),δ). Joint LKJ model. Optimality regression.</p>
+
+<h3>3.6 H7 — Metacognitive Accuracy</h3>
+<p>Per-subject affect-S slopes → correlate with δ, β, k.</p>
+
+<h3>3.7 Quadrant Analysis (Pre-specified Descriptive)</h3>
+<p>Median splits on P(choose high) × α_bayes → HH/HL/LH/LL. k ANOVA, escape rate ANOVA, off-diagonal β comparison.</p>
+
+<!-- ================================================================ -->
+<h2 id="exploratory-evidence">4. Exploratory Findings (N=293)</h2>
+
+<h3>Behavioral Descriptives</h3>
+<p>13,185 choice trials, 10,546 probe ratings. P(choose high) = 43.1%. Threat effect d = 1.63, distance effect d = 1.57.</p>
+
+<table>
+  <tr><th></th><th>D = 1</th><th>D = 2</th><th>D = 3</th></tr>
+  <tr><td><strong>T = 0.1</strong></td><td>0.808</td><td>0.692</td><td>0.565</td></tr>
+  <tr><td><strong>T = 0.5</strong></td><td>0.633</td><td>0.381</td><td>0.188</td></tr>
+  <tr><td><strong>T = 0.9</strong></td><td>0.397</td><td>0.138</td><td>0.078</td></tr>
+</table>
+
+<h3>H4 — Model Comparison</h3>
+<table>
+  <tr><th>Model</th><th>ELBO</th><th>BIC</th></tr>
+  <tr><td><strong>L4a_add (WINNER)</strong></td><td>−6259.7</td><td>18,135.6</td></tr>
+  <tr><td>L3_add</td><td>−6275.4</td><td>18,167.1</td></tr>
+  <tr><td>L4a_hyp (multiplicative)</td><td>−6418</td><td>—</td></tr>
+  <tr><td>L3_survival (exponential)</td><td>−6449</td><td>—</td></tr>
+  <tr><td>L0_effort (effort only)</td><td>−8298</td><td>—</td></tr>
+</table>
+<p>Additive &gt; multiplicative: ΔELBO = +158. Hyperbolic &gt; exponential: ΔELBO = +190.</p>
+
+<h3>H4c — Affect LMMs</h3>
+<table>
+  <tr><th>DV</th><th>Predictor</th><th>β</th><th>t</th></tr>
+  <tr><td>Anxiety</td><td>S_probe_z</td><td>−0.605</td><td>−25.63</td></tr>
+  <tr><td>Confidence</td><td>S_probe_z</td><td>+0.612</td><td>+25.65</td></tr>
+</table>
+
+<h3>H5 — Vigor HBM</h3>
+<p>μ_δ = +0.211, P(μ_δ &gt; 0) = 1.0. 98.3% of subjects δ_i &gt; 0. σ_δ = 0.146. 0 divergences.</p>
+
+<h3>H6 — Cross-Model Coupling</h3>
+<p>r(log(β), δ) = +0.53, p &lt; 10⁻²². r(log(k), δ) = −0.33, p &lt; 10⁻⁸.</p>
+
+<h3>H7 — Metacognition</h3>
+<p>δ → anxiety slope: r = −0.311. δ → confidence slope: r = +0.325. δ → mean anxiety: r = −0.194.</p>
+
+<h3>Dissociation Architecture</h3>
+<p>r(choice, α) = +0.008 (independent). Choice ~ k+β+α: R² = 0.823, k dominant. Threat reverses coupling: r(T=0.1) = +0.196, r(T=0.9) = −0.219, Fisher z = 5.07. Escape: vigor β = +0.091, choice β = −0.177.</p>
+
+<!-- ================================================================ -->
+<h2 id="exclusions">5. Exclusion Criteria</h2>
+<ol style="margin: 8px 0 8px 20px;">
+  <li><strong>Task completion:</strong> All 81 trials completed</li>
+  <li><strong>Valid calibration:</strong> ≥10 presses in calibration</li>
+  <li><strong>Valid keypresses:</strong> No automated input (&gt;3 SD) or disengagement (&gt;50% zero-press trials)</li>
+  <li><strong>Valid predator dynamics:</strong> &lt;10% physically impossible trials</li>
+  <li><strong>Task engagement:</strong> Escape rate ≥35%</li>
+  <li><strong>Probe validity:</strong> ≥80% probe completion (≥29/36). Excluded from H4c/H7 only.</li>
+</ol>
+
+<!-- ================================================================ -->
+<h2 id="sample-size">6. Sample Size Justification</h2>
+<p>N=350 matches planned design. Expected 280–330 after exclusions. Weakest test (H2a) powered at &gt;0.95 for r=0.20 at α=0.01. All H1/H4/H5 based on massive effects. H4c LMM power &gt;0.999 even at 50% effect reduction.</p>
+
+<!-- ================================================================ -->
+<h2 id="not-prereg">7. Not Preregistered (Planned Exploratory)</h2>
+<ul style="margin: 8px 0 8px 20px;">
+  <li><strong>7.1</strong> Psychiatric battery associations (only α→apathy survived FDR in exploratory)</li>
+  <li><strong>7.2</strong> Extended metacognitive calibration (k × threat calibration)</li>
+  <li><strong>7.3</strong> Encounter-window vigor PLS (CV R² = 0.093)</li>
+  <li><strong>7.4</strong> Parameter recovery simulation</li>
+  <li><strong>7.5</strong> Quadrant × psychiatric ANOVA</li>
+  <li><strong>7.6</strong> CCA and bootstrap dissociation validation</li>
+  <li><strong>7.7</strong> Apathy paradox (high α → high AMI apathy)</li>
+</ul>
+
+<!-- ================================================================ -->
+<h2 id="inference">8. Inference Approach</h2>
+<p>LMMs: statsmodels REML. Model comparison: ΔELBO (NumPyro SVI). Bayesian HBMs: NumPyro NUTS (Rhat, ESS). FDR (BH) within hypothesis families. Effect sizes: Cohen's d, partial η², marginal/conditional R².</p>
+
+<!-- ================================================================ -->
+<h2 id="deviations">9. Deviations Protocol</h2>
+<p>Any deviation reported transparently, accompanied by closest feasible alternative, distinguished from preregistered results.</p>
+
+<!-- ================================================================ -->
+<h2 id="sharing">10. Sharing &amp; Transparency</h2>
+<ul style="margin: 8px 0 8px 20px;">
+  <li>AsPredicted (DOI at submission)</li>
+  <li>Preprocessed data on OSF (no Prolific IDs)</li>
+  <li>Code on GitHub (open-source)</li>
+  <li>Posterior samples as compressed NetCDF</li>
+</ul>
+
+<!-- ================================================================ -->
+<h2 id="appendix-a">Appendix A — Model Equations</h2>
+
+<h3>Winning choice model (M5)</h3>
+<pre>S_o(T, D_o) = (1 − T) + T / (1 + λ · D_o)
+SV_o = R_o · S_o − k_i · E_o − β_i · (1 − S_o)
+p(choose H) = σ(τ · (SV_H − SV_L))
+
+Priors:
+  log k_i ~ Normal(μ_k, σ_k);  μ_k ~ Normal(0,1);  σ_k ~ HalfNormal(1)
+  log β_i ~ Normal(μ_β, σ_β);  μ_β ~ Normal(0,1);  σ_β ~ HalfNormal(1)
+  λ ~ LogNormal(0,1);  τ ~ LogNormal(0,1)</pre>
+
+<h3>Vigor HBM</h3>
+<pre>excess_ij = α_i + δ_i · (1 − S_ij) + ε_ij,  ε ~ Normal(0, σ)
+
+Priors:
+  α_i ~ Normal(μ_α, σ_α);  δ_i ~ Normal(μ_δ, σ_δ)
+  μ_α, μ_δ ~ Normal(0,1);  σ_α, σ_δ, σ ~ HalfNormal(1)</pre>
+
+<h3>Joint model (H6b robustness)</h3>
+<pre>[log(k_i), log(β_i), α_i, δ_i] ~ MVN(μ, Σ)
+Σ = diag(σ) · Ω · diag(σ),  Ω ~ LKJCholesky(η = 2)</pre>
+
+<!-- ================================================================ -->
+<h2 id="appendix-b">Appendix B — Variable Glossary</h2>
+<table>
+  <tr><th>Symbol</th><th>Meaning</th><th>Source</th></tr>
+  <tr><td>T</td><td>Threat probability</td><td>∈ {0.1, 0.5, 0.9}</td></tr>
+  <tr><td>D</td><td>Distance level</td><td>H ∈ {1,2,3}; L = 1</td></tr>
+  <tr><td>E</td><td>Effort fraction</td><td>H ∈ {0.6,0.8,1.0}; L = 0.4</td></tr>
+  <tr><td>R_H, R_L</td><td>Reward</td><td>5, 1 (fixed)</td></tr>
+  <tr><td>C</td><td>Capture penalty</td><td>5 (fixed)</td></tr>
+  <tr><td>λ</td><td>Hazard scaling</td><td>Population-level (expl ≈ 14.0)</td></tr>
+  <tr><td>τ</td><td>Inverse temperature</td><td>Population-level</td></tr>
+  <tr><td>k_i</td><td>Effort discounting</td><td>Choice model posterior</td></tr>
+  <tr><td>β_i</td><td>Threat bias</td><td>Choice model posterior</td></tr>
+  <tr><td>α_i</td><td>Baseline excess effort</td><td>Vigor model posterior</td></tr>
+  <tr><td>δ_i</td><td>Danger mobilization</td><td>Vigor model posterior</td></tr>
+  <tr><td>S</td><td>Survival probability</td><td>(1−T)+T/(1+λD)</td></tr>
+</table>
+
+<!-- ================================================================ -->
+<h2 id="appendix-c">Appendix C — Numbering Concordance</h2>
+<table>
+  <tr><th>New (H1–H7)</th><th>Old prereg</th><th>Description</th></tr>
+  <tr><td><strong>H1</strong> (1a,1b,1c)</td><td><em>(implicit)</em></td><td>Threat shifts choice, vigor, affect</td></tr>
+  <tr><td><strong>H2</strong> (2a,2b)</td><td><em>(new)</em></td><td>Coherent choice-vigor coupling</td></tr>
+  <tr><td><strong>H3</strong> (3a,3b)</td><td><em>(new)</em></td><td>Optimality of reallocation</td></tr>
+  <tr><td><strong>H4</strong> (4a,4b,4c)</td><td>Old H1 + H2</td><td>Choice model + S predicts affect</td></tr>
+  <tr><td><strong>H5</strong> (5a)</td><td>Old H3</td><td>Danger drives vigor (HBM)</td></tr>
+  <tr><td><strong>H6</strong> (6a,6b,6c)</td><td>Old H5</td><td>Cross-model parameter coupling</td></tr>
+  <tr><td><strong>H7</strong> (7a,7b)</td><td>Old H6</td><td>Vigor → metacognitive accuracy</td></tr>
+  <tr><td><em>(dropped)</em></td><td>Old H4</td><td>Dissociation (folded into H2 + quadrant)</td></tr>
+</table>
+
+<hr>
+<p style="font-size: 0.85em; color: var(--slate); text-align: center; margin-top: 32px;">
+  Prepared from exploratory analyses (2026-03-22). To be submitted to AsPredicted before confirmatory data are opened.<br>
+  All Section 4 findings derived exclusively from the exploratory sample (N=293).
+</p>
+
+</body>
+</html>
