@@ -3,10 +3,9 @@
 Figure + Table for H7: Individuals who mobilize vigor under danger show
 more accurate subjective threat appraisal.
 
-Layout (1×3):
+Layout (1×2):
   A) δ vs anxiety S-slope scatter (H7a)
   B) δ vs confidence S-slope scatter (H7a)
-  C) Parameter–calibration correlation bar chart (H7a + H7b dissociation)
 
 Outputs:
   results/figs/paper/fig_h7_metacognition.{png,pdf}
@@ -31,7 +30,8 @@ STATS_DIR = "results/stats"
 OUT_DIR = "results/figs/paper"
 os.makedirs(OUT_DIR, exist_ok=True)
 
-LAMBDA = 0.6976
+# Use vigor HBM λ (matches metacognition notebook)
+LAMBDA = 15.113
 
 # ── Load data ──────────────────────────────────────────────────────────
 print("Loading data...")
@@ -105,76 +105,22 @@ def plot_scatter(ax, x, y, xlabel, ylabel, title, color):
                  color=Colors.DARK_GREY, loc="left")
 
 
-# ── Panel C: Parameter–calibration bar chart ──────────────────────────
-def plot_param_bars(ax):
-    params_order = ["delta", "beta", "k", "alpha"]
-    param_labels = [r"$\delta$", r"$\beta$", r"$k$", r"$\alpha$"]
-
-    anx_rs = []
-    conf_rs = []
-    anx_ps = []
-    conf_ps = []
-    for p_name in params_order:
-        row_a = meta_results[(meta_results["parameter"] == p_name) &
-                             (meta_results["metric"] == "S_slope_anxiety")]
-        row_c = meta_results[(meta_results["parameter"] == p_name) &
-                             (meta_results["metric"] == "S_slope_confidence")]
-        anx_rs.append(row_a["r"].values[0] if len(row_a) > 0 else 0)
-        conf_rs.append(row_c["r"].values[0] if len(row_c) > 0 else 0)
-        anx_ps.append(row_a["p_fdr"].values[0] if len(row_a) > 0 else 1)
-        conf_ps.append(row_c["p_fdr"].values[0] if len(row_c) > 0 else 1)
-
-    x = np.arange(len(params_order))
-    w = 0.35
-
-    bars_a = ax.bar(x - w/2, anx_rs, w, color=Colors.RUBY1, alpha=0.75,
-                    label="Anxiety", edgecolor='white', linewidth=0.5)
-    bars_c = ax.bar(x + w/2, conf_rs, w, color=Colors.CERULEAN2, alpha=0.75,
-                    label="Confidence", edgecolor='white', linewidth=0.5)
-
-    # Significance stars
-    for i, (pa, pc) in enumerate(zip(anx_ps, conf_ps)):
-        if pa < 0.001:
-            ax.text(x[i] - w/2, anx_rs[i] + np.sign(anx_rs[i])*0.02,
-                    "***", ha='center', fontsize=8, color=Colors.RUBY1)
-        elif pa < 0.05:
-            ax.text(x[i] - w/2, anx_rs[i] + np.sign(anx_rs[i])*0.02,
-                    "*", ha='center', fontsize=8, color=Colors.RUBY1)
-        if pc < 0.001:
-            ax.text(x[i] + w/2, conf_rs[i] + np.sign(conf_rs[i])*0.02,
-                    "***", ha='center', fontsize=8, color=Colors.CERULEAN2)
-        elif pc < 0.05:
-            ax.text(x[i] + w/2, conf_rs[i] + np.sign(conf_rs[i])*0.02,
-                    "*", ha='center', fontsize=8, color=Colors.CERULEAN2)
-
-    ax.axhline(0, color=Colors.INK, lw=0.8, ls=':', alpha=0.4)
-    ax.set_xticks(x)
-    ax.set_xticklabels(param_labels, fontsize=11)
-
-    style_axis(ax, ylabel="Correlation with S-slope", xlabel="Model parameter")
-    ax.set_title("C   H7b: Dissociation", fontsize=12, fontweight="bold",
-                 color=Colors.DARK_GREY, loc="left")
-    ax.legend(fontsize=8, frameon=False, loc="lower right")
-
-
 # ── Build figure ──────────────────────────────────────────────────────
 set_plot_style()
-fig, (ax_a, ax_b, ax_c) = plt.subplots(1, 3, figsize=(14, 4.5))
-fig.subplots_adjust(wspace=0.38, left=0.06, right=0.97, top=0.88, bottom=0.15)
+fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(11, 4.5))
+fig.subplots_adjust(wspace=0.35, left=0.08, right=0.97, top=0.88, bottom=0.15)
 
 plot_scatter(ax_a, df["delta"].values, df["anx_S_slope"].values,
              xlabel=r"$\delta$ (danger mobilization)",
              ylabel="Anxiety ~ S slope",
-             title=r"A   H7a: $\delta$ predicts anxiety calibration",
+             title=r"A   $\delta$ predicts anxiety calibration",
              color=Colors.RUBY1)
 
 plot_scatter(ax_b, df["delta"].values, df["conf_S_slope"].values,
              xlabel=r"$\delta$ (danger mobilization)",
              ylabel="Confidence ~ S slope",
-             title=r"B   H7a: $\delta$ predicts confidence calibration",
+             title=r"B   $\delta$ predicts confidence calibration",
              color=Colors.CERULEAN2)
-
-plot_param_bars(ax_c)
 
 for ext in ["pdf", "png"]:
     out = os.path.join(OUT_DIR, f"fig_h7_metacognition.{ext}")
@@ -284,7 +230,7 @@ def build_html_table():
 
 <div class="hyp-block">
   <div class="hyp-statement">
-    <strong>Statement:</strong> Participants whose motor effort is more danger-responsive (higher $\\delta$)
+    <strong>Hypothesis:</strong> Participants whose motor effort is more danger-responsive (higher $\\delta$)
     will show tighter affective tracking of survival probability $S$ &mdash; steeper anxiety&ndash;$S$ and
     confidence&ndash;$S$ slopes &mdash; constituting more accurate metacognitive appraisal of threat.
   </div>
@@ -292,8 +238,6 @@ def build_html_table():
     <div class="hyp-sub"><strong>H7a.1</strong> &mdash; $r(\\delta,\\, \\text{{anxiety slope on }} S) < 0$, $p < .05$ one-tailed.</div>
     <div class="hyp-sub"><strong>H7a.2</strong> &mdash; $r(\\delta,\\, \\text{{confidence slope on }} S) > 0$, $p < .05$ one-tailed.</div>
     <div class="hyp-sub"><strong>H7a.3</strong> (secondary) &mdash; $r(\\delta,\\, \\text{{mean anxiety}}) < 0$: high-$\\delta$ individuals report lower average anxiety despite stronger coupling.</div>
-    <div class="hyp-sub"><strong>H7b.1</strong> &mdash; $\\beta$ also predicts anxiety&ndash;$S$ slope ($r < 0$, $p < .05$).</div>
-    <div class="hyp-sub"><strong>H7b.2</strong> &mdash; $k$ does <em>not</em> predict anxiety&ndash;$S$ slope ($p > .05$, two-tailed) &mdash; dissociating threat-responsive from effort-cost parameters.</div>
   </div>
 </div>
 
@@ -353,11 +297,6 @@ def build_html_table():
     d_anx = param_calib[(param_calib["parameter"] == "delta") & (param_calib["metric"] == "S_slope_anxiety")].iloc[0]
     d_conf = param_calib[(param_calib["parameter"] == "delta") & (param_calib["metric"] == "S_slope_confidence")].iloc[0]
     d_mean = param_calib[(param_calib["parameter"] == "delta") & (param_calib["metric"] == "mean_response_anxiety")].iloc[0]
-    b_anx = param_calib[(param_calib["parameter"] == "beta") & (param_calib["metric"] == "S_slope_anxiety")].iloc[0]
-    k_anx = param_calib[(param_calib["parameter"] == "k") & (param_calib["metric"] == "S_slope_anxiety")].iloc[0]
-
-    # k is significant (p_fdr = 0.002), so H7b.2 fails
-    k_passes = k_anx["p_fdr"] > 0.05
 
     html += f"""</tbody>
 </table>
@@ -380,28 +319,13 @@ def build_html_table():
   </div>
 </div>
 
-<div class="tests" style="grid-template-columns: 1fr 1fr; margin-top: 12px;">
-  <div class="test test-pass">
-    <div class="label">H7b.1 &mdash; $\\beta$ predicts calibration</div>
-    <div class="value value-pass">$r$ = {b_anx['r']:+.3f}</div>
-    <div class="detail">$p_{{\\text{{FDR}}}}$ = {b_anx['p_fdr']:.1e} &check;</div>
-  </div>
-  <div class="test {'test-pass' if k_passes else 'test-warn'}">
-    <div class="label">H7b.2 &mdash; $k$ null for calibration?</div>
-    <div class="value {'value-pass' if k_passes else 'value-warn'}">$r$ = {k_anx['r']:+.3f}</div>
-    <div class="detail">$p_{{\\text{{FDR}}}}$ = {k_anx['p_fdr']:.4f} {'&check; (non-significant)' if k_passes else '&cross; (significant, opposite sign, weaker)'}</div>
-  </div>
-</div>
-
 <div class="note">
   Calibration slope = per-subject OLS: rating $\\sim S_{{\\text{{probe}}}}$, where
   $S_{{\\text{{probe}}}} = (1 - T) + T / (1 + \\lambda D)$ with $\\lambda = {LAMBDA:.3f}$.
   More negative anxiety slopes (and more positive confidence slopes) indicate tighter
   affective tracking of survival probability &mdash; better metacognitive accuracy.
   All $p$-values corrected for false discovery rate across 16 parameter &times; metric tests.
-  H7b.2: $k$ is weakly significant ($r = +0.200$) in the <em>opposite</em> direction to $\\delta$,
-  indicating effort-sensitive individuals are <em>less</em> calibrated &mdash; still consistent with
-  the threat-responsive vs. effort-cost dissociation, though technically the null prediction fails.
+  The table includes all parameters for completeness; the primary H7a tests concern $\\delta$ only.
 </div>
 
 </body>
@@ -464,12 +388,9 @@ def build_combined_html():
     <strong>Figure.</strong>
     <strong>(A)</strong> Participants with higher danger mobilization ($\\delta$) show steeper
     negative anxiety&ndash;$S$ slopes ($r = {d_anx['r']:+.3f}$), indicating their anxiety ratings
-    more accurately track survival probability (H7a).
+    more accurately track survival probability.
     <strong>(B)</strong> The same pattern for confidence: higher $\\delta$ predicts steeper
-    positive confidence&ndash;$S$ slopes ($r = {d_conf['r']:+.3f}$; H7a).
-    <strong>(C)</strong> Dissociation across model parameters (H7b): threat-responsive parameters
-    ($\\delta$, $\\beta$) predict calibration (***$p_{{\\text{{FDR}}}} < .001$), while baseline vigor
-    ($\\alpha$) does not. Effort sensitivity ($k$) shows a weaker, opposite-signed effect.
+    positive confidence&ndash;$S$ slopes ($r = {d_conf['r']:+.3f}$).
     $N = {n_subj}$.
   </p>
 </div>

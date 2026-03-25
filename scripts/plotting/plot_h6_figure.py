@@ -327,7 +327,7 @@ def build_html_table():
 
 <div class="hyp-block">
   <div class="hyp-statement">
-    <strong>Statement:</strong> Individual differences in threat bias ($\\beta$, from the choice model) and
+    <strong>Hypothesis:</strong> Individual differences in threat bias ($\\beta$, from the choice model) and
     danger-responsive vigor mobilization ($\\delta$, from the vigor model) are positively correlated.
     This correlation emerges from models that share no parameters or data &mdash; only the survival
     function $S$ (evaluated at the choice-estimated $\\lambda$) links them.

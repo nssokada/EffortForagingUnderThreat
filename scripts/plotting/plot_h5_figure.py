@@ -338,7 +338,7 @@ def build_html_table():
 
 <div class="hyp-block">
   <div class="hyp-statement">
-    <strong>Statement:</strong> Lower survival probability $S$ causes participants to press harder than the task requires,
+    <strong>Hypothesis:</strong> Lower survival probability $S$ causes participants to press harder than the task requires,
     expressed as a positive population-mean danger mobilization parameter $\\delta$ in a hierarchical Bayesian model of
     excess effort, after controlling for the physical effort demand of the chosen option.
   </div>

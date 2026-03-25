@@ -477,7 +477,7 @@ def build_html_table():
 
 <div class="hyp-block">
   <div class="hyp-statement">
-    <strong>Statement:</strong> Choice behavior is best explained by a model in which (a) energetic effort costs are subtracted
+    <strong>Hypothesis:</strong> Choice behavior is best explained by a model in which (a) energetic effort costs are subtracted
     additively from expected reward, (b) escape probability follows a hyperbolic function of distance, and (c) residual
     threat aversion enters as a subject-specific additive bias $\\beta$. The survival probability $S$ from this model also
     predicts trial-level subjective affect.
