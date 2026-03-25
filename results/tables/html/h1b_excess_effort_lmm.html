@@ -1,0 +1,63 @@
+<!DOCTYPE html><html><head><meta charset="utf-8">
+<style>
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; color: #191919; margin: 24px; }
+  h2 { color: #1A93FF; margin-bottom: 4px; }
+  h3 { color: #6B7280; margin-top: 18px; margin-bottom: 6px; }
+  .verdict { font-size: 1.1em; font-weight: bold; margin: 12px 0; padding: 8px 14px;
+             border-radius: 6px; display: inline-block; }
+  .pass { background: #D1FAE5; color: #065F46; }
+  .fail { background: #FEE2E2; color: #991B1B; }
+  table { border-collapse: collapse; margin: 10px 0 18px 0; min-width: 500px; }
+  th { background: #F3F4F6; color: #374151; padding: 8px 14px; text-align: left;
+       border-bottom: 2px solid #D1D5DB; font-size: 0.9em; }
+  td { padding: 7px 14px; border-bottom: 1px solid #E5E7EB; font-size: 0.9em; }
+  tr:hover { background: #F9FAFB; }
+  .sig { color: #065F46; font-weight: bold; }
+  .ns  { color: #991B1B; }
+  .note { color: #6B7280; font-size: 0.85em; margin-top: 4px; }
+  .stat-box { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 6px;
+              padding: 10px 16px; margin: 8px 0; display: inline-block; }
+</style>
+</head><body>
+<h2>H1b &mdash; Excess effort increases with threat</h2>
+<p>Linear LMM (REML): <code>excess_effort ~ threat_z * dist_z + effort_chosen_z + (1 | subject)</code></p>
+<p>N = 293 subjects, 23,733 trials</p>
+
+<h3>Fixed Effects</h3>
+<table>
+<tr><th>Predictor</th><th>&beta;</th><th>SE</th><th>z</th><th>p</th><th>95% CI</th></tr>
+<tr>
+  <td>Intercept</td>
+  <td>0.0077</td><td>0.0069</td>
+  <td>1.11</td><td class="ns">0.269</td>
+  <td>[-0.0059, 0.0213]</td>
+</tr>
+<tr>
+  <td>Threat (z)</td>
+  <td>0.0691</td><td>0.0014</td>
+  <td>50.01</td><td class="sig">< 0.001</td>
+  <td>[0.0664, 0.0718]</td>
+</tr>
+<tr>
+  <td>Distance (z)</td>
+  <td>-0.0196</td><td>0.0026</td>
+  <td>-7.45</td><td class="sig">< 0.001</td>
+  <td>[-0.0247, -0.0144]</td>
+</tr>
+<tr>
+  <td>Effort chosen (z)</td>
+  <td>-0.0754</td><td>0.0024</td>
+  <td>-30.93</td><td class="sig">< 0.001</td>
+  <td>[-0.0802, -0.0706]</td>
+</tr>
+<tr>
+  <td>Threat &times; Distance</td>
+  <td>-0.0191</td><td>0.0016</td>
+  <td>-11.92</td><td class="sig">< 0.001</td>
+  <td>[-0.0223, -0.0160]</td>
+</tr>
+</table>
+
+<p class="note">Criterion: &beta;(threat) &gt; 0, p &lt; 0.05; &beta;(threat &times; dist) &lt; 0, p &lt; 0.05</p>
+<span class="verdict pass">SUPPORTED</span>
+</body></html>

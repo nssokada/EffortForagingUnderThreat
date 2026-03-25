@@ -1,0 +1,110 @@
+{
+  "dataset": {
+    "N_subjects": 293
+  },
+  "H3a": {
+    "r": 0.5774511086887255,
+    "p_two_tailed": 1.8744508651511632e-27,
+    "p_one_tailed": 9.372254325755816e-28,
+    "N": 293,
+    "reallocation_mean": 3.3950847442462127e-16,
+    "reallocation_sd": 1.7379066834880084,
+    "earnings_mean": 6.863481228668942,
+    "earnings_sd": 88.58260867163725,
+    "supported": true
+  },
+  "H3b": {
+    "n_optimal": 7982,
+    "n_suboptimal": 5203,
+    "n_too_cautious": 4886,
+    "n_too_risky": 317,
+    "pct_cautious_of_errors": 0.9390736113780511,
+    "per_subject_mean_pct_cautious": 0.9102102191348582,
+    "per_subject_sd_pct_cautious": 0.16619306055550534,
+    "t": 42.25006678155847,
+    "p_two_tailed": 1.993522059440964e-126,
+    "p_one_tailed": 9.96761029720482e-127,
+    "N_subjects_with_errors": 293,
+    "supported": true,
+    "method": "empirical_escape_rates"
+  },
+  "ev_by_condition": [
+    {
+      "threat": 0.1,
+      "distance_H": 1,
+      "EV_H": 4.35125,
+      "EV_L": 0.6107500000000001,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.8081911262798634
+    },
+    {
+      "threat": 0.1,
+      "distance_H": 2,
+      "EV_H": 4.089473684210526,
+      "EV_L": 0.6107500000000001,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.6921501706484642
+    },
+    {
+      "threat": 0.1,
+      "distance_H": 3,
+      "EV_H": 4.11864406779661,
+      "EV_L": 0.6107500000000001,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.5651877133105802
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 1,
+      "EV_H": 1.9970282317979198,
+      "EV_L": -0.8017830609212482,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.6334470989761092
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 2,
+      "EV_H": 0.528169014084507,
+      "EV_L": -0.8017830609212482,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.38088737201365186
+    },
+    {
+      "threat": 0.5,
+      "distance_H": 3,
+      "EV_H": 0.528169014084507,
+      "EV_L": -0.8017830609212482,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.18771331058020477
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 1,
+      "EV_H": -0.22731316725978679,
+      "EV_L": -2.136387900355872,
+      "optimal_is_high": 1.0,
+      "actual_chose_high": 0.39726962457337883
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 2,
+      "EV_H": -3.0526315789473686,
+      "EV_L": -2.136387900355872,
+      "optimal_is_high": 0.0,
+      "actual_chose_high": 0.1378839590443686
+    },
+    {
+      "threat": 0.9,
+      "distance_H": 3,
+      "EV_H": -2.333333333333334,
+      "EV_L": -2.136387900355872,
+      "optimal_is_high": 0.0,
+      "actual_chose_high": 0.07849829351535836
+    }
+  ],
+  "H3_overall": {
+    "H3a_supported": true,
+    "H3b_supported": true,
+    "overall": true
+  }
+}

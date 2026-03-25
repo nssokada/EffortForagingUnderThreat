@@ -1,26 +1,29 @@
 ---
 name: Next Steps
-description: Priority action items for Nature Comms submission — prereg finalization, figures, confirmatory sample. MCMC already complete.
+description: Priority action items — binary-E model validation with parquet data is BLOCKING, then prereg update, remaining hypotheses, confirmatory sample
 type: project
 ---
 
 # Next Steps (as of 2026-03-24, end of session)
 
-## Priority 0: BLOCKERS before preregistration submission
-- [ ] **H1b verification:** Run the H1b LMM on exploratory data: `excess_effort ~ threat_z + dist_z + effort_chosen_z + (1 | subject)`. Need to confirm β(threat) > 0 — that threat increases pressing beyond what demand explains. If it fails, fall back to terminal vigor (F=35) operationalization. Script ready: `scripts/plotting/plot_h1_figure.py` (also needs to be run).
-- [ ] **Rebuild devcontainer** with conda/scientific Python (Dockerfile updated, needs rebuild via "Dev Containers: Rebuild Container")
+## Priority 0: BLOCKERS
 
-## Priority 0.5: Prereg finalization (in progress)
+- [ ] **Install pyarrow** to read `smoothed_vigor_ts.parquet` — needed to validate new models with actual vigor data
+- [ ] **Verify binary-E choice model + effort-controlled vigor model with parquet data** — current results used behavior_rich proxy. Must confirm +88 ELBO, λ=0.8, and β-δ coupling hold with actual timeseries data
+- [ ] **Rerun full MCMC pipeline** with new model specification (binary E, effort-controlled vigor)
+
+## Priority 0.5: Prereg finalization
+
 - [x] Rewrote prereg in AsPredicted format (`drafts/prereg_aspredicted.md`)
 - [x] Updated detailed prereg (`drafts/preregistration.md`) to H1-H7 simple numbering
-- [x] Updated `instructions/memory/hypotheses.md` with concordance
-- [x] H1 analyses updated to LMMs throughout (logistic for choice, linear for vigor/affect)
-- [ ] **Resume walkthrough at H2** — H1 is finalized (LMMs, all-pairwise monotonicity). H2 text looks good but Noah hasn't confirmed yet. Need to walk through H3-H7 with same level of detail.
-- [ ] **Key decisions still needed from Noah:**
-  - H2: Confirm Pearson r on shift scores is the right test (vs Spearman)
-  - H3: How exactly to compute optimal policy / reallocation index — needs precise specification
-  - H4-H7: Walk through each, same as we did for H1
-- [ ] After all hypotheses reviewed: regenerate the HTML version and AsPredicted .md
+- [x] H1 analyses updated: binary E in H1a `(1|subj)`, threat×dist interaction in H1b, DV definition fixed
+- [x] H1 tested and passes all criteria
+- [x] H2 tested (Pearson r confirmed, r=-0.50, split-half robust)
+- [x] H3 tested (empirical escape rates, reallocation→earnings r=0.58, 94% too-cautious)
+- [ ] **UPDATE PREREG for new model specification:** Binary E choice model replaces graded E. Need to update H4 (model comparison) and H5 (vigor HBM) to reflect: (1) binary effort, (2) effort-controlled vigor model with γ·E_chosen, (3) λ=0.8
+- [ ] **Walk through H4-H7** with updated model specification
+- [ ] **Add allocation dimension hypothesis** — angle vs magnitude predicting outcomes, possibly as new H or extension of H3/H6
+- [ ] After all hypotheses reviewed: regenerate AsPredicted
 - [ ] Submit to AsPredicted before opening confirmatory data
 
 ## Priority 1: Generate H1 figure
