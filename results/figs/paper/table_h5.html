@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>H5 — Danger Drives Excess Motor Vigor</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+<style>
+  :root {
+    --ink: #374151;
+    --muted: #6B7280;
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;
+    --bg-header: #F9FAFB;
+    --accent: #2563EB;
+    --pass: #059669;
+    --pass-bg: #ECFDF5;
+    --pass-border: #A7F3D0;
+    --fail-bg: #FEF2F2;
+    --fail-border: #FECACA;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 920px;
+    margin: 48px auto;
+    color: var(--ink);
+    background: #fff;
+    padding: 0 24px;
+    line-height: 1.55;
+  }
+  h1 { font-size: 1.35em; font-weight: 700; margin-bottom: 0.2em; letter-spacing: -0.01em; }
+  h2 {
+    font-size: 1.0em; font-weight: 600; color: var(--muted);
+    margin: 2.5em 0 0.6em; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .subtitle { color: var(--muted); font-size: 0.92em; margin-bottom: 2em; }
+
+  table {
+    border-collapse: collapse; width: 100%;
+    font-size: 0.88em; margin-bottom: 0.8em;
+  }
+  thead th {
+    background: var(--bg-header);
+    border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong);
+    padding: 10px 14px; text-align: left;
+    font-weight: 600; color: var(--muted);
+    font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  thead th.r { text-align: right; }
+  tbody td {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px; vertical-align: middle;
+  }
+  tbody td.r {
+    text-align: right; font-variant-numeric: tabular-nums;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 0.92em;
+  }
+  tbody tr:last-child td { border-bottom: 2px solid var(--border-strong); }
+  tbody tr:hover td { background: #F9FAFB; }
+
+  .model-spec {
+    background: var(--bg-header);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin: 1.5em 0;
+    text-align: center;
+    line-height: 2;
+  }
+  .model-spec .label {
+    font-size: 0.78em; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); margin-bottom: 8px;
+  }
+
+  .tests {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 1.2em 0 0;
+  }
+  .test {
+    background: var(--pass-bg);
+    border: 1px solid var(--pass-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .test .label {
+    font-size: 0.78em; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--muted); margin-bottom: 4px;
+  }
+  .test .value { font-size: 1.15em; font-weight: 700; color: var(--pass); }
+  .test .detail { font-size: 0.82em; color: var(--muted); margin-top: 2px; }
+
+  /* ── Hypothesis block ── */
+  .hyp-block {
+    background: #F9FAFB;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 2em;
+  }
+  .hyp-statement {
+    font-size: 0.92em;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .hyp-subs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hyp-sub {
+    font-size: 0.86em;
+    color: var(--ink);
+    padding: 6px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    line-height: 1.55;
+  }
+
+  .note {
+    color: var(--muted); font-size: 0.82em; line-height: 1.6;
+    margin-top: 1.5em; padding-top: 1em; border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<h1>H5 — Model-derived danger drives excess motor vigor</h1>
+<p class="subtitle">Exploratory sample, $N = 293$ &middot; MCMC (NumPyro NUTS, 4 chains &times; 1000) &middot; $\lambda = 0.698$</p>
+
+<div class="hyp-block">
+  <div class="hyp-statement">
+    <strong>Statement:</strong> Lower survival probability $S$ causes participants to press harder than the task requires,
+    expressed as a positive population-mean danger mobilization parameter $\delta$ in a hierarchical Bayesian model of
+    excess effort, after controlling for the physical effort demand of the chosen option.
+  </div>
+  <div class="hyp-subs">
+    <div class="hyp-sub"><strong>H5a.1</strong> &mdash; Population mean $\mu_\delta > 0$; the posterior 95% credible interval must exclude zero.</div>
+    <div class="hyp-sub"><strong>H5a.2</strong> &mdash; The proportion of subjects with posterior mean $\delta_i > 0$ must exceed 80%.</div>
+    <div class="hyp-sub"><strong>Secondary</strong> &mdash; $\sigma_\delta > 0.05$ (individual differences recoverable) and $\gamma < 0$ (effort demand constraint confirmed).</div>
+  </div>
+</div>
+
+<div class="model-spec">
+  <div class="label">Vigor model</div>
+  $$\text{excess}_{ij} = \alpha_i + \delta_i \cdot (1 - S_{ij}) + \gamma \cdot E_{\text{chosen},ij} + \varepsilon_{ij}$$
+  <div style="color: var(--muted); font-size: 0.85em; margin-top: 4px;">
+    $S_{ij} = (1 - T) + T / (1 + \lambda D_{\text{chosen}})$ &emsp;|&emsp;
+    $\alpha_i \sim \mathcal{N}(\mu_\alpha, \sigma_\alpha)$ &emsp;|&emsp;
+    $\delta_i \sim \mathcal{N}(\mu_\delta, \sigma_\delta)$
+  </div>
+</div>
+
+<h2>Table 1 &mdash; Population Parameters</h2>
+<table>
+<thead>
+<tr>
+  <th>Parameter</th>
+  <th>Description</th>
+  <th class="r">Estimate</th>
+  <th class="r">95% CI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>$\mu_\delta$</td>
+  <td>Population mean danger mobilization</td>
+  <td class="r">0.211</td>
+  <td class="r">[0.192, 0.232]</td>
+</tr>
+<tr>
+  <td>$\sigma_\delta$</td>
+  <td>Between-subject SD of $\delta$</td>
+  <td class="r">0.146</td>
+  <td class="r"></td>
+</tr>
+<tr>
+  <td>$\mu_\alpha$</td>
+  <td>Population mean baseline excess effort</td>
+  <td class="r">0.015</td>
+  <td class="r"></td>
+</tr>
+<tr>
+  <td>$\gamma$</td>
+  <td>Effort demand constraint (population)</td>
+  <td class="r">-0.257</td>
+  <td class="r"></td>
+</tr>
+<tr>
+  <td>$\%\;\delta_i > 0$</td>
+  <td>Proportion of subjects with positive danger mobilization</td>
+  <td class="r">98.3%</td>
+  <td class="r"></td>
+</tr>
+</tbody>
+</table>
+
+<div class="tests">
+  <div class="test">
+    <div class="label">H5a.1 &mdash; $\mu_\delta > 0$</div>
+    <div class="value">0.211 &ensp; [0.192, 0.232]</div>
+    <div class="detail">95% CI excludes zero &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">H5a.2 &mdash; &gt; 80% positive</div>
+    <div class="value">98.3%</div>
+    <div class="detail">Threshold: 80% &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">Secondary &mdash; $\sigma_\delta > 0.05$</div>
+    <div class="value">0.146</div>
+    <div class="detail">Individual differences recoverable &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">Secondary &mdash; $\gamma < 0$</div>
+    <div class="value">-0.257</div>
+    <div class="detail">Effort demand constraint confirmed &check;</div>
+  </div>
+</div>
+
+<div class="note">
+  Excess effort = observed capacity-normalized vigor &minus; graded effort demand of chosen option.
+  $S_{ij}$ uses $\lambda = 0.698$ from the binary-$E$ choice model.
+  $\gamma$ controls for the physical ceiling: participants who chose the harder option have less headroom.
+  All subject-level parameters estimated via hierarchical normal priors (MCMC NUTS, 4 chains &times; 1000 warmup + 1000 samples, target acceptance = 0.95).
+</div>
+
+</body>
+</html>

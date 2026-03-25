@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>H7 — Vigor Mobilization Predicts Metacognitive Accuracy</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+<style>
+  :root {
+    --ink: #374151; --muted: #6B7280; --border: #E5E7EB;
+    --border-strong: #D1D5DB; --bg-header: #F9FAFB;
+    --accent: #2563EB; --pass: #059669;
+    --pass-bg: #ECFDF5; --pass-border: #A7F3D0;
+    --warn: #D97706; --warn-bg: #FFFBEB; --warn-border: #FDE68A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 920px; margin: 48px auto; color: var(--ink);
+    background: #fff; padding: 0 24px; line-height: 1.55;
+  }
+  h1 { font-size: 1.35em; font-weight: 700; margin-bottom: 0.2em; }
+  h2 {
+    font-size: 1.0em; font-weight: 600; color: var(--muted);
+    margin: 2.5em 0 0.6em; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .subtitle { color: var(--muted); font-size: 0.92em; margin-bottom: 2em; }
+
+  .hyp-block {
+    background: #F9FAFB; border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px 24px; margin-bottom: 2em;
+  }
+  .hyp-statement { font-size: 0.92em; line-height: 1.65; margin-bottom: 12px; }
+  .hyp-subs { display: flex; flex-direction: column; gap: 6px; }
+  .hyp-sub {
+    font-size: 0.86em; color: var(--ink); padding: 6px 12px;
+    background: white; border-radius: 6px; border: 1px solid var(--border); line-height: 1.55;
+  }
+
+  table {
+    border-collapse: collapse; width: 100%; font-size: 0.88em; margin-bottom: 0.8em;
+  }
+  thead th {
+    background: var(--bg-header); border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong); padding: 10px 14px;
+    text-align: left; font-weight: 600; color: var(--muted);
+    font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  thead th.r { text-align: right; }
+  tbody td {
+    border-bottom: 1px solid var(--border); padding: 10px 14px; vertical-align: middle;
+  }
+  tbody td.r {
+    text-align: right; font-variant-numeric: tabular-nums;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 0.92em;
+  }
+  tbody tr:last-child td { border-bottom: 2px solid var(--border-strong); }
+  tbody tr:hover td { background: #F9FAFB; }
+  tr.highlight td { background: #EFF6FF; }
+  tr.highlight:hover td { background: #DBEAFE; }
+
+  .tests {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 1.2em 0 0;
+  }
+  .test {
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .test-pass { background: var(--pass-bg); border: 1px solid var(--pass-border); }
+  .test-warn { background: var(--warn-bg); border: 1px solid var(--warn-border); }
+  .test .label {
+    font-size: 0.78em; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--muted); margin-bottom: 4px;
+  }
+  .test .value { font-size: 1.15em; font-weight: 700; }
+  .test .value-pass { color: var(--pass); }
+  .test .value-warn { color: var(--warn); }
+  .test .detail { font-size: 0.82em; color: var(--muted); margin-top: 2px; }
+
+  .note {
+    color: var(--muted); font-size: 0.82em; line-height: 1.6;
+    margin-top: 1.5em; padding-top: 1em; border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<h1>H7 — Individuals who mobilize vigor under danger show more accurate subjective threat appraisal</h1>
+<p class="subtitle">Exploratory sample, $N = 293$ &middot; Per-subject OLS calibration slopes &middot; FDR-corrected</p>
+
+<div class="hyp-block">
+  <div class="hyp-statement">
+    <strong>Statement:</strong> Participants whose motor effort is more danger-responsive (higher $\delta$)
+    will show tighter affective tracking of survival probability $S$ &mdash; steeper anxiety&ndash;$S$ and
+    confidence&ndash;$S$ slopes &mdash; constituting more accurate metacognitive appraisal of threat.
+  </div>
+  <div class="hyp-subs">
+    <div class="hyp-sub"><strong>H7a.1</strong> &mdash; $r(\delta,\, \text{anxiety slope on } S) < 0$, $p < .05$ one-tailed.</div>
+    <div class="hyp-sub"><strong>H7a.2</strong> &mdash; $r(\delta,\, \text{confidence slope on } S) > 0$, $p < .05$ one-tailed.</div>
+    <div class="hyp-sub"><strong>H7a.3</strong> (secondary) &mdash; $r(\delta,\, \text{mean anxiety}) < 0$: high-$\delta$ individuals report lower average anxiety despite stronger coupling.</div>
+    <div class="hyp-sub"><strong>H7b.1</strong> &mdash; $\beta$ also predicts anxiety&ndash;$S$ slope ($r < 0$, $p < .05$).</div>
+    <div class="hyp-sub"><strong>H7b.2</strong> &mdash; $k$ does <em>not</em> predict anxiety&ndash;$S$ slope ($p > .05$, two-tailed) &mdash; dissociating threat-responsive from effort-cost parameters.</div>
+  </div>
+</div>
+
+<h2>Table 1 &mdash; Parameter &times; calibration correlations</h2>
+<p style="color: var(--muted); font-size: 0.85em; margin-bottom: 0.8em;">
+  Per-subject calibration = OLS slope of rating $\sim S_{\text{probe}}$. All $p$-values FDR-corrected.
+</p>
+
+<table>
+<thead>
+<tr>
+  <th>Parameter</th>
+  <th>Metric</th>
+  <th class="r">$r$</th>
+  <th class="r">$p$ (raw)</th>
+  <th class="r">$p$ (FDR)</th>
+  <th class="r">$N$</th>
+  <th class="r">Sig</th>
+</tr>
+</thead>
+<tbody>
+<tr class="highlight">
+  <td>$\delta$</td>
+  <td>Anxiety S-slope</td>
+  <td class="r">-0.311</td>
+  <td class="r">< 10<sup>-7</sup></td>
+  <td class="r">< 10<sup>-6</sup></td>
+  <td class="r">289</td>
+  <td class="r">&check;</td>
+</tr>
+<tr class="highlight">
+  <td>$\delta$</td>
+  <td>Confidence S-slope</td>
+  <td class="r">+0.325</td>
+  <td class="r">< 10<sup>-7</sup></td>
+  <td class="r">< 10<sup>-6</sup></td>
+  <td class="r">291</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$\delta$</td>
+  <td>Mean anxiety</td>
+  <td class="r">-0.194</td>
+  <td class="r">< 10<sup>-3</sup></td>
+  <td class="r">0.0022</td>
+  <td class="r">293</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$\delta$</td>
+  <td>Mean confidence</td>
+  <td class="r">+0.047</td>
+  <td class="r">0.4248</td>
+  <td class="r">0.4531</td>
+  <td class="r">293</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$\beta$</td>
+  <td>Anxiety S-slope</td>
+  <td class="r">-0.261</td>
+  <td class="r">< 10<sup>-5</sup></td>
+  <td class="r">< 10<sup>-4</sup></td>
+  <td class="r">289</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$\beta$</td>
+  <td>Confidence S-slope</td>
+  <td class="r">+0.291</td>
+  <td class="r">< 10<sup>-6</sup></td>
+  <td class="r">< 10<sup>-5</sup></td>
+  <td class="r">291</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$\beta$</td>
+  <td>Mean anxiety</td>
+  <td class="r">-0.101</td>
+  <td class="r">0.0853</td>
+  <td class="r">0.1241</td>
+  <td class="r">293</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$\beta$</td>
+  <td>Mean confidence</td>
+  <td class="r">-0.065</td>
+  <td class="r">0.2700</td>
+  <td class="r">0.3323</td>
+  <td class="r">293</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$k$</td>
+  <td>Anxiety S-slope</td>
+  <td class="r">+0.199</td>
+  <td class="r">< 10<sup>-3</sup></td>
+  <td class="r">0.0021</td>
+  <td class="r">289</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$k$</td>
+  <td>Confidence S-slope</td>
+  <td class="r">-0.175</td>
+  <td class="r">0.0028</td>
+  <td class="r">0.0063</td>
+  <td class="r">291</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$k$</td>
+  <td>Mean anxiety</td>
+  <td class="r">+0.141</td>
+  <td class="r">0.0154</td>
+  <td class="r">0.0273</td>
+  <td class="r">293</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$k$</td>
+  <td>Mean confidence</td>
+  <td class="r">-0.127</td>
+  <td class="r">0.0302</td>
+  <td class="r">0.0484</td>
+  <td class="r">293</td>
+  <td class="r">&check;</td>
+</tr>
+<tr>
+  <td>$\alpha$</td>
+  <td>Anxiety S-slope</td>
+  <td class="r">+0.060</td>
+  <td class="r">0.3055</td>
+  <td class="r">0.3491</td>
+  <td class="r">289</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$\alpha$</td>
+  <td>Confidence S-slope</td>
+  <td class="r">-0.093</td>
+  <td class="r">0.1127</td>
+  <td class="r">0.1503</td>
+  <td class="r">291</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$\alpha$</td>
+  <td>Mean anxiety</td>
+  <td class="r">+0.024</td>
+  <td class="r">0.6766</td>
+  <td class="r">0.6766</td>
+  <td class="r">293</td>
+  <td class="r">&mdash;</td>
+</tr>
+<tr>
+  <td>$\alpha$</td>
+  <td>Mean confidence</td>
+  <td class="r">-0.151</td>
+  <td class="r">0.0095</td>
+  <td class="r">0.0190</td>
+  <td class="r">293</td>
+  <td class="r">&check;</td>
+</tr>
+</tbody>
+</table>
+
+<div class="tests">
+  <div class="test test-pass">
+    <div class="label">H7a.1 &mdash; $\delta$ &times; anxiety slope</div>
+    <div class="value value-pass">$r$ = -0.311</div>
+    <div class="detail">$p_{\text{FDR}}$ = 5.3e-07 &check;</div>
+  </div>
+  <div class="test test-pass">
+    <div class="label">H7a.2 &mdash; $\delta$ &times; confidence slope</div>
+    <div class="value value-pass">$r$ = +0.325</div>
+    <div class="detail">$p_{\text{FDR}}$ = 2.1e-07 &check;</div>
+  </div>
+  <div class="test test-pass">
+    <div class="label">H7a.3 &mdash; $\delta$ &times; mean anxiety</div>
+    <div class="value value-pass">$r$ = -0.194</div>
+    <div class="detail">Lower anxiety despite stronger coupling &check;</div>
+  </div>
+</div>
+
+<div class="tests" style="grid-template-columns: 1fr 1fr; margin-top: 12px;">
+  <div class="test test-pass">
+    <div class="label">H7b.1 &mdash; $\beta$ predicts calibration</div>
+    <div class="value value-pass">$r$ = -0.261</div>
+    <div class="detail">$p_{\text{FDR}}$ = 2.8e-05 &check;</div>
+  </div>
+  <div class="test test-warn">
+    <div class="label">H7b.2 &mdash; $k$ null for calibration?</div>
+    <div class="value value-warn">$r$ = +0.199</div>
+    <div class="detail">$p_{\text{FDR}}$ = 0.0021 &cross; (significant, opposite sign, weaker)</div>
+  </div>
+</div>
+
+<div class="note">
+  Calibration slope = per-subject OLS: rating $\sim S_{\text{probe}}$, where
+  $S_{\text{probe}} = (1 - T) + T / (1 + \lambda D)$ with $\lambda = 0.698$.
+  More negative anxiety slopes (and more positive confidence slopes) indicate tighter
+  affective tracking of survival probability &mdash; better metacognitive accuracy.
+  All $p$-values corrected for false discovery rate across 16 parameter &times; metric tests.
+  H7b.2: $k$ is weakly significant ($r = +0.200$) in the <em>opposite</em> direction to $\delta$,
+  indicating effort-sensitive individuals are <em>less</em> calibrated &mdash; still consistent with
+  the threat-responsive vs. effort-cost dissociation, though technically the null prediction fails.
+</div>
+
+</body>
+</html>

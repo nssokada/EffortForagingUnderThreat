@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>H6 — Cross-Model Parameter Coupling</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+<style>
+  :root {
+    --ink: #374151; --muted: #6B7280; --border: #E5E7EB;
+    --border-strong: #D1D5DB; --bg-header: #F9FAFB;
+    --accent: #2563EB; --pass: #059669;
+    --pass-bg: #ECFDF5; --pass-border: #A7F3D0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 920px; margin: 48px auto; color: var(--ink);
+    background: #fff; padding: 0 24px; line-height: 1.55;
+  }
+  h1 { font-size: 1.35em; font-weight: 700; margin-bottom: 0.2em; }
+  h2 {
+    font-size: 1.0em; font-weight: 600; color: var(--muted);
+    margin: 2.5em 0 0.6em; text-transform: uppercase; letter-spacing: 0.04em;
+  }
+  .subtitle { color: var(--muted); font-size: 0.92em; margin-bottom: 2em; }
+
+  .hyp-block {
+    background: #F9FAFB; border: 1px solid var(--border);
+    border-radius: 8px; padding: 20px 24px; margin-bottom: 2em;
+  }
+  .hyp-statement { font-size: 0.92em; line-height: 1.65; margin-bottom: 12px; }
+  .hyp-subs { display: flex; flex-direction: column; gap: 6px; }
+  .hyp-sub {
+    font-size: 0.86em; color: var(--ink); padding: 6px 12px;
+    background: white; border-radius: 6px; border: 1px solid var(--border); line-height: 1.55;
+  }
+
+  table {
+    border-collapse: collapse; width: 100%; font-size: 0.88em; margin-bottom: 0.8em;
+  }
+  thead th {
+    background: var(--bg-header); border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong); padding: 10px 14px;
+    text-align: left; font-weight: 600; color: var(--muted);
+    font-size: 0.85em; text-transform: uppercase; letter-spacing: 0.03em;
+  }
+  thead th.r { text-align: right; }
+  tbody td {
+    border-bottom: 1px solid var(--border); padding: 10px 14px; vertical-align: middle;
+  }
+  tbody td.r {
+    text-align: right; font-variant-numeric: tabular-nums;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace; font-size: 0.92em;
+  }
+  tbody tr:last-child td { border-bottom: 2px solid var(--border-strong); }
+  tbody tr:hover td { background: #F9FAFB; }
+  tr.highlight td { background: #EFF6FF; }
+  tr.highlight:hover td { background: #DBEAFE; }
+
+  .tests {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin: 1.2em 0 0;
+  }
+  .test {
+    background: var(--pass-bg); border: 1px solid var(--pass-border);
+    border-radius: 8px; padding: 14px 16px;
+  }
+  .test .label {
+    font-size: 0.78em; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.04em; color: var(--muted); margin-bottom: 4px;
+  }
+  .test .value { font-size: 1.15em; font-weight: 700; color: var(--pass); }
+  .test .detail { font-size: 0.82em; color: var(--muted); margin-top: 2px; }
+
+  .note {
+    color: var(--muted); font-size: 0.82em; line-height: 1.6;
+    margin-top: 1.5em; padding-top: 1em; border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<h1>H6 — Choice and vigor parameters are coupled across independently estimated Bayesian models</h1>
+<p class="subtitle">Exploratory sample, $N = 293$ &middot; Independent Bayesian pipeline + Joint LKJ model</p>
+
+<div class="hyp-block">
+  <div class="hyp-statement">
+    <strong>Statement:</strong> Individual differences in threat bias ($\beta$, from the choice model) and
+    danger-responsive vigor mobilization ($\delta$, from the vigor model) are positively correlated.
+    This correlation emerges from models that share no parameters or data &mdash; only the survival
+    function $S$ (evaluated at the choice-estimated $\lambda$) links them.
+  </div>
+  <div class="hyp-subs">
+    <div class="hyp-sub"><strong>H6a</strong> &mdash; Pearson $r(\log\beta_{\text{choice}},\, \delta_{\text{vigor}}) > 0$, $p < .001$ (one-tailed), via independently estimated hierarchical models.</div>
+    <div class="hyp-sub"><strong>H6b</strong> &mdash; A joint LKJ model with correlated random effects confirms $\rho(\beta, \delta)$ posterior mean $> 0$ with 95% CI excluding zero.</div>
+    <div class="hyp-sub"><strong>H6c</strong> &mdash; OLS: optimality $\sim \beta_z + \delta_z + k_z$. Both $\beta$ and $\delta$ are significant predictors ($p < .05$).</div>
+  </div>
+</div>
+
+<h2>Table 1 &mdash; Independent Bayesian cross-correlations</h2>
+<table>
+<thead>
+<tr>
+  <th>Parameters</th>
+  <th class="r">$r$</th>
+  <th class="r">$p$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>$log(k)$ &harr; $δ$</td>
+  <td class="r">-0.283</td>
+  <td class="r">< 10<sup>-6</sup></td>
+</tr>
+<tr class="highlight">
+  <td>$log(β)$ &harr; $δ$</td>
+  <td class="r">+0.549</td>
+  <td class="r">< 10<sup>-23</sup></td>
+</tr>
+<tr>
+  <td>$log(k)$ &harr; $α$</td>
+  <td class="r">+0.348</td>
+  <td class="r">< 10<sup>-9</sup></td>
+</tr>
+<tr>
+  <td>$log(β)$ &harr; $α$</td>
+  <td class="r">+0.077</td>
+  <td class="r">0.186</td>
+</tr>
+<tr>
+  <td>$α$ &harr; $δ$</td>
+  <td class="r">+0.056</td>
+  <td class="r">0.336</td>
+</tr>
+<tr>
+  <td>$log(k)$ &harr; $log(β)$</td>
+  <td class="r">+0.038</td>
+  <td class="r">0.522</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Table 2 &mdash; Joint LKJ model posterior correlations</h2>
+<table>
+<thead>
+<tr>
+  <th>Parameters</th>
+  <th class="r">$\rho$ (mean)</th>
+  <th class="r">SD</th>
+  <th class="r">95% CI</th>
+  <th class="r">$P(\rho > 0)$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>$\log(k)$ &harr; $\log(\beta)$</td>
+  <td class="r">-0.183</td>
+  <td class="r">0.060</td>
+  <td class="r">[-0.299, -0.066]</td>
+  <td class="r">0.002</td>
+</tr>
+<tr>
+  <td>$\log(k)$ &harr; $\alpha$</td>
+  <td class="r">+0.383</td>
+  <td class="r">0.032</td>
+  <td class="r">[+0.319, +0.443]</td>
+  <td class="r">1.000</td>
+</tr>
+<tr>
+  <td>$\log(k)$ &harr; $\delta$</td>
+  <td class="r">-0.730</td>
+  <td class="r">0.033</td>
+  <td class="r">[-0.789, -0.660]</td>
+  <td class="r">0.000</td>
+</tr>
+<tr>
+  <td>$\log(\beta)$ &harr; $\alpha$</td>
+  <td class="r">-0.331</td>
+  <td class="r">0.031</td>
+  <td class="r">[-0.391, -0.268]</td>
+  <td class="r">0.000</td>
+</tr>
+<tr class="highlight">
+  <td>$\log(\beta)$ &harr; $\delta$</td>
+  <td class="r">+0.754</td>
+  <td class="r">0.040</td>
+  <td class="r">[+0.671, +0.827]</td>
+  <td class="r">1.000</td>
+</tr>
+<tr>
+  <td>$\alpha$ &harr; $\delta$</td>
+  <td class="r">-0.229</td>
+  <td class="r">0.049</td>
+  <td class="r">[-0.318, -0.126]</td>
+  <td class="r">0.000</td>
+</tr>
+</tbody>
+</table>
+
+<h2>Table 3 &mdash; H6c: Optimality regression</h2>
+<p style="color: var(--muted); font-size: 0.85em; margin-bottom: 0.8em;">
+  OLS: $\%\text{optimal} \sim \beta_z + \delta_z + k_z$ &emsp; ($R^2 = 0.506$, $N = 293$)
+</p>
+<table>
+<thead>
+<tr>
+  <th>Predictor</th>
+  <th class="r">$\beta$</th>
+  <th class="r">SE</th>
+  <th class="r">$t$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>$β_z$</td>
+  <td class="r">+0.0315</td>
+  <td class="r">0.0052</td>
+  <td class="r">+6.04</td>
+</tr>
+<tr>
+  <td>$δ_z$</td>
+  <td class="r">+0.0248</td>
+  <td class="r">0.0051</td>
+  <td class="r">+4.82</td>
+</tr>
+<tr>
+  <td>$k_z$</td>
+  <td class="r">-0.0798</td>
+  <td class="r">0.0050</td>
+  <td class="r">-15.89</td>
+</tr>
+</tbody>
+</table>
+
+<div class="tests">
+  <div class="test">
+    <div class="label">H6a &mdash; $\beta$&ndash;$\delta$ coupling</div>
+    <div class="value">$r$ = +0.549</div>
+    <div class="detail">$p$ = 1.68e-24, one-tailed &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">H6b &mdash; Joint model</div>
+    <div class="value">$\rho$ = +0.754</div>
+    <div class="detail">95% CI [+0.671, +0.827] &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">H6c &mdash; Optimality</div>
+    <div class="value">$R^2$ = 0.506</div>
+    <div class="detail">Both $\beta$ and $\delta$ predict &check;</div>
+  </div>
+</div>
+
+<div class="note">
+  Independent Bayesian: choice model (SVI, binary $E$) and vigor model (MCMC) share no parameters or data.
+  The only link is the survival function $S = (1-T) + T/(1+\lambda D)$ with $\lambda = 0.698$.
+  Joint model: $[\log k_i, \log \beta_i, \alpha_i, \delta_i] \sim \text{MVN}(\mu, \Sigma)$, $\Omega \sim \text{LKJCholesky}(\eta=2)$.
+  Bold values in heatmap: 95% CI excludes zero.
+</div>
+
+</body>
+</html>

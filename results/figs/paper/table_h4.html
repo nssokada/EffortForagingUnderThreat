@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>H4 — Choice Model Comparison &amp; Affect Prediction</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+  onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+<style>
+  :root {
+    --ink: #374151;
+    --muted: #6B7280;
+    --border: #E5E7EB;
+    --border-strong: #D1D5DB;
+    --bg-header: #F9FAFB;
+    --bg-winner: #EFF6FF;
+    --bg-winner-hover: #DBEAFE;
+    --accent: #2563EB;
+    --pass: #059669;
+    --pass-bg: #ECFDF5;
+    --pass-border: #A7F3D0;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    max-width: 920px;
+    margin: 48px auto;
+    color: var(--ink);
+    background: #fff;
+    padding: 0 24px;
+    line-height: 1.55;
+  }
+  h1 {
+    font-size: 1.35em;
+    font-weight: 700;
+    margin-bottom: 0.2em;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 1.0em;
+    font-weight: 600;
+    color: var(--muted);
+    margin: 2.5em 0 0.6em;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 0.92em;
+    margin-bottom: 2em;
+  }
+
+  /* ── Tables ── */
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.88em;
+    margin-bottom: 0.8em;
+  }
+  thead th {
+    background: var(--bg-header);
+    border-top: 2px solid var(--border-strong);
+    border-bottom: 2px solid var(--border-strong);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--muted);
+    font-size: 0.85em;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  thead th.r { text-align: right; }
+  tbody td {
+    border-bottom: 1px solid var(--border);
+    padding: 10px 14px;
+    vertical-align: middle;
+  }
+  tbody td.r {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-family: 'SF Mono', 'Menlo', 'Consolas', monospace;
+    font-size: 0.92em;
+  }
+  tbody tr:last-child td { border-bottom: 2px solid var(--border-strong); }
+  tbody tr:hover td { background: #F9FAFB; }
+
+  /* Winner row */
+  tr.winner td { background: var(--bg-winner); }
+  tr.winner:hover td { background: var(--bg-winner-hover); }
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.78em;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tag-best { background: var(--accent); color: #fff; }
+
+  /* Question column */
+  .q { color: var(--muted); font-size: 0.92em; }
+
+  /* ── Test result cards ── */
+  .tests {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin: 1.2em 0 0;
+  }
+  .test {
+    background: var(--pass-bg);
+    border: 1px solid var(--pass-border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .test .label {
+    font-size: 0.78em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .test .value {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--pass);
+  }
+  .test .detail {
+    font-size: 0.82em;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  /* ── Hypothesis block ── */
+  .hyp-block {
+    background: #F9FAFB;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 2em;
+  }
+  .hyp-statement {
+    font-size: 0.92em;
+    line-height: 1.65;
+    margin-bottom: 12px;
+  }
+  .hyp-subs {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .hyp-sub {
+    font-size: 0.86em;
+    color: var(--ink);
+    padding: 6px 12px;
+    background: white;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    line-height: 1.55;
+  }
+
+  /* ── Notes ── */
+  .note {
+    color: var(--muted);
+    font-size: 0.82em;
+    line-height: 1.6;
+    margin-top: 1.5em;
+    padding-top: 1em;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ── LMM table tweaks ── */
+  .lmm-spec {
+    color: var(--muted);
+    font-size: 0.85em;
+    margin-bottom: 0.8em;
+  }
+</style>
+</head>
+<body>
+
+<h1>H4 — The survival-weighted additive-effort choice model best explains foraging behavior</h1>
+<p class="subtitle">Exploratory sample, $N = 293$ &middot; Binary effort $E \in \{0, 1\}$ &middot; $\lambda = 0.698$</p>
+
+<div class="hyp-block">
+  <div class="hyp-statement">
+    <strong>Statement:</strong> Choice behavior is best explained by a model in which (a) energetic effort costs are subtracted
+    additively from expected reward, (b) escape probability follows a hyperbolic function of distance, and (c) residual
+    threat aversion enters as a subject-specific additive bias $\beta$. The survival probability $S$ from this model also
+    predicts trial-level subjective affect.
+  </div>
+  <div class="hyp-subs">
+    <div class="hyp-sub"><strong>H4a</strong> &mdash; Additive effort (M5) outperforms multiplicative effort (M4): $\Delta$ELBO &gt; 0.</div>
+    <div class="hyp-sub"><strong>H4b</strong> &mdash; Hyperbolic survival (M4) outperforms exponential survival (M3): $\Delta$ELBO &gt; 0. Additionally, M5 outperforms the effort-only baseline (M1) by $\Delta$ELBO &gt; 100.</div>
+    <div class="hyp-sub"><strong>H4c</strong> &mdash; Model-derived $S$ negatively predicts trial-level anxiety ($\beta &lt; 0$, $|t| &gt; 3$) and positively predicts confidence ($\beta &gt; 0$, $|t| &gt; 3$) in within-subject LMMs.</div>
+  </div>
+</div>
+
+<h2>Table 1 &mdash; Model Comparison (ELBO)</h2>
+<table>
+<thead>
+<tr>
+  <th style="width:60px">Model</th>
+  <th>Subjective value structure</th>
+  <th class="r">ELBO</th>
+  <th class="r">$\Delta$ELBO</th>
+  <th>Question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>M1</td>
+  <td>$SV = R \cdot e^{-kE}$</td>
+  <td class="r">-8,297.6</td>
+  <td class="r">-2037.9</td>
+  <td class="q">Does threat matter?</td>
+</tr>
+<tr>
+  <td>M2</td>
+  <td>$SV = R \cdot e^{-kE} - \beta \cdot T \cdot D$</td>
+  <td class="r">-6,780.4</td>
+  <td class="r">-520.7</td>
+  <td class="q">Mechanistic S or linear features?</td>
+</tr>
+<tr>
+  <td>M3</td>
+  <td>$SV = R \cdot e^{-kE} \cdot S_{\text{exp}} - \beta(1-S)$</td>
+  <td class="r">-6,449.3</td>
+  <td class="r">-189.6</td>
+  <td class="q">Which survival kernel?</td>
+</tr>
+<tr>
+  <td>M4</td>
+  <td>$SV = R \cdot e^{-kE} \cdot S_{\text{hyp}} - \beta(1-S)$</td>
+  <td class="r">-6,418.1</td>
+  <td class="r">-158.4</td>
+  <td class="q">Which effort structure?</td>
+</tr>
+<tr class="winner">
+  <td>M5 <span class="tag tag-best">Best</span></td>
+  <td>$SV = R \cdot S - k \cdot E - \beta(1-S)$</td>
+  <td class="r">-6,259.7</td>
+  <td class="r">+0.0</td>
+  <td class="q"></td>
+</tr>
+</tbody>
+</table>
+
+<div class="tests">
+  <div class="test">
+    <div class="label">H4a &mdash; Effort structure</div>
+    <div class="value">$\Delta$ = +158.4</div>
+    <div class="detail">Additive &gt; multiplicative</div>
+  </div>
+  <div class="test">
+    <div class="label">H4b &mdash; Survival kernel</div>
+    <div class="value">$\Delta$ = +31.2</div>
+    <div class="detail">Hyperbolic &gt; exponential</div>
+  </div>
+  <div class="test">
+    <div class="label">M5 vs. baseline</div>
+    <div class="value">$\Delta$ = +2037.9</div>
+    <div class="detail">Threshold: &gt; 100</div>
+  </div>
+</div>
+
+<h2>Table 2 &mdash; H4c: Survival predicts trial-level affect</h2>
+<p class="lmm-spec">LMM: $\text{rating} \sim S_{\text{probe}}^z + (1 + S_{\text{probe}}^z \mid \text{subject})$</p>
+
+<table>
+<thead>
+<tr>
+  <th>Outcome</th>
+  <th class="r">$\beta$</th>
+  <th class="r">SE</th>
+  <th class="r">$t$</th>
+  <th class="r">$p$</th>
+  <th class="r">$N_{\text{subj}}$</th>
+  <th class="r">$N_{\text{obs}}$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+  <td>Anxiety</td>
+  <td class="r">-0.605</td>
+  <td class="r">0.024</td>
+  <td class="r">-25.63</td>
+  <td class="r">< 10<sup>-144</sup></td>
+  <td class="r">293</td>
+  <td class="r">5,274</td>
+</tr>
+<tr>
+  <td>Confidence</td>
+  <td class="r">0.612</td>
+  <td class="r">0.024</td>
+  <td class="r">25.65</td>
+  <td class="r">< 10<sup>-144</sup></td>
+  <td class="r">293</td>
+  <td class="r">5,272</td>
+</tr>
+</tbody>
+</table>
+
+<div class="tests" style="grid-template-columns: 1fr 1fr 1fr;">
+  <div class="test">
+    <div class="label">Anxiety</div>
+    <div class="value">$\beta < 0$ &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">Confidence</div>
+    <div class="value">$\beta > 0$ &check;</div>
+  </div>
+  <div class="test">
+    <div class="label">Effect size</div>
+    <div class="value">$|t| > 3$ &check;</div>
+  </div>
+</div>
+
+<div class="note">
+  $S_{\text{probe}} = (1 - T) + \frac{T}{1 + \lambda D}$, with population-level
+  $\lambda = 0.698$ from the binary-$E$ SVI fit.
+  ELBO = evidence lower bound (higher is better); all models fit via SVI (NumPyro).
+  $\Delta$ELBO is relative to the best model (M5); negative values indicate worse fit.
+  Within-subject LMMs include random intercepts and random slopes for $S_{\text{probe}}$.
+</div>
+
+</body>
+</html>
