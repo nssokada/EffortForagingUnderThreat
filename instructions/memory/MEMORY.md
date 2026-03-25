@@ -8,6 +8,7 @@ All memory files for the EffortForagingUnderThreat project.
 |------|------|-------------|
 | [project_goal.md](project_goal.md) | project | Nature Comms submission: title, core claim, 4-Results structure, what remains |
 | [paper_framing.md](paper_framing.md) | project | Current framing: effort reallocation, evidence pyramid, key numbers, λ caveat |
+| [optimal_control_plan.md](optimal_control_plan.md) | project | **NEW DIRECTION:** Reframe as stochastic optimal control — single cost function (c_effort, c_death) governs choice + vigor mechanistically |
 | [active_issues.md](active_issues.md) | issues | MCMC not run, confirmatory not started, missing figures, old file cleanup |
 | [next_steps.md](next_steps.md) | project | Priority: (1) MCMC on GPU, (2) remaining figures, (3) confirmatory sample, (4) polish |
 
