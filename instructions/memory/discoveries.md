@@ -868,3 +868,30 @@ ODE vigor model, continuous temporal alignment, per-subject effort×distance res
 - Window comparison table: fixed enc±2s, terminal, variable, onset+terminal, trial-level
 - Encounter-centered threat/attack effects on pre/post pressing
 - PLS: encounter-window features → choice params (CV R²=0.12)
+
+---
+
+## 9. EVC+gamma Parameter Recovery (2026-03-26)
+
+**Model:** EVC+gamma (c_effort, c_death, epsilon per-subject + gamma population). Script: `scripts/analysis/evc_parameter_recovery.py`.
+
+**Method:** 5 synthetic datasets × 50 subjects × 45 trials. Generated from empirical log-normal population distributions, re-fit via SVI (35k steps, Adam lr=0.002). Recovery assessed via log-scale Pearson r, log MAE, and coverage.
+
+**Results (mean +/- SD across 5 datasets):**
+
+| Param | r_log | log_MAE | Coverage (1 SD) | Notes |
+|-------|-------|---------|-----------------|-------|
+| c_death | 0.946 +/- 0.023 | 0.194 | 0.56 | Excellent recovery |
+| epsilon | 0.926 +/- 0.016 | 0.958 | 0.04 | Good rank recovery, upward bias (+1.0 log), SVI posteriors too narrow |
+| c_effort | 0.041 +/- 0.244 | 1.633 | 0.04 | NOT recoverable — floor effect, most subjects ~0.002 |
+| gamma | recovered=0.262 +/- 0.017 (true=0.283) | — | — | Close but slight underestimation |
+
+**Interpretation:**
+- c_death and epsilon (the two parameters driving individual differences in threat sensitivity and escape effort) recover well
+- c_effort is not individually identifiable with 45 trials — most subjects have near-identical tiny values. This is expected: effort cost term (c_effort * u^2 * D) is dominated by survival/death terms for realistic parameter values
+- epsilon coverage is poor (0.04) despite high r — this is a known SVI limitation (variational posteriors underestimate uncertainty)
+- gamma recovers close to true value (0.262 vs 0.283) — slight underestimation
+
+**Outputs:**
+- `results/stats/evc_parameter_recovery.csv`
+- `results/figs/paper/fig_s_parameter_recovery.png`

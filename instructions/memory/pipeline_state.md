@@ -145,6 +145,9 @@ Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm per window), N=293, 23
 - `joint_correlated_population.csv` ✅ (2026-03-21, population hyperparameters + ELBO)
 - `joint_correlated_omega_samples.csv` ✅ (2026-03-21, 4000 posterior samples of correlation matrix)
 
+**EVC+gamma parameter recovery (2026-03-26):**
+- `evc_parameter_recovery.csv` ✅ (5 synthetic datasets × 50 subjects; c_death r=0.946, epsilon r=0.926, c_effort r=0.04 NOT recoverable, gamma=0.262 vs true 0.283)
+
 **Superseded (keep for reference):**
 - `FET_Exp_Bias_*.csv` — old model, replaced by L3_add
 - `joint_model_*.csv` — old joint model (independent priors, σ_δ collapsed), replaced by joint_correlated_*

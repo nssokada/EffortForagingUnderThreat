@@ -4,6 +4,26 @@ Chronological log of work sessions. Most recent first.
 
 ---
 
+## Session 2026-03-26
+
+### EVC+gamma Parameter Recovery
+
+**Created and ran** `scripts/analysis/evc_parameter_recovery.py`:
+- Generates 5 synthetic datasets (50 subjects each) from empirical population distributions
+- Re-fits EVC+gamma model via SVI (35k steps each, ~65s per fit)
+- Computes Pearson r (raw + log scale), log MAE, coverage
+
+**Key results:**
+- c_death: r_log=0.946, excellent recovery
+- epsilon: r_log=0.926, good rank recovery but upward bias (+1.0 log units)
+- c_effort: r_log=0.041, NOT recoverable (floor effect — most subjects cluster at ~0.002)
+- gamma: recovered=0.262 vs true=0.283, slight underestimation
+
+**Outputs:** `results/stats/evc_parameter_recovery.csv`, `results/figs/paper/fig_s_parameter_recovery.png`
+**Memory updated:** discoveries.md (section 9), pipeline_state.md
+
+---
+
 ## Session 2026-03-24
 
 ### Prereg rewrite (via Discord with Noah)
