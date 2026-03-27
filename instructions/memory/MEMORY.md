@@ -29,10 +29,18 @@ All memory files for the EffortForagingUnderThreat project.
 | [open_questions.md](open_questions.md) | questions | Remaining questions: vigor vs distance, α-δ independence, MCMC resolution |
 | [hypotheses.md](hypotheses.md) | hypotheses | All hypotheses with status + numbering concordance (prereg H1-H7 ↔ internal H#s, updated 2026-03-24) |
 
+## EVC / Policy analysis
+
+| File | Type | Description |
+|------|------|-------------|
+| [evc_policy_analysis.md](/home/node/.claude/projects/-workspace/memory/evc_policy_analysis.md) | project | Binarized 4-policy framework, normative model attempts, vigor measurement insights |
+| [evc_model_test.md](/home/node/.claude/projects/-workspace/memory/evc_model_test.md) | project | Formal EVC model test: rigid fails (ΔELBO=-993), soft shows coupling (γ=1.74), free δ wins |
+
 ## Session logs
 
 | File | Type | Note |
 |------|------|------|
+| [session_2026_03_25.md](/home/node/.claude/projects/-workspace/memory/session_2026_03_25.md) | session | EVC/Pareto exploration, joint model fitting, 4-policy framework, formal EVC model test |
 | [session_2024_03_24.md](session_2024_03_24.md) | session | Major session: H1-H3 tests, binary-E model, allocation dimension, psych correlates |
 | [session_history.md](session_history.md) | history | Older session log — not updated since 2026-03-20 |
 
