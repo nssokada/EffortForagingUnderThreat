@@ -4,6 +4,49 @@ Chronological log of work sessions. Most recent first.
 
 ---
 
+## Session 2026-03-27
+
+### EVC-LQR Full Pipeline & Paper Draft
+
+**Ran complete analysis pipeline for EVC-LQR model (2 params: c_death, epsilon):**
+
+1. **Parameter Recovery** (`scripts/analysis/evc_lqr_recovery.py`):
+   - 5 datasets × 50 subj × 45 trials, re-fit with 25k SVI steps
+   - c_death: r=0.888, epsilon: r=0.933, gamma: 0.314 vs true 0.318
+   - c_effort NOT individually recoverable (population param)
+
+2. **PPC** (`notebooks/07_evc_pipeline/02_ppc_lqr.py`):
+   - Choice: accuracy=75.4%, AUC=0.819, per-subj r=0.901
+   - Vigor: trial r=0.510, per-subj r=0.717
+   - ISSUE: Choice PPC doesn't capture distance gradient (ce too small)
+   - ISSUE: Vigor has level shift (pred > obs)
+
+3. **Clinical** (`notebooks/07_evc_pipeline/10_clinical_lqr.py`):
+   - No correlations survive FDR correction
+   - Best: log(cd)→AMI_Emotional r=0.121 (p=0.039 uncorrected)
+   - No cd×eps interactions significant
+
+4. **Affect & Metacognition** (`notebooks/07_evc_pipeline/07_affect_lqr.py`):
+   - S→Anxiety: beta=-0.786, t=-13.09 (very strong)
+   - S→Confidence: beta=0.848, t=13.40 (very strong)
+   - Confidence uncorrelated with performance (r=0.012 CQ, r=-0.048 SR)
+   - Calibration→CQ: r=0.239, Calibration→SR: r=0.185
+   - Discrepancy→STAI-State: r=0.308, →OASIS: r=0.177, →PHQ-9: r=0.201
+   - PARTIAL double dissociation (leakage: disc→SR r=-0.153, cal→STAI-S r=0.138)
+
+5. **Profiles** (`notebooks/07_evc_pipeline/05_profiles_lqr.py`):
+   - 4 archetypes: Vigilant, Helpless, Reckless, Disengaged
+   - P(heavy) R²=0.877 from log_cd + log_eps + interaction
+   - Helpless (hi cd, lo eps): lowest earnings (1.7), highest survival (73.6%)
+
+6. **Paper draft** (`drafts/draft003/evc_lqr_paper.md`):
+   - Full NatComms-format paper with Abstract, Intro, 5 Results, Discussion, Methods
+   - Critical review appended identifying key weaknesses
+
+**Key insight:** Metacognition is the bridge—model params don't predict clinical, but discrepancy (anxiety bias) does. Effect sizes modest (r=0.18-0.31).
+
+---
+
 ## Session 2026-03-26
 
 ### EVC+gamma Parameter Recovery

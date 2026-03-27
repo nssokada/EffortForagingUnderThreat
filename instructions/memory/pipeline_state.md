@@ -148,6 +148,27 @@ Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm per window), N=293, 23
 **EVC+gamma parameter recovery (2026-03-26):**
 - `evc_parameter_recovery.csv` ✅ (5 synthetic datasets × 50 subjects; c_death r=0.946, epsilon r=0.926, c_effort r=0.04 NOT recoverable, gamma=0.262 vs true 0.283)
 
+**EVC-LQR full pipeline (2026-03-27):**
+- `evc_lqr_recovery.csv` ✅ (5 datasets × 50 subj; cd r=0.888, eps r=0.933, gamma 0.314 vs true 0.318)
+- `evc_lqr_ppc.csv` ✅ (Choice acc=75.4%, AUC=0.819, subj choice r=0.901, vigor r=0.510, subj vigor r=0.717)
+- `evc_lqr_clinical.csv` ✅ (No FDR survivors; best uncorrected: cd→AMI_Emotional r=0.121 p=0.039)
+- `evc_lqr_clinical_interactions.csv` ✅ (No significant cd×eps interactions)
+- `evc_lqr_clinical_factors.csv` ✅ (F1/F2/F3 all null)
+- `evc_lqr_affect.csv` ✅ (Anxiety beta=-0.786 t=-13.09; Confidence beta=0.848 t=13.40)
+- `evc_lqr_metacognition.csv` ✅ (Conf-CQ r=0.012 null; Conf-SR r=-0.048 null; Steiger z=0.82 ns)
+- `evc_lqr_dissociation.csv` ✅ (Partial dissociation: cal→CQ r=0.239, disc→STAI-State r=0.308)
+- `evc_lqr_profiles.csv` ✅ (4 quadrants; P(heavy) R²=0.877; Helpless archetype lowest earnings)
+
+**Figures (2026-03-27):**
+- `fig_s_lqr_recovery.png` ✅ (2-panel scatter: cd and eps recovery)
+- `fig_ppc_lqr.png` ✅ (6-panel PPC)
+- `fig_s_lqr_clinical.png` ✅ (Forest plot)
+- `fig_lqr_metacognition.png` ✅ (4-panel metacognition)
+- `fig_lqr_quadrants.png` ✅ (4-panel profiles)
+
+**Draft:**
+- `drafts/draft003/evc_lqr_paper.md` ✅ (Full paper + critical review)
+
 **Superseded (keep for reference):**
 - `FET_Exp_Bias_*.csv` — old model, replaced by L3_add
 - `joint_model_*.csv` — old joint model (independent priors, σ_δ collapsed), replaced by joint_correlated_*
