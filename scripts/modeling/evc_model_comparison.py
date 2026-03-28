@@ -595,7 +595,7 @@ def evaluate_model(fit_result, n_samples=500, seed=44):
         return_sites.append('c_death')
     if name in ('FINAL', 'M2', 'M3', 'M4', 'M5', 'M6'):
         return_sites.append('epsilon')
-    if name in ('FINAL', 'M2', 'M4', 'M6'):
+    if name in ('FINAL', 'M2', 'M3', 'M4', 'M6'):
         return_sites.append('gamma')
     if name in ('FINAL', 'M1', 'M4', 'M5', 'M6'):
         return_sites.append('ce_vigor')
@@ -776,9 +776,27 @@ if __name__ == '__main__':
     print("STEP 2: Fitting comparison models (35k steps each)")
     print("=" * 70)
     for model_name in ['M1', 'M2', 'M3', 'M4', 'M5', 'M6']:
-        fit_result = fit_model(model_name, data, n_steps=35000, lr=0.002)
-        eval_result = evaluate_model(fit_result)
-        results.append(eval_result)
+        try:
+            # M2 needs lower lr to avoid divergence
+            lr = 0.001 if model_name == 'M2' else 0.002
+            fit_result = fit_model(model_name, data, n_steps=35000, lr=lr)
+            # Check for NaN loss
+            if np.isnan(fit_result['losses'][-1]):
+                print(f"  WARNING: {model_name} diverged (NaN loss), retrying with lr=0.0005")
+                fit_result = fit_model(model_name, data, n_steps=35000, lr=0.0005, seed=123)
+            eval_result = evaluate_model(fit_result)
+            results.append(eval_result)
+        except Exception as e:
+            print(f"  ERROR fitting/evaluating {model_name}: {e}")
+            results.append({
+                'name': model_name,
+                'description': MODEL_SPECS[model_name]['description'],
+                'bic': np.nan, 'final_loss': np.nan,
+                'choice_acc': np.nan, 'r_choice_subj': np.nan,
+                'r_vigor': np.nan, 'r_vigor_subj': np.nan,
+                'n_subj_params': MODEL_SPECS[model_name]['n_subj_params'],
+                'n_params': np.nan,
+            })
 
     # STEP 3: Compile comparison table
     print("\n" + "=" * 70)
