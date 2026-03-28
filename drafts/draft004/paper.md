@@ -44,7 +44,7 @@ S = (1 - T^gamma^) + epsilon x T^gamma^ x p~esc~
 
 where gamma = 0.210 is the population probability weighting exponent (indicating substantial compression of threat probabilities) and epsilon = 0.098 is the population effort-efficacy parameter reflecting the universal tendency to underweight effort's benefit to survival. Choices follow a softmax rule: P(heavy) = sigmoid(DeltaEU / tau), with tau = 0.476.
 
-The critical advance over prior models is that c~e~ is estimated per subject (log-normal prior, non-centered parameterization), enabling the model to capture individual differences in how strongly distance deters foraging. Previous versions with population-level effort cost failed to reproduce distance gradients in choice (Supplementary Fig. S1). With per-subject c~e~, the model reproduced the full threat-by-distance choice surface: at T = 0.1, P(heavy) declined from 0.87 at D = 1 to 0.53 at D = 3; at T = 0.9, from 0.33 to 0.10 (Fig. 2a). The model achieved BIC = 17,768 with per-subject choice r^2^ = 0.951, choice accuracy = 79.3%, and AUC = 0.876 (Fig. 2b).
+The critical advance over prior models is that c~e~ is estimated per subject (log-normal prior, non-centered parameterization), enabling the model to capture individual differences in how strongly distance deters foraging. Both subject-level parameters are log-normally distributed; we report log-transformed values throughout (log(c~e~): M = -0.47, SD = 0.78; log(c~d~): M = 3.44, SD = 1.57), which is the native parameterization of the hierarchical model. Previous versions with population-level effort cost failed to reproduce distance gradients in choice (Supplementary Fig. S1). With per-subject c~e~, the model reproduced the full threat-by-distance choice surface: at T = 0.1, P(heavy) declined from 0.87 at D = 1 to 0.53 at D = 3; at T = 0.9, from 0.33 to 0.10 (Fig. 2a). The model achieved BIC = 17,768 with per-subject choice r^2^ = 0.951, choice accuracy = 79.3%, and AUC = 0.876 (Fig. 2b).
 
 The probability weighting parameter gamma = 0.210 indicates that a nominal 50% threat is experienced as T^0.210^ = 0.86, consistent with loss-domain probability distortion^27^ but stronger than typical estimates from monetary gambles (gamma ~ 0.65-0.70)^28^, potentially reflecting the salience of embodied predation compared to abstract losses.
 
@@ -64,7 +64,7 @@ The model predicted trial-level vigor with r^2^ = 0.511, and per-subject mean vi
 
 We note that the threat-vigor relationship is obscured in unconditional analyses due to a Simpson's paradox: because threat shifts choice toward light cookies (60% heavy at T = 0.1 versus 34% at T = 0.9), and light cookies have lower required press rates, collapsing across choice makes mean vigor appear flat across threat levels. Conditioning on chosen cookie type reveals strong threat modulation (t = 6.6-7.5, p < 10^-10^). The joint model naturally resolves this confound because it conditions on the chosen option.
 
-Parameter recovery confirmed identifiability of both subject-level parameters. Simulating 293 synthetic subjects at the fitted population distribution and re-fitting yielded recovery correlations of r = 0.92 for c~e~ and r = 0.94 for c~d~ (Fig. 2e,f). The correlation between c~e~ and c~d~ in log space was r = -0.135, confirming that the two parameters capture largely independent dimensions of individual variation. Population parameters gamma and epsilon were also well-recovered.
+Parameter recovery confirmed identifiability of both subject-level parameters. Simulating 293 synthetic subjects at the fitted population distribution and re-fitting yielded recovery correlations (in log space) of r = 0.92 for log(c~e~) and r = 0.94 for log(c~d~) (Fig. 2e,f). The correlation between log(c~e~) and log(c~d~) was r = -0.135, confirming that the two parameters capture largely independent dimensions of individual variation. Population parameters gamma and epsilon were also well-recovered.
 
 ### Behavioral profiles reveal distinct foraging strategies
 
@@ -193,9 +193,9 @@ Between blocks, participants completed the DASS-21 (Depression, Anxiety, and Str
 
 The model has two per-subject parameters drawn from log-normal distributions with non-centered parameterization, plus population-level parameters.
 
-**Per-subject parameters:**
-- c~e,i~ (effort cost): governs choice through distance-dependent effort penalty. Median = 0.624.
-- c~d,i~ (capture aversion): governs vigor through the survival incentive at stake upon capture. Median = 31.3.
+**Per-subject parameters (log-normal; reported in log space):**
+- c~e,i~ (effort cost): governs choice through distance-dependent effort penalty. log(c~e~): M = -0.47, SD = 0.78 (geometric mean = 0.62).
+- c~d,i~ (capture aversion): governs vigor through the survival incentive at stake upon capture. log(c~d~): M = 3.44, SD = 1.57 (geometric mean = 31.3). The large geometric mean reflects the low population efficacy (epsilon = 0.098); the effective survival incentive per unit of survival gradient is c~d~ x epsilon ≈ 3.1, indicating moderate loss aversion relative to the 5-point capture penalty.
 
 **Population parameters:**
 - gamma = 0.210: probability weighting exponent
