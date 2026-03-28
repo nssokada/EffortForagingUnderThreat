@@ -174,6 +174,21 @@ Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm per window), N=293, 23
 **Draft:**
 - `drafts/draft003/evc_lqr_paper.md` ✅ (Full paper + critical review)
 
+**DEFINITIVE EVC 2+2 model (2026-03-27) — population epsilon:**
+- Model: `scripts/modeling/evc_final_2plus2.py` ✅
+- `oc_evc_final_params.csv` ✅ (N=293, per-subject ce and cd)
+- `oc_evc_final_population.csv` ✅ (epsilon=0.098, gamma=0.210, ce_vigor=0.003, tau=0.476)
+- **Fit:** BIC=17,768, Choice acc=79.3%, Subj choice r²=0.951, Vigor r²=0.511, Subj vigor r²=0.687
+- `evc_final_recovery.csv` ✅ (3 datasets×50 subj; ce r=0.916 PASS, cd r=0.943 PASS, gamma PASS)
+- `evc_final_ppc.csv` ✅ (Choice acc=79.3%, AUC=0.876, subj choice r=0.976, vigor r=0.722, subj vigor r=0.836)
+- `evc_final_affect.csv` ✅ (Anxiety beta=-0.557 t=-14.04; Confidence beta=0.575 t=13.48)
+- `evc_final_metacognition.csv` ✅ (Conf-CQ r=-0.081 null; Conf-SR r=-0.048 null; Steiger z=-0.50 ns)
+- `evc_final_dissociation.csv` ✅ (cal→CQ r=0.230 p<.001, disc→STAI-State r=0.327 p<.0001)
+- `evc_final_clinical.csv` ✅ (No FDR survivors; no significant interactions)
+- `evc_final_clinical_factors.csv` ✅ (F1/F2/F3 all null)
+- `evc_final_profiles.csv` ✅ (4 quadrants: Cautious/Lazy/Vigilant/Bold; P(heavy) R²=0.953)
+- Figures: fig_s_final_recovery.png, fig_ppc_final.png, fig_s_final_clinical.png, fig_final_metacognition.png, fig_final_quadrants.png
+
 **Superseded (keep for reference):**
 - `FET_Exp_Bias_*.csv` — old model, replaced by L3_add
 - `joint_model_*.csv` — old joint model (independent priors, σ_δ collapsed), replaced by joint_correlated_*
