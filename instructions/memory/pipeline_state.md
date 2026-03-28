@@ -148,6 +148,11 @@ Data source: `smoothed_vigor_ts.parquet` (mean vigor_norm per window), N=293, 23
 **EVC+gamma parameter recovery (2026-03-26):**
 - `evc_parameter_recovery.csv` ✅ (5 synthetic datasets × 50 subjects; c_death r=0.946, epsilon r=0.926, c_effort r=0.04 NOT recoverable, gamma=0.262 vs true 0.283)
 
+**EVC Option 2 parameter recovery (2026-03-27):**
+- `evc_option2_recovery.csv` ✅ (5 datasets × 50 subj; ce r=0.941 PASS, cd r=0.917 PASS, eps r=-0.025 FAIL — no individual variance, gamma=0.274 vs true 0.210 slight positive bias)
+- `fig_s_option2_recovery.png` ✅ (3-panel scatter: ce, cd, eps true vs recovered)
+- Script: `scripts/analysis/evc_option2_recovery.py`
+
 **EVC-LQR full pipeline (2026-03-27):**
 - `evc_lqr_recovery.csv` ✅ (5 datasets × 50 subj; cd r=0.888, eps r=0.933, gamma 0.314 vs true 0.318)
 - `evc_lqr_ppc.csv` ✅ (Choice acc=75.4%, AUC=0.819, subj choice r=0.901, vigor r=0.510, subj vigor r=0.717)
