@@ -202,6 +202,8 @@ def make_model_m2(N_S, N_trials):
                            obs=ch_choice)
 
         # VIGOR: S(u)×R - (1-S(u))×cd×(R+C) — no effort cost in vigor
+        # Add minimal motor cost (0.01*u²) for numerical stability
+        # Without ANY cost, optimal u→∞, causing NaN
         cd_v = c_death[vig_subj]
         T_w_v = jnp.power(vig_T, gamma)
         u_grid = jnp.linspace(0.1, 1.5, 30)
@@ -210,7 +212,8 @@ def make_model_m2(N_S, N_trials):
                + epsilon * T_w_v[:, None] * p_esc
                * jax.nn.sigmoid((u_g - vig_req[:, None]) / sigma_motor))
         eu_grid = (S_u * vig_R[:, None]
-                   - (1.0 - S_u) * cd_v[:, None] * (vig_R[:, None] + 5.0))
+                   - (1.0 - S_u) * cd_v[:, None] * (vig_R[:, None] + 5.0)
+                   - 0.1 * u_g ** 2 * vig_dist[:, None])  # regularization for numerical stability
         weights = jax.nn.softmax(eu_grid * 10.0, axis=1)
         u_star = jnp.sum(weights * u_g, axis=1)
         excess_pred = u_star - vig_req - vig_offset
@@ -777,8 +780,8 @@ if __name__ == '__main__':
     print("=" * 70)
     for model_name in ['M1', 'M2', 'M3', 'M4', 'M5', 'M6']:
         try:
-            # M2 needs lower lr to avoid divergence
-            lr = 0.001 if model_name == 'M2' else 0.002
+            # M2 and M6 need lower lr to avoid divergence
+            lr = 0.001 if model_name in ('M2', 'M6') else 0.002
             fit_result = fit_model(model_name, data, n_steps=35000, lr=lr)
             # Check for NaN loss
             if np.isnan(fit_result['losses'][-1]):
