@@ -780,8 +780,14 @@ if __name__ == '__main__':
     print("=" * 70)
     for model_name in ['M1', 'M2', 'M3', 'M4', 'M5', 'M6']:
         try:
-            # M2 and M6 need lower lr to avoid divergence
-            lr = 0.001 if model_name in ('M2', 'M6') else 0.002
+            # M2 needs very low lr (no effort cost makes gradients steep)
+            # M6 also needs lower lr for stability
+            if model_name == 'M2':
+                lr = 0.0002
+            elif model_name == 'M6':
+                lr = 0.001
+            else:
+                lr = 0.002
             fit_result = fit_model(model_name, data, n_steps=35000, lr=lr)
             # Check for NaN loss
             if np.isnan(fit_result['losses'][-1]):
