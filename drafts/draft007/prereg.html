@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>prereg_evc_aspredicted</title>
+
+<style>
+@page { margin: 2.5cm; size: A4; }
+body {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 11pt;
+    line-height: 1.6;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    color: #1a1a1a;
+}
+h1 { font-size: 18pt; margin-top: 0; margin-bottom: 8px; line-height: 1.3; }
+h2 { font-size: 14pt; margin-top: 28px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 4px; }
+h3 { font-size: 12pt; margin-top: 20px; margin-bottom: 8px; }
+h4 { font-size: 11pt; margin-top: 16px; margin-bottom: 6px; font-style: italic; }
+p { margin: 0 0 10px 0; text-align: justify; }
+table { border-collapse: collapse; margin: 16px 0; font-size: 10pt; width: 100%; }
+th, td { border: 1px solid #999; padding: 5px 8px; text-align: left; }
+th { background: #f0f0f0; font-weight: bold; }
+tr:nth-child(even) { background: #fafafa; }
+sup { font-size: 8pt; }
+hr { border: none; border-top: 1px solid #ccc; margin: 24px 0; }
+blockquote { border-left: 3px solid #ccc; margin: 12px 0; padding: 4px 16px; color: #555; }
+code { font-family: 'Courier New', monospace; font-size: 10pt; background: #f5f5f5; padding: 1px 4px; }
+pre { background: #f5f5f5; padding: 12px; overflow-x: auto; font-size: 10pt; }
+strong { font-weight: bold; }
+em { font-style: italic; }
+ul, ol { margin: 8px 0 8px 24px; }
+li { margin-bottom: 4px; }
+.author { font-size: 11pt; color: #444; margin-bottom: 4px; }
+.abstract { font-size: 10.5pt; }
+@media print {
+    body { font-size: 10.5pt; padding: 0; }
+    h2 { page-break-after: avoid; }
+    table { page-break-inside: avoid; }
+}
+</style>
+
+</head>
+<body>
+<p><strong>Hypothesis</strong>
+The overarching questions being asked are A) how do humans integrate energetic cost and predation risk when foraging, and B) does the metacognitive relationship between computed danger and experienced affect predict clinical anxiety symptoms?</p>
+<p>We test this using a task where subjects forage for food items in a virtual environment under threat of capture by a virtual predator, choosing between options that vary in reward, effort cost, and escape distance, then physically executing their foraging bout by pressing keys. On a subset of trials (probe trials), subjects report their subjective anxiety and confidence.</p>
+<p>The computational framework estimates two per-subject parameters from a joint hierarchical Bayesian EVC-LQR model:</p>
+<ul>
+<li><strong>c_e</strong> — effort cost: how strongly effort/distance deters choice (identified from choice data)</li>
+<li><strong>c_d</strong> — capture aversion: how strongly the survival incentive drives motor vigor (identified from vigor data)</li>
+<li><strong>S</strong> — survival probability: S = (1 − T^γ) + ε × T^γ × p_esc, where γ (probability weighting) and ε (effort efficacy) are population-level parameters shared across subjects</li>
+</ul>
+<p>The model uses an LQR (linear-quadratic regulator) cost structure where effort enters choice as a commitment cost (req² × D) and vigor as a deviation cost ((u − req)² × D).</p>
+<p>Specific hypotheses are as follows:</p>
+<ol>
+<li>Threat will reduce high-effort choice, increase excess motor effort, and shift subjective anxiety upward and confidence downward
+a. High-effort choice will decrease with threat probability and with escape distance
+b. Excess effort (pressing rate minus chosen option's demand), conditioned on chosen cookie type, will increase with threat probability
+c. Trial-level anxiety will increase and confidence will decrease with model-derived survival probability S</li>
+<li>The EVC-LQR model will jointly capture choice and vigor with two recoverable per-subject parameters
+a. Per-subject choice predictions will correlate r &gt; 0.85 with observed choice proportions
+b. Trial-level vigor predictions will explain r² &gt; 0.30 of excess effort variance
+c. The model will capture distance gradients in choice: predicted P(choose heavy) will decrease with distance within each threat level
+d. Parameter recovery will yield correlations r &gt; 0.70 for both log(c_e) and log(c_d) in simulation
+e. log(c_e) and log(c_d) will be approximately independent: |r| &lt; 0.25</li>
+<li>Subjective confidence will track choice quality but not motor execution quality
+a. Between-subject mean confidence will correlate positively with choice quality (proportion of EV-optimal choices), r &gt; 0, p &lt; 0.05
+b. Between-subject mean confidence will NOT correlate with survival rate, |r| &lt; 0.10
+c. Steiger's test comparing the two dependent correlations (confidence-choice vs. confidence-survival) will be significant, p &lt; 0.05</li>
+<li>Metacognitive calibration and discrepancy will dissociate performance from clinical symptoms
+a. Calibration (within-subject r between anxiety and model-derived danger 1−S) and discrepancy (mean anxiety residual after removing the S-anxiety relationship) will be approximately orthogonal: |r| &lt; 0.15
+b. Calibration will predict task performance: r(calibration, choice quality) &gt; 0 OR r(calibration, survival rate) &gt; 0, p &lt; 0.05
+c. Discrepancy will predict clinical anxiety symptoms: r(discrepancy, STAI-State) &gt; 0, p &lt; 0.01
+d. Discrepancy will predict at least two additional clinical measures from {OASIS, STICSA, PHQ-9, DASS-Anxiety, DASS-Stress, DASS-Depression} at p &lt; 0.05 uncorrected</li>
+</ol>
+<p><strong>Dependent variable</strong>
+Listed according to hypotheses:</p>
+<ol>
+<li>(a) Binary choice of high- vs. low-effort cookie on each of 45 behavioral trials (trial-level). (b) Excess effort: the difference between the actual pressing rate and the effort demand of the chosen option, both in proportion-of-calibrated-capacity units, centered by cookie type (trial-level, continuous). (c) Self-reported anxiety and confidence ratings on probe trials (0–7 scale, trial-level), 18 per affect type per subject.</li>
+<li>(a–b) Per-subject predicted versus observed choice proportion and trial-level excess effort, from the jointly fitted EVC-LQR model. (c) Condition-level (threat × distance) predicted versus observed P(choose heavy). (d) Simulated-and-recovered parameter correlations in log space. (e) Pearson r between log(c_e) and log(c_d).</li>
+<li>(a) Per-subject Pearson r between mean confidence and choice quality (proportion of trials matching the EV-maximizing option). (b) Per-subject Pearson r between mean confidence and survival rate (1 − capture rate). (c) Steiger's z comparing the two dependent correlations.</li>
+<li>(a) Pearson r between calibration and discrepancy. (b) Pearson r between calibration and choice quality or survival rate. (c–d) Pearson r between discrepancy and z-scored psychiatric subscale scores.</li>
+</ol>
+<p><strong>Conditions</strong>
+One experiment with a within-subjects design. Each subject completes 81 trials (3 blocks × 27 trials) in a virtual foraging task. Conditions are fully crossed within subject:</p>
+<ul>
+<li><strong>Threat probability:</strong> T ∈ {0.1, 0.5, 0.9} — the probability of a predator attack on each trial</li>
+<li><strong>Distance:</strong> D ∈ {1, 2, 3} corresponding to 5, 7, 9 game units from the safe zone — the distance of the high-effort cookie</li>
+<li><strong>Effort demand:</strong> E_H ∈ {0.6, 0.8, 1.0} of calibrated pressing capacity — the effort required for the high-effort cookie</li>
+</ul>
+<p>The low-effort option is fixed (E_L = 0.4, D_L = 1, R_L = 1 point). The high-effort option yields R_H = 5 points. Capture penalty is C = 5 points.</p>
+<p>Each block contains 15 regular behavioral trials and 12 probe trials (6 anxiety, 6 confidence). Probe trials use forced-choice (identical options) and collect ratings before pressing begins. A psychiatric battery (DASS-21, PHQ-9, OASIS, STAI-State, AMI, MFIS, STICSA) is administered between blocks.</p>
+<p><strong>Analyses</strong>
+H1.</p>
+<ol>
+<li>Logistic mixed-effects model on trial-level binary choice: <code>choice ~ threat_z + dist_z + threat_z:dist_z + (1 | subject)</code>. Tests: β(threat) &lt; 0 and β(dist) &lt; 0, both p &lt; 0.01. Monotonicity of P(choose heavy) across adjacent threat levels within each distance, confirmed by paired t-tests (p &lt; 0.01, one-tailed).</li>
+<li>Linear mixed-effects model on trial-level cookie-centered excess effort, conditioned on chosen cookie type: <code>excess_cc ~ threat_z + (1 | subject)</code>. Test: β(threat) &gt; 0, p &lt; 0.05.</li>
+<li>Linear mixed-effects models on probe ratings: <code>anxiety ~ S_z + (1 + S_z | subject)</code> and <code>confidence ~ S_z + (1 + S_z | subject)</code>, where S is the EVC model's survival probability. Tests: β(S) &lt; 0 for anxiety and β(S) &gt; 0 for confidence, both |t| &gt; 3.0.</li>
+</ol>
+<p>H2.</p>
+<ol>
+<li>Fit the EVC-LQR model (2 per-subject parameters: c_e, c_d; population: γ, ε, c_e_vigor, τ, p_esc, σ_motor, σ_v) via NumPyro SVI (AutoNormal guide, 40,000 steps, Adam lr=0.002). Choice data: 45 choice trials (type=1). Vigor data: all 81 trials (types 1, 5, 6), with probe distances from startDistance. Cookie-type centering of excess effort using choice-trial means. The choice equation is ΔEU = S × 4 − c_e × (0.81 × D_H − 0.16); c_d does not enter choice (collinear with the reward differential). The vigor equation optimizes EU(u) = S(u) × R − (1 − S(u)) × c_d × (R + C) − c_e_vigor × (u − req)² × D via softmax-weighted grid search.</li>
+<li>Report per-subject choice r² (test &gt; 0.85) and trial-level vigor r² (test &gt; 0.30).</li>
+<li>Condition-level PPC: verify that predicted P(heavy) declines with D within each T.</li>
+<li>Parameter recovery: simulate 3 datasets × 50 subjects × 81 trials from the fitted population distribution, refit, report Pearson r in log space for c_e and c_d (test &gt; 0.70).</li>
+<li>Report Pearson r between log(c_e) and log(c_d) (test |r| &lt; 0.25).</li>
+</ol>
+<p>H3.</p>
+<ol>
+<li>For each subject, compute mean confidence, choice quality (proportion of EV-optimal choices), and survival rate. Report Pearson r(confidence, choice quality) and r(confidence, survival rate).</li>
+<li>Apply Steiger's test for dependent correlations (p &lt; 0.05).</li>
+</ol>
+<p>H4.</p>
+<ol>
+<li>Compute per-subject calibration (within-subject r between anxiety rating and 1−S) and discrepancy (mean residual from population-level anxiety~S regression).</li>
+<li>Test orthogonality: |r(calibration, discrepancy)| &lt; 0.15.</li>
+<li>Test calibration → performance: r(calibration, choice quality) or r(calibration, survival), p &lt; 0.05.</li>
+<li>Test discrepancy → clinical: r(discrepancy, STAI-State) &gt; 0, p &lt; 0.01.</li>
+<li>Count additional clinical measures with r(discrepancy, measure) &gt; 0, p &lt; 0.05 (test ≥ 2 from {OASIS, STICSA, PHQ-9, DASS-Anxiety, DASS-Stress, DASS-Depression}).</li>
+</ol>
+<p><strong>Exploratory analyses (not preregistered):</strong></p>
+<ul>
+<li>Bayesian ROPE analysis of model parameters vs. clinical measures</li>
+<li>Cross-validated machine learning prediction of clinical outcomes</li>
+<li>Factor analysis of psychiatric battery and parameter-factor associations</li>
+<li>Behavioral profile (c_e × c_d quadrant) analysis</li>
+<li>Simpson's paradox demonstration in unconditional vigor</li>
+<li>Optimality and Pareto analysis</li>
+<li>Anxiety sensitization across blocks</li>
+</ul>
+<p><strong>Outliers and Exclusions</strong>
+Exclusion criteria applied before any model fitting:</p>
+<ol>
+<li>Incomplete task (did not finish all 81 trials)</li>
+<li>Invalid calibration (fewer than 10 presses across calibration trials)</li>
+<li>Implausible keypresses: max single-trial press rate &gt; 3 SD above sample mean (automated input), or zero presses on &gt; 50% of regular trials (disengagement)</li>
+<li>Invalid predator dynamics: &gt; 10% of trials with physically impossible predator behavior</li>
+<li>Low engagement: overall escape rate &lt; 35% across attack trials</li>
+<li>Insufficient probes: &lt; 80% probe completion (&lt; 29/36). These subjects excluded from affect analyses (H1c, H3, H4) only.</li>
+</ol>
+<p>No post-hoc exclusions based on model fit quality or statistical extremity.</p>
+<p><strong>Sample Size</strong>
+N = 350 recruited via Prolific. Expected N ≈ 280–330 after exclusions (exploratory retention: 83.7%). The weakest powered test is H3c (Steiger's test for dependent correlations; exploratory z = 3.14). At N = 280, power &gt; 0.95 for all preregistered tests based on exploratory effect sizes.</p>
+<p><strong>Other</strong>
+The exploratory sample (N = 293) was used to develop all hypotheses and specify all analysis plans. The confirmatory sample has been collected but not analyzed. The preregistration will be timestamped on AsPredicted before the confirmatory data are opened. All analysis code is available at [repository URL]; data will be shared on OSF upon acceptance.</p>
+<p><strong>Name</strong>
+Expected Value of Control in effort foraging under threat: metacognitive bridges to clinical anxiety</p>
+<p><strong>Finally</strong>
+Experiment</p>
+
+</body>
+</html>
