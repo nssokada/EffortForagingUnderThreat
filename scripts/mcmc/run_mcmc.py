@@ -12,7 +12,7 @@ Architecture (identical to SVI):
     Vigor: EU(u) = S(u)*R - (1-S(u))*cd_i*(R+C) - ce_vigor*(u-req)^2*D
 
 MCMC settings (full run):
-    4 chains, 1000 warmup + 1000 samples, target_accept=0.85, max_tree_depth=10
+    4 chains, 2000 warmup + 4000 samples, target_accept=0.85, max_tree_depth=10
 
 Usage:
     python scripts/mcmc/run_mcmc.py --data_dir data/exploratory_350/processed/stage5_filtered_data_20260320_191950
@@ -293,7 +293,7 @@ def _compute_ess(chains):
 # MCMC fitting
 # ═══════════════════════════════════════════════════════════════════════════════
 
-def fit_mcmc(data, num_warmup=1000, num_samples=1000, num_chains=4,
+def fit_mcmc(data, num_warmup=2000, num_samples=4000, num_chains=4,
              target_accept_prob=0.85, max_tree_depth=10, seed=0):
     """Fit the 2+2 model via MCMC (NUTS)."""
 
@@ -635,8 +635,8 @@ def main():
     parser.add_argument('--out_dir', type=str,
                         default='results/stats/mcmc',
                         help='Output directory for MCMC results')
-    parser.add_argument('--num_warmup', type=int, default=1000)
-    parser.add_argument('--num_samples', type=int, default=1000)
+    parser.add_argument('--num_warmup', type=int, default=2000)
+    parser.add_argument('--num_samples', type=int, default=4000)
     parser.add_argument('--num_chains', type=int, default=4)
     parser.add_argument('--target_accept', type=float, default=0.85)
     parser.add_argument('--max_tree_depth', type=int, default=10)

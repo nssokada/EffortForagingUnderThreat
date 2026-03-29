@@ -12,7 +12,7 @@ pip install jax[cuda12] numpyro pandas scipy
 ## Quick test (5-10 min on GPU, ~20 min on CPU)
 python scripts/mcmc/run_mcmc_quick.py --data_dir data/exploratory_350/processed/stage5_filtered_data_20260320_191950
 
-## Full run (30-60 min on GPU)
+## Full run (4 chains × 2000 warmup + 4000 samples; ~1-2 hours on GPU)
 python scripts/mcmc/run_mcmc.py --data_dir data/exploratory_350/processed/stage5_filtered_data_20260320_191950
 
 ## Post-hoc comparison figure (after MCMC completes)
@@ -20,7 +20,7 @@ python scripts/mcmc/compare_svi_mcmc.py
 
 ## Expected output
 - R-hat < 1.05 for all population parameters
-- R-hat < 1.10 for per-subject parameters (with 1000 samples)
+- R-hat < 1.05 for per-subject parameters (with 4000 samples)
 - SVI-MCMC correlation: r > 0.99 for both log(ce) and log(cd)
 - Zero or near-zero divergent transitions
 
@@ -32,6 +32,6 @@ python scripts/mcmc/compare_svi_mcmc.py
 - `results/figs/paper/fig_s_mcmc_validation.png` — SVI vs MCMC comparison figure
 
 ## What to report in the paper
-"SVI parameter estimates were validated against MCMC (NUTS, 4 chains x 1000 samples;
+"SVI parameter estimates were validated against MCMC (NUTS, 4 chains x 4000 samples;
 all population R-hat < 1.05; per-subject parameter correlation with SVI:
 log(ce) r = X.XXX, log(cd) r = X.XXX; N divergent transitions = X)."
