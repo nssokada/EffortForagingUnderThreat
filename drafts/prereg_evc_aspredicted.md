@@ -141,7 +141,7 @@ For the exploratory clinical analyses (E1–E2), the combined exploratory + conf
 The exploratory sample (N = 293) was used to develop all hypotheses and specify all analysis plans. The confirmatory sample has been collected but not analyzed. The preregistration will be timestamped on AsPredicted before the confirmatory data are opened. All analysis code is available at [repository URL]; data will be shared on OSF upon acceptance.
 
 **Name**
-A Common Computational Structure Integrates Effort and Threat Across Decision, Emotion, and Action
+Three separable cost signals govern foraging under threat: effort, threat aversion, and defensive vigor
 
 **Finally**
 Experiment
