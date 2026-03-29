@@ -73,14 +73,14 @@ H4.
 5. Count additional clinical measures with r(discrepancy, measure) > 0, p < 0.05 (test ≥ 2 from {OASIS, STICSA, PHQ-9, DASS-Anxiety, DASS-Stress, DASS-Depression}).
 6. Report any cross-associations (calibration → clinical, discrepancy → performance) to characterize leakage in the differential prediction pattern.
 
-**Exploratory analyses (not preregistered):**
-- Bayesian ROPE analysis of model parameters vs. clinical measures
+**Exploratory analyses (not preregistered as directional hypotheses):**
+- **Exploratory H5: Computational parameters and clinical symptoms.** In the combined exploratory + confirmatory sample (N ≈ 570–620), we will test whether log(c_e) and log(c_d) predict anxiety symptoms (STAI, OASIS, STICSA, DASS-Anxiety) and apathy (AMI) at p < .05 uncorrected. The exploratory sample showed small, inconsistent associations (|r| = 0.08–0.12) that did not survive correction for multiple comparisons, but the exploratory sample was underpowered for effects of this magnitude (50% power at r = 0.12). The combined sample provides 83% power to detect r = 0.12, resolving whether these reflect true nulls or underpowered signals.
+- Bayesian ROPE analysis of model parameters vs. clinical measures (combined sample)
+- Within-trial encounter dynamics: encounter reactivity as predictor of apathy (AMI)
 - Cross-validated machine learning prediction of clinical outcomes
 - Factor analysis of psychiatric battery and parameter-factor associations
 - Behavioral profile (c_e × c_d quadrant) analysis (descriptive, supplementary)
 - Simpson's paradox demonstration in unconditional vigor
-- Optimality and Pareto analysis
-- Anxiety sensitization across blocks
 
 **Outliers and Exclusions**
 Exclusion criteria applied before any model fitting:
@@ -94,13 +94,15 @@ Exclusion criteria applied before any model fitting:
 No post-hoc exclusions based on model fit quality or statistical extremity.
 
 **Sample Size**
-N = 350 recruited via Prolific. Expected N ≈ 280–330 after exclusions (exploratory retention: 83.7%). The weakest powered test is H3c (Steiger's test for dependent correlations; exploratory z = 3.14). At N = 280, power > 0.95 for all preregistered tests based on exploratory effect sizes.
+N = 350 recruited via Prolific. Expected N ≈ 280–330 after exclusions (exploratory retention: 83.7%). The weakest powered preregistered test is H3a (r = 0.25; at N = 280, power > 0.99). At N = 280, power > 0.95 for all preregistered tests (H1–H4) based on exploratory effect sizes.
+
+For the exploratory clinical analyses (H5), the combined exploratory + confirmatory sample (N ≈ 570–620) provides substantially greater sensitivity. At N = 580: power = 83% for r = 0.12, 96% for r = 0.15. This combined approach follows recommendations for maximizing sensitivity in computational psychiatry where individual parameter–symptom effect sizes are typically small (r = 0.10–0.20; Gillan et al., 2016; Wise & Dolan, 2020). We will report clinical associations from both the confirmatory sample alone (preregistered H1–H4) and the combined sample (exploratory H5).
 
 **Other**
 The exploratory sample (N = 293) was used to develop all hypotheses and specify all analysis plans. The confirmatory sample has been collected but not analyzed. The preregistration will be timestamped on AsPredicted before the confirmatory data are opened. All analysis code is available at [repository URL]; data will be shared on OSF upon acceptance.
 
 **Name**
-Metacognitive bias, not threat computation, bridges foraging decisions to anxiety symptoms
+Integrating effort and threat in human foraging: a unified computation of choice and vigor under predation risk
 
 **Finally**
 Experiment
