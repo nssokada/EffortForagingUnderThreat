@@ -1,0 +1,26 @@
+analysis,variable,mean,sd,se,n,test,t_stat,p_value
+encounter_change_by_threat,T=0.1,-0.04128272458910942,0.2933882772922516,0.009752556330273351,905,one-sample t,-4.233016014099121,2.5413066396140493e-05
+encounter_change_by_threat,T=0.5,-0.03887272626161575,0.3032805919647217,0.005327274846068238,3241,one-sample t,-7.2969255447387695,3.685095035111524e-13
+encounter_change_by_threat,T=0.9,-0.040788210928440094,0.3492373824119568,0.004523739567751236,5960,one-sample t,-9.016480445861816,2.5738006517983607e-19
+encounter_change_anova,threat,,,,10106,one-way ANOVA,0.04044950753450394,0.9603577852249146
+overall_reactivity,encounter_change,-0.018584033474326134,0.27644237875938416,,293,one-sample t,-1.1507188081741333,0.2507893741130829
+reactivity_x_param,log(c_death),0.500655420350349,,,293,Pearson r,,5.393733798114725e-20
+reactivity_x_param,log(c_effort),-0.08614800402236433,,,293,Pearson r,,0.14127788220090065
+reactivity_x_clinical,STAI_Trait,0.07482741335435694,,,292,Pearson r,,0.20232516827895886
+reactivity_x_clinical,STAI_State,-0.032592264008793774,,,293,Pearson r,,0.5784483781319824
+reactivity_x_clinical,OASIS_Total,-0.013240455845294843,,,293,Pearson r,,0.8214493868485714
+reactivity_x_clinical,DASS21_Anxiety,0.01575812878153592,,,293,Pearson r,,0.7882379890283955
+reactivity_x_clinical,DASS21_Depression,-0.03343423865984837,,,293,Pearson r,,0.5686675207297474
+reactivity_x_clinical,DASS21_Stress,-0.008501468711026815,,,293,Pearson r,,0.8847880311620767
+reactivity_x_clinical,PHQ9_Total,-0.060502161117788125,,,293,Pearson r,,0.3020022795353116
+reactivity_x_clinical,AMI_Total,-0.16672320583887942,,,293,Pearson r,,0.004213777756705019
+reactivity_x_clinical,MFIS_Total,0.033411669352117784,,,292,Pearson r,,0.5695945428924064
+reactivity_x_clinical,STICSA_Total,0.01946903062179822,,,293,Pearson r,,0.7399926780644974
+reactivity_x_clinical,F1,0.007851991145691689,,,291,Pearson r,,0.8939003860064447
+reactivity_x_clinical,F2,-0.07868608827304038,,,291,Pearson r,,0.18070640870298085
+reactivity_x_clinical,F3,0.1894026817575317,,,291,Pearson r,,0.001168349733687911
+block_stability,mean_cross_block_r,0.7820402979850769,,,288,Pearson r (average),,
+piecewise_slope_change,post_slope - pre_slope,0.049548516386060976,0.1435415430649281,,293,one-sample t,5.908630809560815,9.594599773953951e-09
+slope_change_x_log_cd,slope_change × log(c_death),0.17631560165043147,,,293,Pearson r,,0.0024544600389103735
+reactivity_x_param_robust,log(c_death) Spearman,0.4066724169680963,,,293,Spearman rho,,4.2621014853750903e-13
+reactivity_x_param_robust,log(c_death) no outlier,0.4653853898835393,,,292,Pearson r,,4.229303234513475e-17
