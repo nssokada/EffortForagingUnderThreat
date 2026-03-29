@@ -354,10 +354,12 @@ if __name__ == '__main__':
     print(f"N_choice={data['N_choice']}, N_vigor={data['N_vigor']}")
 
     # ── Fit MCMC ──
+    # 200+200 to fit within time constraints (CPU only, ~600 params)
+    # Can increase to 500+500 with GPU
     mcmc, elapsed = fit_mcmc(
         data,
-        num_warmup=500,
-        num_samples=500,
+        num_warmup=200,
+        num_samples=200,
         num_chains=4,
         target_accept_prob=0.8,
         max_tree_depth=10,
