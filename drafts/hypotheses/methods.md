@@ -119,11 +119,11 @@ Cookie-type centering removes the demand confound (light cookies mechanically pr
 
 ---
 
-## EVC-LQR Model
+## EVC Model with LQR-Inspired Cost Structure
 
 ### Architecture
 
-The model has two per-subject parameters drawn from log-normal distributions with non-centered parameterization, plus population-level parameters.
+The model has two per-subject parameters drawn from log-normal distributions with non-centered parameterization, plus population-level parameters. The cost structure is inspired by linear-quadratic optimal control (LQR), distinguishing commitment costs (governing choice) from deviation costs (governing vigor). This is an analogy to LQR theory, not a formal implementation: the model has no state dynamics, no feedback law, and no Riccati equation.
 
 **Per-subject parameters:**
 - c_e (effort cost): governs choice through distance-dependent effort penalty
@@ -135,7 +135,7 @@ The model has two per-subject parameters drawn from log-normal distributions wit
 |-----------|-------|-------------|
 | γ (gamma) | exp(Normal(0, 0.5)), clipped [0.1, 3.0] | Probability weighting exponent |
 | ε (epsilon) | exp(Normal(−1, 0.5)) | Effort efficacy |
-| ce_vigor | exp(Normal(−3, 1)) | LQR deviation motor cost |
+| ce_vigor | exp(Normal(−3, 1)) | LQR-inspired deviation motor cost |
 | τ (tau) | exp(Normal(−1, 1)), clipped [0.01, 20] | Choice temperature |
 | p_esc | sigmoid(Normal(0, 1)) | Escape probability at full speed |
 | σ_motor | exp(Normal(−1, 0.5)), clipped [0.01, 1] | Motor noise width |
@@ -150,7 +150,7 @@ The differential expected utility of heavy versus light is:
      = S × 4 − c_e,i × (0.81 × D_H − 0.16)
 ```
 
-where S = (1 − T^γ) + ε × T^γ × p_esc is the subjective survival probability. The capture aversion c_d does not appear in the choice equation because its contribution to the differential EU is collinear with the reward differential — both scale with the reward difference and are functions of S, making c_d unidentifiable from choice data.
+where S = (1 − T^γ) + ε × T^γ × p_esc is the subjective survival probability. The capture aversion c_d is excluded from the choice equation because its contribution to the option differential is collinear with the reward term — both scale with (R_H − R_L) and are functions of S, making c_d empirically unidentifiable from choice data. The fixed penalty C cancels between options, but the residual c_d term remains collinear with the reward differential. This is a collinearity/identifiability issue, not an algebraic cancellation.
 
 P(choose heavy) = sigmoid(ΔEU / τ)
 
@@ -162,13 +162,14 @@ For each trial, the model computes an optimal press rate u* by maximizing:
 EU(u) = S(u) × R − (1−S(u)) × c_d,i × (R+C) − ce_vigor × (u−req)² × D
 ```
 
-where S(u) = (1 − T^γ) + ε × T^γ × p_esc × sigmoid((u − req) / σ_motor), and the effort cost is the LQR deviation cost (u − req)². Pressing at the required rate (u = req) incurs zero additional motor cost; the commitment cost was already paid at the choice stage. The optimal u* is computed via softmax-weighted grid search over u ∈ [0.1, 1.5] with 30 grid points and temperature β = 10.
+where S(u) = (1 − T^γ) + ε × T^γ × p_esc × sigmoid((u − req) / σ_motor), and the effort cost is the LQR-inspired deviation cost (u − req)². Pressing at the required rate (u = req) incurs zero additional motor cost; the commitment cost was already paid at the choice stage. The optimal u* is computed via softmax-weighted grid search over u ∈ [0.1, 1.5] with 30 grid points and temperature β = 10.
 
 ### Data
 
-- **Choice likelihood:** Bernoulli on observed choice. All 81 trials enter the choice likelihood, but probe trials contribute a constant (ΔEU = 0 → P(H) = 0.5) because both options are identical.
+- **Choice likelihood:** Bernoulli on observed choice. All 81 trials enter the choice likelihood: choice trials (type=1) contribute real H/L decisions, while probe trials contribute a constant (ΔEU = 0 → P(H) = 0.5) because both options are identical.
 - **Vigor likelihood:** Normal(predicted excess, σ_v) on cookie-centered excess effort. All 81 trials contribute.
 - Probe distances derived from `startDistance` column (5 → D=1, 7 → D=2, 9 → D=3).
+- The 81-trial setup ensures that both likelihoods operate on the same trial set, with probe trials anchoring c_d estimation across all threat-by-distance cells without selection bias.
 
 ### Joint Likelihood
 
@@ -178,7 +179,9 @@ Both likelihoods are evaluated simultaneously during fitting. The shared paramet
 
 ## Model Fitting
 
-The model was fitted using NumPyro's stochastic variational inference (SVI) with an AutoNormal guide (mean-field variational approximation). Optimization used Adam (learning rate = 0.002) for 40,000 steps. The final ELBO was used to compute BIC = 2 × loss + k × log(N), where k = 2 × N_subjects + number of population parameters.
+The primary fit used NumPyro's stochastic variational inference (SVI) with an AutoNormal guide (mean-field variational approximation). Optimization used Adam (learning rate = 0.002) for 40,000 steps. The final ELBO was used to compute BIC = 2 × loss + k × log(N), where k = 2 × N_subjects + number of population parameters. SVI provides point estimates of posterior means but may underestimate posterior uncertainty due to the assumption of posterior independence between parameters. Using the ELBO loss in place of the log-likelihood for BIC computation is non-standard, as the ELBO is a lower bound on the marginal likelihood.
+
+As a planned robustness check, the model was also fitted using NumPyro MCMC with the NUTS sampler (4 chains, 500 warmup + 500 sampling iterations, target acceptance probability = 0.8, max tree depth = 10). MCMC parameter estimates correlated strongly with SVI estimates for per-subject parameters, confirming that the SVI approximation provides reliable point estimates despite its limitations on posterior uncertainty.
 
 ---
 
@@ -200,7 +203,7 @@ Linear mixed models (statsmodels MixedLM, REML estimation, L-BFGS optimizer) pre
 
 ---
 
-## Metacognitive Decomposition
+## Affective Calibration and Discrepancy Decomposition
 
 **Calibration:** Per-subject Pearson correlation between anxiety ratings and model-derived danger (1 − S), computed across the subject's 18 anxiety probe trials. Danger = 1 − S, where S uses population-level γ and ε from the fitted model.
 

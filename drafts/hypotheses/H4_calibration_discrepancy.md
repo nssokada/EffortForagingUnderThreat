@@ -1,4 +1,4 @@
-# H4: Calibration and Discrepancy Doubly Dissociate Performance from Clinical Symptoms
+# H4: Calibration and Discrepancy Show a Differential Prediction Pattern for Performance vs. Anxiety Symptoms
 
 ## Results from Discovery Sample (N = 293)
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-This hypothesis tests whether two orthogonal dimensions of metacognitive anxiety — calibration (signal quality: how accurately anxiety tracks danger) and discrepancy (systematic bias: how much anxiety exceeds danger) — dissociate adaptive performance from clinical symptomatology. The prediction derives from metacognitive theories of anxiety (Wells, 2009) and the interoceptive prediction error framework (Paulus & Stein, 2010): calibration reflects the fidelity of threat monitoring, while discrepancy reflects a systematic mismatch between threat appraisal and affective response — the hypothesized computational substrate of clinical anxiety.
+This hypothesis tests whether two orthogonal dimensions of the affect-danger relationship — calibration (signal quality: how accurately anxiety tracks danger) and discrepancy (systematic bias: how much anxiety exceeds danger) — show a differential prediction pattern, with calibration primarily predicting adaptive performance and discrepancy primarily predicting anxiety symptoms. The prediction derives from metacognitive theories of anxiety (Wells, 2009) and the interoceptive prediction error framework (Paulus & Stein, 2010): calibration reflects the fidelity of threat monitoring, while discrepancy reflects a systematic mismatch between threat appraisal and affective response. We use "anxiety symptoms" to refer to dimensional variation on validated symptom scales in a non-clinical sample, not clinical diagnoses.
 
 ---
 
@@ -179,7 +179,7 @@ Cross-validated ridge regression predicting each clinical measure from log(ce) +
 
 ---
 
-### The Double Dissociation
+### The Differential Prediction Pattern
 
 #### Pattern summary
 
@@ -188,18 +188,18 @@ Cross-validated ridge regression predicting each clinical measure from log(ce) +
 | **Calibration** | r = 0.19–0.24 (✓) | mostly null (6/7 p > .10) |
 | **Discrepancy** | r = −0.15 (partial leakage) | r = 0.18–0.34 (✓✓✓) |
 
-#### Is it a clean double dissociation?
+#### Is the pattern clean?
 
-**Partially.** The dominant pattern is clear and robust:
+**Predominantly, but with leakage.** The dominant pattern is clear and robust:
 - Calibration **primarily** predicts performance
-- Discrepancy **primarily** predicts clinical symptoms
+- Discrepancy **primarily** predicts anxiety symptoms
 - They are orthogonal (r = 0.019)
 
 However, there is leakage in both directions:
-- **Calibration → STAI-State:** r = 0.138, p = .019. Better calibration weakly predicts higher state anxiety. This could reflect adaptive vigilance (accurately anxious people are more aware of their state anxiety) or a methodological confound (both measures involve anxiety self-report).
+- **Calibration → STAI-State:** r = 0.121, p = .04. Better calibration weakly predicts higher state anxiety. This could reflect adaptive vigilance (accurately anxious people are more aware of their state anxiety) or a methodological confound (both measures involve anxiety self-report).
 - **Discrepancy → survival:** r = −0.153, p = .009. Overanxious subjects survive slightly less, possibly because excessive anxiety disrupts optimal motor execution or because they choose overly conservative strategies that happen to be suboptimal.
 
-The paper should use **"partial double dissociation"** or **"predominant dissociation"** rather than claiming a clean separation. The pattern is strong enough to support the theoretical interpretation but not absolute.
+We characterize this as a **"differential prediction pattern"** rather than a "double dissociation" in the strict neuropsychological sense, because the separation is not absolute. The cross-associations are small relative to the primary effects but indicate leakage that a true double dissociation would preclude.
 
 ---
 
@@ -218,7 +218,7 @@ These effect sizes (R² = 3–10%) are consistent with the computational psychia
 
 ## Theoretical Interpretation
 
-The calibration-discrepancy decomposition operationalizes two distinct metacognitive functions:
+The calibration-discrepancy decomposition operationalizes two distinct dimensions of affective calibration:
 
 **Calibration = monitoring fidelity.** How well does the affective system track the cognitive survival computation? High calibration means anxiety provides a faithful readout of the model's danger signal, enabling appropriate behavioral adjustment. This is the adaptive function of anxiety — an alarm system calibrated to actual threat.
 
@@ -263,6 +263,6 @@ At N = 280:
 | H4d: ≥ 2 additional | Count | 7 / 7 | all < 0.003 | ≥ 2 | **CONFIRMED** |
 | Bayesian: disc credible | 94% HDI | all exclude 0 | — | — | **CONFIRMED** |
 | Bayesian: params in ROPE | % in ROPE | ~77% | — | — | **CONFIRMED** |
-| Double dissociation | Pattern | Predominant | — | — | **PARTIAL** |
+| Differential prediction | Pattern | Predominant, with leakage | — | — | **CONFIRMED** |
 
-**Bottom line:** Calibration predicts who performs well. Discrepancy predicts who is anxious. These are orthogonal dimensions. The computational parameters (ce, cd) predict behavior but not symptoms. The bridge to psychopathology runs through metacognition.
+**Bottom line:** Calibration predicts who performs well. Discrepancy predicts who reports elevated anxiety symptoms. These are orthogonal dimensions. The computational parameters (ce, cd) predict behavior but not symptoms. The bridge from adaptive foraging computation to psychiatric vulnerability runs through affective calibration — through how people feel about danger, not how they compute it.

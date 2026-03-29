@@ -169,4 +169,4 @@ Within-subject correlation: r = −0.25 (not mirror images). 28% of subjects sho
 | H1c: Anxiety ↓ with S | LMM β(S_z) | −0.557 | < 10⁻⁴⁴ | \|t\| > 3.0 | **CONFIRMED** |
 | H1c: Confidence ↑ with S | LMM β(S_z) | +0.575 | < 10⁻⁴⁰ | \|t\| > 3.0 | **CONFIRMED** |
 
-All sub-hypotheses confirmed with large effect sizes. The behavioral effects of threat are robust and provide the foundation for the computational model (H2) and metacognitive analyses (H3, H4).
+All sub-hypotheses confirmed with large effect sizes. The behavioral effects of threat are robust and provide the foundation for the computational model (H2) and affective calibration analyses (H3, H4).
