@@ -20,9 +20,22 @@
 
 **Step 3.** Implement eight value functions. For each model compute ΔV per trial:
 
+**Step 3a.** First, determine the effort cost parameterization. Two candidates:
+
+| Effort term | Formula | Interpretation of λ |
+|-------------|---------|---------------------|
+| **Linear (req·T)** | `effort(D) = req_H · T_H − req_L · T_L` | Cost per unit of total effort (demand × duration). Clean interpretation: aversiveness per second of pressing. |
+| **LQR (req²·D)** | `effort(D) = req_H² · D_H − req_L² · 1` | Cost per unit of squared-demand weighted distance. From LQR commitment-cost analogy: cost scales with the squared control signal. |
+
+Both are run within M1 and M2 as a preliminary comparison (4 fits: M1-linear, M1-LQR, M2-linear, M2-LQR). The winning effort parameterization is used for all remaining models M3–M8.
+
+> **Note on req·T vs req²·D:** The values are related but not identical. req·T = (0.6×5, 0.8×7, 1.0×9) = (3.0, 5.6, 9.0). req²·D = (0.36×1, 0.64×2, 1.0×3) = (0.36, 1.28, 3.0). Both increase monotonically with distance, but req·T has a wider range and captures the fact that pressing for longer is itself costly (not just pressing harder). The LQR form (req²·D) gives more weight to high-demand cookies and matches our existing 3-param v2 specification. The linear form (req·T) treats effort as proportional to total work (demand × time), which is arguably more intuitive.
+
+**Step 3b.** Using the winning effort parameterization, implement the full model set:
+
 | Model | ΔV Formula | Free Parameters | What it tests |
 |-------|-----------|-----------------|---------------|
-| M1 | `4 − λ·(req_H² · D_H − req_L² · 1)` | λ, β | Pure effort discounting (no threat) |
+| M1 | `4 − λ·effort(D)` | λ, β | Pure effort discounting (no threat) |
 | M2 | `4 − λ·effort(D) − γ·p` | λ, γ, β | Additive effort + linear threat (≈ our 3-param v2) |
 | M3 | `5·exp(−p·T_H) − exp(−p·T_L) − λ·effort(D)` | λ, β | Objective survival × reward, effort separate |
 | M4 | `[exp(−p·T_H)·5 − req_H·λ]/T_H − [exp(−p·T_L)·1 − req_L·λ]/T_L` | λ, β | Rate-of-return with survival |
@@ -32,15 +45,17 @@
 | M8 | `4 − λ·effort(D) − γ·p − δ·p·D_H` | λ, γ, δ, β | Additive with threat × distance interaction |
 
 Where:
-- `effort(D) = req_H² · D_H − req_L² · 1` (LQR-inspired commitment cost differential, as in our 3-param v2)
-- `T_H`, `T_L` are exposure durations in seconds
+- `effort(D)` = winning parameterization from Step 3a (either req·T or req²·D)
+- `T_H`, `T_L` are exposure durations in seconds (5, 7, 9 and 5)
 - `D_H` = distance level (1, 2, 3)
 
-**Rationale for changes from v1:**
-- **M1-M2 now use distance-scaled effort** (`req²·D` instead of fixed `0.5`). This addresses the confound: distance affects both effort and survival. Without distance in the effort term, models can't separate "avoid because far" from "avoid because dangerous."
-- **M2 is our current 3-param v2 choice equation** (with γ here = β there, λ here = k there). This serves as the benchmark.
-- **M7 adds a per-subject penalty-weighting parameter ψ** (= cd in the choice equation). This tests whether individual differences in capture aversion affect choice when survival depends on exposure duration. Our Phase 2 analysis showed cd's leverage in choice was collinear with T at population-fixed frac_full. M7 tests whether per-subject ψ with per-subject survival still has identifiable leverage.
-- **M8 tests whether threat × distance interaction in choice requires a survival function** or can be captured by a simple linear interaction term.
+**Rationale for model set:**
+- **M1:** No threat in the model. Baseline — how much can effort alone explain?
+- **M2 is our current 3-param v2 choice equation** (with γ here = β_threat there, λ here = k there). This serves as the benchmark.
+- **M3–M4:** Objective survival functions (no probability distortion). Tests whether the raw survival computation `exp(-p·T)` is sufficient.
+- **M5–M6 are the key tests:** Does probability distortion (α) improve over M3–M4? If yes, subjective threat exceeds objective survival calculation — paralleling our old γ=0.21 finding but within an exposure-time survival function.
+- **M7 adds per-subject penalty weighting ψ** (≈ cd in choice). Our Phase 2 analysis showed cd's leverage in choice was collinear with T at population-fixed frac_full. M7 tests whether per-subject ψ with per-subject survival has identifiable leverage when the survival function itself varies with both p and T.
+- **M8 tests whether threat × distance interaction requires a survival function** or can be captured by a simple linear product term δ·p·D.
 
 **Step 4.** For each model define the choice likelihood:
 ```
@@ -77,10 +92,20 @@ SVI settings:
 > ⚠️ **STOP CONDITION:** If any model produces NaN loss or fails to converge, try reducing lr to 0.0005. If still failing, flag and exclude from comparison.
 
 **Step 7.** Compute model comparison:
-- BIC = 2 × loss + k × log(n) for each model (where loss is best ELBO, k = number of parameters, n = total trials)
-- ΔBIC relative to winning model
-- Report per-subject choice accuracy and r² for all models
-- Return comparison table sorted by BIC
+
+**SVI phase (development):** Use approximate BIC as a screening criterion:
+- BIC_approx ≈ −2 × (−ELBO) + k × log(n) = 2 × ELBO_loss + k × log(n)
+- Where ELBO_loss is the best (minimum) ELBO value, k = number of free parameters (per-subject × N + population), n = total choice trials
+- ⚠️ **Caveat:** The ELBO is a lower bound on the log marginal likelihood, not the negative log-likelihood directly. BIC_approx is a proxy for screening models, not a rigorous comparison. Models within ΔBIC_approx < 10 should be considered indistinguishable at this stage.
+- Report ΔBIC_approx relative to best model, per-subject choice accuracy, and per-subject choice r²
+
+**MCMC phase (final):** Recompute using WAIC (Watanabe-Akaike Information Criterion):
+- WAIC computed from pointwise log-likelihoods across MCMC samples
+- This is the principled comparison criterion for the paper
+- Also compute LOO-CV (leave-one-out cross-validation via Pareto-smoothed importance sampling) as a robustness check
+- Report ΔWAIC and ΔLOOic relative to best model
+
+Return comparison table sorted by BIC_approx (SVI phase) or WAIC (MCMC phase).
 
 **Step 8.** Posterior predictive check for winning model:
 - Generate predicted P(heavy) for each of the 9 cells using posterior mean parameters
@@ -280,19 +305,24 @@ Correlate the winning model's parameters with the 3-param v2 model's parameters:
 
 ## EXECUTION PLAN
 
-### Phase A: SVI Development (on this machine)
-1. Implement all 8 models in NumPyro
-2. Fit via SVI (ClippedAdam, 40K steps, early stopping)
-3. Model comparison by BIC
-4. Run Parts 2-4 with winning model
-5. Parameter recovery for winning model (3 × 50 subjects)
+### Phase A: Effort parameterization (on this machine)
+1. Implement M1 and M2 with both req·T and req²·D effort terms (4 fits)
+2. Compare BIC_approx → select winning effort parameterization
+3. Document the choice and rationale
 
-### Phase B: MCMC Finalization (GPU or extended run)
-6. Refit winning model with NUTS (4 chains × 2000 warmup + 2000 samples)
-7. Verify R-hat < 1.01, ESS > 400
-8. Confirm SVI-MCMC parameter correlation > 0.99
-9. Compute WAIC (requires MCMC samples)
-10. Update all downstream analyses with MCMC parameters
+### Phase B: Full model comparison via SVI (on this machine)
+4. Implement all 8 models using winning effort term
+5. Fit via SVI (ClippedAdam, lr=0.001, 40K steps, early stopping at best loss)
+6. Screen by BIC_approx — identify top 2-3 models
+7. Parameter recovery for top models (3 × 50 subjects)
+8. Run Parts 2-4 with provisional winning model
+
+### Phase C: MCMC Finalization (GPU or extended run)
+9. Refit top 2-3 models with NUTS (4 chains × 2000 warmup + 2000 samples)
+10. Verify R-hat < 1.01, ESS > 400 for all parameters
+11. Confirm SVI-MCMC parameter correlation > 0.99
+12. Compute WAIC and LOO-CV from MCMC samples — this is the definitive comparison
+13. Update all downstream analyses with MCMC parameters from the WAIC-winning model
 
 ### Phase C: Confirmatory (after exploratory is complete)
 11. Preregister the winning model and all tests
