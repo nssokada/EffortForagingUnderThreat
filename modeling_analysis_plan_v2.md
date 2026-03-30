@@ -173,7 +173,7 @@ Run mixed effects model:
 
 > **Note from prior work:** Our encounter dynamics analysis found that encounter reactivity is threat-INDEPENDENT (F=0.04, p=.96) and trait-stable (cross-block r=0.78). The delta-vigor analysis may confirm this null for threat modulation while showing distance modulation. If delta-vigor IS threat-modulated when computed from raw epochs (vs the smoothed 20Hz timeseries used before), that would be a new finding.
 
-**Step 16. Decoupling threshold test.**
+**Step 16a. ΔV–delta-vigor correlation (descriptive validation).**
 
 For each participant:
 1. Compute the predicted ΔV at each of the three threat levels using their individual parameters
@@ -182,8 +182,22 @@ For each participant:
 4. Also compute across participants: does between-subject variation in predicted ΔV predict between-subject variation in mean delta-vigor?
 
 Return:
-- Within-subject correlation (mean across participants)
+- Within-subject correlation (mean across participants, with CI)
 - Between-subject correlation (Pearson r)
+
+> **What this tests:** Directional consistency — does the model's value computation track the sign and magnitude of the vigor shift? This is the easier test; it should pass if the model is approximately correct.
+
+**Step 16b. Decoupling threshold test (mechanistic prediction).**
+
+For each participant:
+1. Compute the **predicted ΔV = 0 crossing point** — the predator probability at which the winning model predicts ΔV crosses zero, given the participant's individual parameters. If the model uses a survival function, this is the threat level at which the expected value of the heavy cookie drops below the expected value of the light cookie. Interpolate between the three discrete threat levels to estimate the crossing probability.
+2. Compute the **empirical vigor transition point** — the predator probability at which delta-vigor (reactive − anticipatory) transitions from positive to negative. Fit a linear interpolation through the participant's three delta-vigor values at T=10%, 50%, 90% and find the zero crossing.
+
+Correlate predicted threshold probability with empirical transition probability across participants. Return Pearson r and p-value.
+
+> **What this tests:** A specific, quantitative prediction — the model predicts the exact threat level at which each individual's behavior should flip from "press harder when the predator appears" to "no additional mobilization." If the correlation is significant, the choice model's value function predicts the inflection point of a completely different behavioral measure (within-trial vigor dynamics) that it was never fit to. This is the headline test for a reviewer.
+>
+> **Important:** This test only works if some participants have positive delta-vigor at low threat and negative (or zero) delta-vigor at high threat. If delta-vigor is uniformly positive or uniformly flat across threat levels (as our prior encounter dynamics analysis suggested — F=0.04, p=.96 for threat modulation), the transition point is undefined and this test is not feasible. Check the distribution of per-subject delta-vigor slopes before computing.
 
 **Step 17. Vigor collapse timing test.**
 
@@ -344,7 +358,8 @@ Correlate the winning model's parameters with the 3-param v2 model's parameters:
 | 5 | Individual parameter estimates table (N=290 rows) |
 | 6 | Fixed effects table from Step 14 anticipatory vigor |
 | 7 | Fixed effects table and contrast from Step 15 delta-vigor |
-| 8 | Decoupling threshold results from Step 16 |
+| 8 | ΔV–delta-vigor correlation from Step 16a |
+| 8b | Decoupling threshold correlation from Step 16b (if feasible) |
 | 9 | Abandonment timing results from Step 17 |
 | 10 | Clinical regression tables from Step 19 |
 | 11 | Trait vigor moderation table from Step 20 |
