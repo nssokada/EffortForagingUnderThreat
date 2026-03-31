@@ -123,6 +123,32 @@ Mean cross-block correlation > 0.20 (moderate stability).
 
 ---
 
+## H2e: Substantial individual differences in the encounter motor response
+
+### Prediction
+
+Participants vary widely in the magnitude of their encounter motor response (the press rate increase triggered by predator appearance). This variation is trait-like — stable across task blocks — indicating a reliable individual difference in reactive defensive motor mobilization.
+
+### Test
+
+1. **Individual variation:** Compute the per-subject encounter spike (attack minus non-attack normalized press rate in the reactive epoch). The coefficient of variation (SD/|mean|) exceeds 1, indicating that between-subject variation is larger than the population mean effect.
+
+2. **Cross-block stability:** Compute the encounter spike separately within each of the three task blocks. Correlate Block 1 spikes with Block 2 spikes, etc. Report the mean cross-block correlation.
+
+### Threshold
+
+1. CV > 1
+2. Mean cross-block r > 0.20
+
+### Exploratory benchmarks
+
+- Encounter spike: mean = +0.037, SD = 0.059, CV = 1.59
+- Range: [-0.13, +0.69] — some participants show a large positive spike, others show no response or a decrease
+- 83% of participants show a positive spike
+- Cross-block stability: to be computed in confirmatory sample
+
+---
+
 ## Analysis notes
 
 ### Cookie control
