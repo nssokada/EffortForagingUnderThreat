@@ -23,9 +23,13 @@ dependencies:
   # ── Bayesian diagnostics ──────────────────────────────────────────
   - arviz>=0.19
 
+  # ── I/O ────────────────────────────────────────────────────────────
+  - pyarrow>=15.0
+
   # ── Utilities ─────────────────────────────────────────────────────
   - tqdm
   - ipykernel
+  - ipython>=8.0
   - jupyterlab>=4.0
 
   # ── JAX ecosystem (via pip for best Mac/CPU compatibility) ─────────
@@ -35,3 +39,5 @@ dependencies:
     - numpyro>=0.15.0         # HMC/NUTS sampling (choice models)
     - pymc>=5.10.0            # used in psych/mental health analysis
     - bambi>=0.13.0           # Bayesian mixed-effects regressions
+    - factor-analyzer>=0.5.0  # psychological scale factor analysis
+    - python-docx>=1.0        # preregistration Word doc generation

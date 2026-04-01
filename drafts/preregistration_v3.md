@@ -140,11 +140,19 @@ We compare four models, all using cell-mean vigor data with saturating survival 
 - **M3 (Single-parameter):** theta = omega = kappa. One parameter enters both channels.
 - **M4 (Joint W):** omega + kappa per-subject, both enter W(u), joint likelihood.
 
-**H3a.** M4 outperforms M1 (delta-BIC > 0). Threat matters beyond effort.
+All four models are fitted with identical inference: NumPyro HMC/NUTS, 4 chains × 2,000 warmup + 4,000 sampling iterations, target_accept = 0.95, max_tree_depth = 10. Models share the same population parameters (gamma, h, tau, sigma_v, sigma_sp, b_cookie) wherever structurally applicable; they differ only in the per-subject parameterization described above.
 
-**H3b.** M4 outperforms M2 (delta-BIC > 0). Individual effort differences matter.
+**Convergence requirements:** R-hat < 1.01 and bulk ESS > 400 for all parameters. If any model fails to converge, we double the sampling iterations (to 8,000) before declaring non-convergence.
 
-**H3c.** M4 outperforms M3 (delta-BIC > 0). Capture cost and effort cost are separable — one parameter cannot serve both roles.
+**Primary criterion:** WAIC, computed from pointwise log-likelihoods across posterior samples (ArviZ). WAIC naturally penalizes model complexity through the effective number of parameters p_WAIC.
+
+**Robustness criterion:** Approximate LOO-CV via Pareto-smoothed importance sampling (PSIS-LOO; ArviZ). If WAIC and LOO-CV agree on the winning model, we report the concordant result. If they disagree, we report both metrics, flag the discrepancy, and interpret the comparison as equivocal for the affected contrast — the hypothesis is supported only if both criteria agree.
+
+**H3a.** M4 outperforms M1 (delta-WAIC > 0). Threat matters beyond effort.
+
+**H3b.** M4 outperforms M2 (delta-WAIC > 0). Individual effort differences matter.
+
+**H3c.** M4 outperforms M3 (delta-WAIC > 0). Capture cost and effort cost are separable — one parameter cannot serve both roles.
 
 ### H4: Foraging Profiles and Optimality
 
@@ -187,9 +195,9 @@ We compare four models, all using cell-mean vigor data with saturating survival 
 ### Model fitting
 
 1. Cell means computed: per-subject mean normalized press rate at each threat x distance x cookie combination (~18 cells per subject)
-2. CM2 model fitted via NumPyro SVI (AutoNormal, ClippedAdam lr=0.001, 35k steps, early stopping on best ELBO)
-3. Parameter extraction: posterior mean omega_i and kappa_i per subject
-4. Model comparison: M1-M4 fitted with same procedure, compared on BIC
+2. All four models (M1–M4) fitted via NumPyro HMC/NUTS (4 chains × 2,000 warmup + 4,000 samples, target_accept = 0.95; see H3)
+3. Parameter extraction: posterior mean omega_i and kappa_i per subject from M4
+4. Model comparison: WAIC (primary) with PSIS-LOO robustness check, computed from posterior samples
 
 ### Statistical tests
 
