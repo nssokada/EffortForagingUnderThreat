@@ -31,7 +31,7 @@ from scipy.special import expit
 from pathlib import Path
 
 EXCLUDE = [154, 197, 208]; C = 5.0
-DATA_DIR = Path("data/exploratory_350/processed/stage5_filtered_data_20260320_191950")
+DATA_DIR = Path("data/exploratory_350/processed/stage5_filtered_data_20260317_094210")
 OUT_DIR = Path("results/stats/joint_optimal")
 
 KK = ['cs','cT','cDH','cDL','cc','vs','vT','vR','vq','vD','vr','vc','vn']
