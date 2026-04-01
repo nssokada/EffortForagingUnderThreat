@@ -99,56 +99,6 @@ p < .01 for both LRTs.
 
 ---
 
-## H2d: Stable individual differences in how threat modulates pre-encounter vigor
-
-### Prediction
-
-Participants differ in the degree to which threat probability increases their pre-encounter pressing rate, and this individual difference is stable across task blocks.
-
-### Test
-
-1. **Individual threat-vigor slopes:** For each participant, regress normalized press rate on threat probability across anticipatory-epoch observations (controlling for cookie type). Extract the per-subject slope.
-
-2. **Between-subject variation:** Test whether the SD of slopes is greater than zero (which it trivially will be) — the substantive test is the cross-block stability below.
-
-3. **Cross-block stability:** Compute the per-subject anticipatory threat-vigor slope separately within each of the three task blocks. Correlate Block 1 slopes with Block 2 slopes, Block 1 with Block 3, Block 2 with Block 3. Report the mean cross-block correlation.
-
-### Threshold
-
-Mean cross-block correlation > 0.20 (moderate stability).
-
-### Exploratory benchmarks
-
-- To be computed in confirmatory sample. The anticipatory threat × β interaction (z = 2.46, p = .014) from the epoch analysis demonstrates that individual differences in threat-vigor slopes exist and are moderated by the model's threat sensitivity parameter.
-
----
-
-## H2e: Substantial individual differences in the encounter motor response
-
-### Prediction
-
-Participants vary widely in the magnitude of their encounter motor response (the press rate increase triggered by predator appearance). This variation is trait-like — stable across task blocks — indicating a reliable individual difference in reactive defensive motor mobilization.
-
-### Test
-
-1. **Individual variation:** Compute the per-subject encounter spike (attack minus non-attack normalized press rate in the reactive epoch). The coefficient of variation (SD/|mean|) exceeds 1, indicating that between-subject variation is larger than the population mean effect.
-
-2. **Cross-block stability:** Compute the encounter spike separately within each of the three task blocks. Correlate Block 1 spikes with Block 2 spikes, etc. Report the mean cross-block correlation.
-
-### Threshold
-
-1. CV > 1
-2. Mean cross-block r > 0.20
-
-### Exploratory benchmarks
-
-- Encounter spike: mean = +0.037, SD = 0.059, CV = 1.59
-- Range: [-0.13, +0.69] — some participants show a large positive spike, others show no response or a decrease
-- 83% of participants show a positive spike
-- Cross-block stability: to be computed in confirmatory sample
-
----
-
 ## Analysis notes
 
 ### Cookie control
@@ -157,7 +107,7 @@ All analyses control for cookie type by one of:
 - Running within cookie type separately (H2a)
 - Using attack vs non-attack contrast which is balanced on cookie within subject (H2b)
 - Including cookie as a parametric covariate in the GAM (H2c)
-- Including cookie as a covariate in the per-subject slope regression (H2d)
+- Including cookie as a covariate in per-subject regressions (model validation hypotheses)
 
 ### Temporal resolution
 

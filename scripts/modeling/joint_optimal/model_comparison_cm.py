@@ -1,0 +1,478 @@
+"""
+5-Model Comparison on Cell-Mean Vigor + Saturating Survival
+
+M1: Effort-only (κ per-subject, no threat in choice, no vigor model)
+M2: Threat-only (ω per-subject, no per-subject effort)
+M3: Single-parameter (θ = ω = κ)
+M4: Separate equations (λ choice-only + ω vigor-only, no shared W)
+M5: Joint W(u) (ω + κ, both enter both channels)
+
+All vigor models use:
+  - Cell-mean data (5,215 obs, subj × T × D × cookie)
+  - Saturating S: speed(u) = sigmoid((u - 0.25·req) / σ_sp)
+  - S = exp(-h·T^γ·D / speed(u))
+  - Weighted likelihood: σ_v / √n per cell
+"""
+
+import sys, time, os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+
+import jax
+jax.config.update('jax_enable_x64', True)
+import jax.numpy as jnp
+import numpyro, numpyro.distributions as dist
+from numpyro.infer import SVI, Trace_ELBO, Predictive
+from numpyro.infer.autoguide import AutoNormal
+from jax import random
+import numpy as np
+import pandas as pd
+from scipy.stats import pearsonr
+from scipy.special import expit
+from pathlib import Path
+
+EXCLUDE = [154, 197, 208]; C = 5.0
+DATA_DIR = Path("data/exploratory_350/processed/stage5_filtered_data_20260320_191950")
+OUT_DIR = Path("results/stats/joint_optimal")
+
+KK = ['cs','cT','cDH','cDL','cc','vs','vT','vR','vq','vD','vr','vc','vn']
+
+
+# ============================================================
+# Data
+# ============================================================
+
+def prepare_data():
+    cells = pd.read_csv("results/stats/vigor_analysis/cell_means.csv")
+    beh = pd.read_csv(DATA_DIR / "behavior_rich.csv", low_memory=False)
+    beh = beh[~beh['subj'].isin(EXCLUDE)]
+    cdf = beh[beh['type'] == 1].copy()
+
+    subjects = sorted(set(cdf['subj'].unique()) & set(cells['subj'].unique()))
+    si = {s: i for i, s in enumerate(subjects)}
+    NS = len(subjects); NC = len(cdf); NV = len(cells)
+
+    data = {
+        'cs': jnp.array([si[s] for s in cdf.subj]),
+        'cT': jnp.array(cdf.threat.values),
+        'cDH': jnp.array(cdf.distance_H.values, dtype=jnp.float64),
+        'cDL': jnp.ones(NC),
+        'cc': jnp.array(cdf.choice.values),
+        'vs': jnp.array([si[s] for s in cells.subj]),
+        'vT': jnp.array(cells.T_round.values),
+        'vR': jnp.array(np.where(cells.is_heavy == 1, 5., 1.)),
+        'vq': jnp.array(np.where(cells.is_heavy == 1, 0.9, 0.4)),
+        'vD': jnp.array(cells.actual_dist.values, dtype=jnp.float64),
+        'vr': jnp.array(cells.mean_rate.values),
+        'vc': jnp.array(cells.is_heavy.values, dtype=jnp.float64),
+        'vn': jnp.array(cells.n_trials.values, dtype=jnp.float64),
+        'subjects': subjects, 'N_S': NS, 'N_choice': NC, 'N_vigor': NV,
+    }
+    print(f"  {NS} subjects, {NC} choice, {NV} cell-mean vigor")
+    return data
+
+
+# ============================================================
+# Shared: saturating EU
+# ============================================================
+
+def eu_sat(om, kap, T, D, R, req, g, h, sp, ug):
+    u = ug[None, :]
+    speed = jax.nn.sigmoid((u - 0.25 * req[:, None]) / sp)
+    S = jnp.exp(-h * jnp.power(T[:, None], g) * D[:, None] / jnp.clip(speed, .01, None))
+    W = (S * R[:, None]
+         - (1.0 - S) * om[:, None] * (R[:, None] + C)
+         - kap[:, None] * (u - req[:, None]) ** 2 * D[:, None])
+    w = jax.nn.softmax(W * 20., axis=1)
+    return jnp.sum(w * u, 1), jnp.sum(w * W, 1)
+
+
+def pop_vigor_params():
+    gr = numpyro.sample('gr', dist.Normal(0, .5))
+    g = numpyro.deterministic('gamma', jnp.clip(jnp.exp(gr), .1, 3.))
+    hr = numpyro.sample('hr', dist.Normal(0, 1))
+    h = numpyro.deterministic('hazard', jnp.exp(hr))
+    tr = numpyro.sample('tr', dist.Normal(0, 1))
+    tau = jnp.clip(jnp.exp(tr), .01, 50.)
+    sv = numpyro.sample('sv', dist.HalfNormal(.3))
+    bc = numpyro.sample('bc', dist.Normal(0, .5))
+    spr = numpyro.sample('spr', dist.Normal(-1, .5))
+    sp = jnp.clip(jnp.exp(spr), .01, 1.)
+    return g, h, tau, sv, bc, sp
+
+
+# ============================================================
+# M1: Effort-only (κ per-subject, no threat)
+# ============================================================
+
+def make_m1(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        tr = numpyro.sample('tr', dist.Normal(0, 1))
+        tau = jnp.clip(jnp.exp(tr), .01, 50.)
+        mk = numpyro.sample('mk', dist.Normal(-1, 1))
+        sk = numpyro.sample('sk', dist.HalfNormal(.5))
+        with numpyro.plate('s', NS):
+            kr_ = numpyro.sample('kr', dist.Normal(0, 1))
+        kap = jnp.exp(mk + sk * kr_)
+        numpyro.deterministic('kappa', kap)
+
+        # Choice: effort difference only, no threat
+        effort_H = 0.81 * cDH  # req_H² × D_H
+        effort_L = 0.16 * cDL  # req_L² × D_L
+        delta_V = 4.0 - kap[cs] * (effort_H - effort_L)  # ΔR=4, effort diff
+        pH = jax.nn.sigmoid(jnp.clip(delta_V / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+        # No vigor model
+    return model
+
+
+# ============================================================
+# M2: Threat-only (ω per-subject, population κ)
+# ============================================================
+
+def make_m2(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        g, h, tau, sv, bc, sp = pop_vigor_params()
+        mk = numpyro.sample('mk', dist.Normal(-1, 1))
+        kap_pop = jnp.exp(mk)
+
+        mo = numpyro.sample('mo', dist.Normal(0, 1))
+        so = numpyro.sample('so', dist.HalfNormal(1.))
+        with numpyro.plate('s', NS):
+            or_ = numpyro.sample('or', dist.Normal(0, 1))
+        om = jnp.exp(mo + so * or_)
+        numpyro.deterministic('omega', om)
+
+        ug = jnp.linspace(.1, 1.5, 40)
+        kap_v = jnp.full(NV, kap_pop)
+
+        # Choice: S-weighted, ω per-subject, no per-subject κ
+        _, VH = eu_sat(om[cs], jnp.full(NC, kap_pop), cT, cDH,
+                        jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
+        _, VL = eu_sat(om[cs], jnp.full(NC, kap_pop), cT, cDL,
+                        jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+        pH = jax.nn.sigmoid(jnp.clip((VH - VL) / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+
+        # Vigor
+        us, _ = eu_sat(om[vs], kap_v, vT, vD, vR, vq, g, h, sp, ug)
+        rp = us + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
+    return model
+
+
+# ============================================================
+# M3: Single-parameter (θ = ω = κ)
+# ============================================================
+
+def make_m3(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        g, h, tau, sv, bc, sp = pop_vigor_params()
+        mt = numpyro.sample('mt', dist.Normal(0, 1))
+        st = numpyro.sample('st', dist.HalfNormal(.5))
+        with numpyro.plate('s', NS):
+            tr_ = numpyro.sample('tr_', dist.Normal(0, 1))
+        theta = jnp.exp(mt + st * tr_)
+        numpyro.deterministic('theta', theta)
+
+        ug = jnp.linspace(.1, 1.5, 40)
+
+        # θ enters as BOTH ω and κ
+        _, VH = eu_sat(theta[cs], theta[cs], cT, cDH,
+                        jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
+        _, VL = eu_sat(theta[cs], theta[cs], cT, cDL,
+                        jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+        pH = jax.nn.sigmoid(jnp.clip((VH - VL) / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+
+        us, _ = eu_sat(theta[vs], theta[vs], vT, vD, vR, vq, g, h, sp, ug)
+        rp = us + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
+    return model
+
+
+# ============================================================
+# M4: Separate equations (λ choice-only + ω vigor-only)
+# ============================================================
+
+def make_m4(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        g, h, tau, sv, bc, sp = pop_vigor_params()
+        beta_pop = numpyro.sample('beta_pop', dist.Normal(0, 5.))
+        mk = numpyro.sample('mk', dist.Normal(-1, 1))
+        kap_pop = jnp.exp(mk)
+
+        # λ for choice, ω for vigor — separate
+        ml = numpyro.sample('ml', dist.Normal(0, 1))
+        sl = numpyro.sample('sl', dist.HalfNormal(.5))
+        mo = numpyro.sample('mo', dist.Normal(0, 1))
+        so = numpyro.sample('so', dist.HalfNormal(1.))
+        with numpyro.plate('s', NS):
+            lr_ = numpyro.sample('lr', dist.Normal(0, 1))
+            or_ = numpyro.sample('or', dist.Normal(0, 1))
+        lam = jnp.exp(ml + sl * lr_)
+        om = jnp.exp(mo + so * or_)
+        numpyro.deterministic('lambda', lam)
+        numpyro.deterministic('omega', om)
+
+        # Choice: separate linear equation (NOT from W)
+        effort_cost = 0.81 * cDH - 0.16
+        delta_V = 4.0 - lam[cs] * effort_cost - beta_pop * cT
+        pH = jax.nn.sigmoid(jnp.clip(delta_V / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+
+        # Vigor: from W with ω (NOT λ)
+        ug = jnp.linspace(.1, 1.5, 40)
+        us, _ = eu_sat(om[vs], jnp.full(NV, kap_pop), vT, vD, vR, vq, g, h, sp, ug)
+        rp = us + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
+    return model
+
+
+# ============================================================
+# M5: Joint W(u) (ω + κ, both enter both)
+# ============================================================
+
+def make_m5(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        g, h, tau, sv, bc, sp = pop_vigor_params()
+        mo = numpyro.sample('mo', dist.Normal(0, 1))
+        so = numpyro.sample('so', dist.HalfNormal(1.))
+        mk = numpyro.sample('mk', dist.Normal(-1, 1))
+        sk = numpyro.sample('sk', dist.HalfNormal(.5))
+        with numpyro.plate('s', NS):
+            or_ = numpyro.sample('or', dist.Normal(0, 1))
+            kr_ = numpyro.sample('kr', dist.Normal(0, 1))
+        om = jnp.exp(mo + so * or_)
+        kap = jnp.exp(mk + sk * kr_)
+        numpyro.deterministic('omega', om)
+        numpyro.deterministic('kappa', kap)
+
+        ug = jnp.linspace(.1, 1.5, 40)
+        _, VH = eu_sat(om[cs], kap[cs], cT, cDH,
+                        jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
+        _, VL = eu_sat(om[cs], kap[cs], cT, cDL,
+                        jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+        pH = jax.nn.sigmoid(jnp.clip((VH - VL) / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+
+        us, _ = eu_sat(om[vs], kap[vs], vT, vD, vR, vq, g, h, sp, ug)
+        rp = us + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
+    return model
+
+
+# ============================================================
+# Fitting
+# ============================================================
+
+def fit_model(name, model_fn, data, n_steps=35000, lr=0.001, seed=42):
+    kw = {k: data[k] for k in KK}
+    guide = AutoNormal(model_fn)
+    opt = numpyro.optim.ClippedAdam(step_size=lr, clip_norm=10.)
+    svi = SVI(model_fn, guide, opt, Trace_ELBO())
+    state = svi.init(random.PRNGKey(seed), **kw)
+    upd = jax.jit(svi.update)
+    bl, bp = float('inf'), None
+    t0 = time.time()
+    for i in range(n_steps):
+        state, loss = upd(state, **kw)
+        l = float(loss)
+        if l < bl and not np.isnan(l):
+            bl = l; bp = svi.get_params(state)
+        if (i + 1) % 10000 == 0:
+            print(f"    {name} step {i+1}: {l:.1f} (best={bl:.1f})")
+    elapsed = time.time() - t0
+    print(f"    {name} done in {elapsed:.0f}s, best={bl:.1f}")
+    return {'name': name, 'best_loss': bl, 'best_params': bp,
+            'guide': guide, 'model_fn': model_fn, 'kwargs': kw}
+
+
+def evaluate(fit, data, n_samples=300):
+    """Compute choice accuracy/r² and vigor r²."""
+    kw = fit['kwargs']
+    sites = ['omega', 'kappa', 'theta', 'lambda', 'rp', 'gamma', 'hazard', 'tr']
+    pred = Predictive(fit['model_fn'], guide=fit['guide'], params=fit['best_params'],
+                      num_samples=n_samples, return_sites=sites)
+    samp = pred(random.PRNGKey(44), **kw)
+
+    # Vigor
+    vr = np.array(data['vr'])
+    if 'rp' in samp:
+        rp = np.array(samp['rp']).mean(0)
+        r_vig = pearsonr(rp, vr)[0]
+    else:
+        r_vig = np.nan
+
+    # Choice — reconstruct per model
+    cs = np.array(data['cs']); cT = np.array(data['cT'])
+    cDH = np.array(data['cDH']); cc = np.array(data['cc'])
+    NC = len(cs)
+    tau_v = float(np.exp(np.array(samp['tr']).mean())) if 'tr' in samp else 1.0
+
+    name = fit['name']
+    if name == 'M1':
+        kap = np.array(samp['kappa']).mean(0)
+        delta = 4.0 - kap[cs] * (0.81 * cDH - 0.16)
+        pH = expit(np.clip(delta / tau_v, -20, 20))
+    elif name == 'M4':
+        lam = np.array(samp['lambda']).mean(0)
+        beta = float(np.array(samp['beta_pop']).mean())
+        delta = 4.0 - lam[cs] * (0.81 * cDH - 0.16) - beta * cT
+        pH = expit(np.clip(delta / tau_v, -20, 20))
+    else:
+        # M2, M3, M5: reconstruct from W grid search
+        gamma_v = float(np.array(samp['gamma']).mean())
+        hazard_v = float(np.array(samp['hazard']).mean())
+        sp_v = 0.25  # approximate
+
+        if name == 'M2':
+            om = np.array(samp['omega']).mean(0)
+            kap_arr = np.full(len(om), 0.5)  # population κ
+        elif name == 'M3':
+            theta = np.array(samp['theta']).mean(0)
+            om = theta; kap_arr = theta
+        else:  # M5
+            om = np.array(samp['omega']).mean(0)
+            kap_arr = np.array(samp['kappa']).mean(0)
+
+        ug = np.linspace(0.1, 1.5, 40)
+        VH = np.zeros(NC); VL = np.zeros(NC)
+        for idx in range(NC):
+            s = cs[idx]; T = cT[idx]; DH = cDH[idx]
+            for R, req, D, store in [(5., .9, DH, VH), (1., .4, 1., VL)]:
+                speed = expit((ug - 0.25 * req) / sp_v)
+                S = np.exp(-hazard_v * T**gamma_v * D / np.clip(speed, .01, None))
+                W = S * R - (1 - S) * om[s] * (R + C) - kap_arr[s] * (ug - req)**2 * D
+                store[idx] = W.max()
+        pH = expit(np.clip((VH - VL) / tau_v, -20, 20))
+
+    acc = ((pH >= 0.5).astype(int) == cc).mean()
+    ch_df = pd.DataFrame({'s': cs, 'c': cc, 'p': pH})
+    sc = ch_df.groupby('s').agg(o=('c', 'mean'), p=('p', 'mean'))
+    try:
+        r_ch = pearsonr(sc['o'], sc['p'])[0]
+    except:
+        r_ch = np.nan
+
+    return {
+        'choice_acc': acc,
+        'choice_r2': r_ch**2 if not np.isnan(r_ch) else np.nan,
+        'vigor_r2': r_vig**2 if not np.isnan(r_vig) else np.nan,
+    }
+
+
+# ============================================================
+# Main
+# ============================================================
+
+MODEL_SPECS = [
+    ('M1', make_m1, 1, 'Effort-only (κ)'),
+    ('M2', make_m2, 1, 'Threat-only (ω)'),
+    ('M3', make_m3, 1, 'Single-param (θ=ω=κ)'),
+    ('M4', make_m4, 2, 'Separate (λ+ω)'),
+    ('M5', make_m5, 2, 'Joint W(u) (ω+κ)'),
+]
+
+PARAM_COUNTS = {
+    'M1': lambda N: N + 2,         # κ raw + mk, sk, τ
+    'M2': lambda N: N + 9,         # ω raw + pop params
+    'M3': lambda N: N + 9,         # θ raw + pop params
+    'M4': lambda N: 2 * N + 11,    # λ+ω raw + pop params + beta
+    'M5': lambda N: 2 * N + 10,    # ω+κ raw + pop params
+}
+
+
+if __name__ == '__main__':
+    t_start = time.time()
+    print("=" * 70)
+    print("MODEL COMPARISON: Joint Optimal Control (Cell Means + Saturating S)")
+    print("=" * 70)
+
+    data = prepare_data()
+    NS = data['N_S']
+    results = []
+
+    for name, make_fn, nps, desc in MODEL_SPECS:
+        print(f"\n{'=' * 50}")
+        print(f"--- {name}: {desc} ---")
+        print(f"{'=' * 50}")
+        model_fn = make_fn(NS, data['N_choice'], data['N_vigor'])
+        fit = fit_model(name, model_fn, data, n_steps=35000)
+
+        if fit['best_params'] is None:
+            print(f"  {name} FAILED")
+            continue
+
+        metrics = evaluate(fit, data)
+
+        n_params = PARAM_COUNTS[name](NS)
+        # M1 has no vigor likelihood
+        if name == 'M1':
+            n_obs = data['N_choice']
+        else:
+            n_obs = data['N_choice'] + data['N_vigor']
+        bic = 2 * fit['best_loss'] + n_params * np.log(n_obs)
+
+        row = {
+            'Model': name, 'Description': desc,
+            'n_per_subj': nps, 'n_params': n_params,
+            'ELBO': -fit['best_loss'], 'BIC': bic,
+            'choice_acc': metrics['choice_acc'],
+            'choice_r2': metrics['choice_r2'],
+            'vigor_r2': metrics['vigor_r2'],
+        }
+        results.append(row)
+
+        print(f"\n  ELBO = {-fit['best_loss']:.1f}, BIC = {bic:.0f}")
+        print(f"  Choice: acc = {metrics['choice_acc']:.3f}, r² = {metrics['choice_r2']:.3f}")
+        if not np.isnan(metrics.get('vigor_r2', np.nan)):
+            print(f"  Vigor:  r² = {metrics['vigor_r2']:.3f}")
+        else:
+            print(f"  Vigor:  not modeled")
+
+    # Comparison table
+    if results:
+        df = pd.DataFrame(results)
+        bic_m5 = df.loc[df['Model'] == 'M5', 'BIC'].values[0]
+        df['dBIC'] = df['BIC'] - bic_m5
+
+        print("\n" + "=" * 70)
+        print("COMPARISON TABLE")
+        print("=" * 70)
+        cols = ['Model', 'Description', 'n_per_subj', 'ELBO', 'BIC', 'dBIC',
+                'choice_acc', 'choice_r2', 'vigor_r2']
+        print(df[cols].to_string(index=False))
+
+        # Sub-hypothesis tests
+        print("\n" + "=" * 70)
+        print("HYPOTHESIS TESTS")
+        print("=" * 70)
+        m5_bic = df.loc[df['Model'] == 'M5', 'BIC'].values[0]
+        for alt in ['M1', 'M2', 'M3', 'M4']:
+            row_alt = df[df['Model'] == alt]
+            if len(row_alt) > 0:
+                alt_bic = row_alt['BIC'].values[0]
+                delta = alt_bic - m5_bic
+                h_name = {'M1': 'H3a', 'M2': 'H3b', 'M3': 'H3c', 'M4': 'H3d'}[alt]
+                verdict = "CONFIRMED" if delta > 0 else "FAILED"
+                print(f"  {h_name}: M5 vs {alt} — ΔBIC = {delta:+.0f} → {verdict}")
+
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        df.to_csv(OUT_DIR / "model_comparison_cm.csv", index=False)
+        print(f"\nSaved to {OUT_DIR / 'model_comparison_cm.csv'}")
+
+    elapsed = time.time() - t_start
+    print(f"\nTotal time: {elapsed / 60:.1f} min")
