@@ -1,46 +1,20 @@
-# H5: Three Dimensions of Anxiety — Quality, Reactivity, and Level
+# H5: Metacognitive Monitoring of the Foraging Computation
 
 ## Overview
 
-This hypothesis tests a triple dissociation in what anxiety does during foraging under threat. We decompose individual differences in the anxiety response into three orthogonal dimensions — **calibration** (signal quality), **slope** (reactivity to threat), and **mean level** (tonic intensity) — and show that each predicts a different domain of outcomes.
+This hypothesis tests how accurately metacognitive signals — anxiety and confidence — monitor the first-order survival computation, and whether monitoring accuracy predicts foraging efficiency beyond the computational model parameters. We decompose anxiety into calibration (signal quality) and reactivity (slope), and show that each predicts a different aspect of foraging performance. We further show that the computational capture-cost parameter (ω) maps onto confidence (a coping appraisal) rather than anxiety (a threat appraisal), and that confidence determines the type but not rate of foraging errors.
 
 ### Theoretical grounding
 
-Metacognitive models of anxiety (Wells 2009) distinguish between the content of threat cognition and the accuracy of threat monitoring. Interoceptive prediction error frameworks (Paulus & Stein 2010) formalize anxiety as a mismatch between internal signals and environmental contingencies. Our decomposition operationalizes this: calibration measures how well anxiety tracks threat (signal quality), slope measures how strongly anxiety reacts to threat changes (reactivity), and mean level measures tonic anxiety intensity (the "baseline" that clinical measures capture).
-
-### Definitions
-
-- **Calibration** = within-subject Pearson r between anxiety rating and threat probability. Range [-1, 1]. Higher = anxiety is a better thermometer of danger.
-- **Anxiety slope** = within-subject regression slope of anxiety on threat. Higher = more anxiety increase per unit threat.
-- **Mean anxiety** = average anxiety rating across all probes. Higher = more anxious overall.
-
-These are conceptually distinct: a person can have perfect calibration (r=1.0) with either a steep slope (reactive) or shallow slope (dampened), and at either a high or low mean level.
+In the two-stage metacognitive architecture (Fleming & Daw 2017), a first-order process generates decisions while a second-order monitor evaluates their quality. Metacognitive accuracy — how well the monitor tracks the first-order process — determines whether behavior is appropriately adjusted. In our task, the first-order process is the survival computation (ω, κ → choice and vigor). The second-order monitors are anxiety (tracking threat, Lazarus's 1991 primary appraisal: "is this threatening?") and confidence (tracking coping capacity, Lazarus's secondary appraisal: "can I cope?"). We test whether monitoring accuracy predicts foraging efficiency, and whether anxiety and confidence monitor dissociable aspects of the computation.
 
 ---
 
-## H5a: The three dimensions are approximately orthogonal
+## H5a: Anxiety calibration predicts foraging optimality beyond the computational model
 
 ### Prediction
 
-Calibration, slope, and mean anxiety are not strongly correlated. Each captures a different aspect of the anxiety response.
-
-### Test
-
-Pairwise Pearson r among the three dimensions.
-
-### Exploratory benchmarks
-
-- r(calibration, mean anxiety): ~0.04 (orthogonal)
-- r(slope, mean anxiety): moderate positive (steeper slope → higher mean, partially confounded)
-- r(calibration, slope): related but distinct (both track threat, but calibration is about fit quality, slope about magnitude)
-
----
-
-## H5b: Calibration predicts foraging optimality beyond the computational model
-
-### Prediction
-
-After controlling for ω and κ, calibration explains additional variance in foraging optimality, escape rate, and earnings. People whose anxiety is a better signal of danger make better decisions.
+After controlling for ω and κ, calibration (within-subject r between anxiety and threat) explains additional variance in foraging optimality, escape rate, and earnings. People whose anxiety is a better thermometer of danger make better decisions — the metacognitive monitor adds information that the first-order computation doesn't contain.
 
 ### Test
 
@@ -61,15 +35,13 @@ Calibration ΔR² > 0.03 and p < .01 for at least two of: optimality, escape, ea
 | Earnings | 0.009 | 0.067 | **+0.058** | <.0001 |
 | Escape | 0.056 | 0.094 | **+0.038** | .0006 |
 
-Interpretation: The model parameters capture WHO avoids and WHO presses hard. Calibration captures WHO makes GOOD decisions on top of that. Affect quality adds information that the rational computation doesn't contain.
-
 ---
 
-## H5c: Anxiety slope predicts behavioral adaptation
+## H5b: Anxiety reactivity predicts adaptive choice shifting
 
 ### Prediction
 
-People whose anxiety reacts more strongly to threat (steeper slope) also shift their behavior more across threat levels. Anxiety reactivity drives behavioral reactivity.
+People whose anxiety reacts more strongly to threat (steeper slope) shift their choices more across threat levels. Anxiety reactivity drives choice adaptation but not vigor adaptation — the monitor guides the avoidance channel specifically.
 
 ### Test
 
@@ -85,76 +57,16 @@ r(anxiety slope, choice shift) > 0.20, p < .01.
 
 - r(anxiety slope, choice shift) = **+0.389** (p < .0001)
 - r(anxiety slope, vigor shift) = +0.004 (null)
-- Anxiety slope → % optimal: r = +0.264
-- Anxiety slope → earnings: r = +0.228
 
-Interpretation: Anxiety slope predicts adaptive CHOICE shifting but not vigor shifting. People who feel more anxious at high threat also avoid more at high threat — their anxiety is driving appropriate behavioral adjustment.
+Anxiety reactivity specifically predicts how much people adjust their avoidance strategy across threat levels, not how much they adjust their motor output.
 
 ---
 
-## H5d: Mean anxiety predicts clinical symptoms but not foraging success
+## H5c: ω maps to confidence, not anxiety
 
 ### Prediction
 
-Mean task anxiety correlates with clinical measures (STAI, OASIS, DASS). Calibration and slope do not.
-
-### Test
-
-Correlate each anxiety dimension with clinical measures.
-
-### Threshold
-
-r(mean anxiety, STAI-State) > 0.15, p < .01.
-|r(calibration, clinical)| < 0.15 for all measures.
-
-### Exploratory benchmarks
-
-| Clinical measure | r(mean anxiety) | r(calibration) | r(slope) |
-|------------------|-----------------|----------------|----------|
-| STAI-State | **+0.326** | +0.117 | +0.041 |
-| STAI-Trait | -0.219 | -0.057 | +0.013 |
-| OASIS | **+0.204** | -0.012 | -0.051 |
-| DASS-Anxiety | **+0.251** | +0.012 | -0.011 |
-
-Mean anxiety → clinical: significant. Calibration → clinical: null. Slope → clinical: null. Clinical distress tracks how anxious you ARE, not how well your anxiety tracks reality.
-
----
-
-## H5e: Computational parameters are psychiatrically silent
-
-### Prediction
-
-ω and κ do not predict clinical symptom measures. The foraging computation is rational and unrelated to psychopathology.
-
-### Test
-
-Hierarchical regression:
-- Step 1: clinical ~ ω_z + κ_z
-- Step 2: clinical ~ ω_z + κ_z + mean_anxiety_z
-
-### Threshold
-
-Step 1 R² < 0.02 for all clinical measures.
-
-### Exploratory benchmarks
-
-| Measure | R²(ω+κ) | R²(+mean anxiety) | ΔR² |
-|---------|---------|-------------------|-----|
-| STAI-State | 0.001 | 0.107 | +0.106 |
-| DASS-Total | 0.009 | 0.074 | +0.065 |
-| STICSA | 0.002 | 0.078 | +0.076 |
-| PHQ-9 | 0.008 | 0.058 | +0.050 |
-| AMI-Total | 0.009 | 0.009 | +0.000 (null) |
-
-ω, κ: silent. Mean anxiety: significant for all anxiety/distress measures. AMI (apathy): null for both — anxiety is specific to internalizing symptoms.
-
----
-
-## H5f: ω maps to confidence, not anxiety
-
-### Prediction
-
-The computational capture cost parameter (ω) predicts subjective confidence (a prospective evaluation of one's situation) but not anxiety (an affective state). The computation informs judgment, not feeling.
+The computational capture-cost parameter (ω) predicts subjective confidence but not anxiety. This dissociation maps onto Lazarus's (1991) distinction between primary appraisal (threat evaluation → anxiety) and secondary appraisal (coping evaluation → confidence). The computation informs the coping judgment; it does not generate the affective state.
 
 ### Test
 
@@ -171,13 +83,15 @@ r(ω, confidence) < 0, p < .01. |r(ω, anxiety)| < 0.10.
 - r(ω, anxiety) = +0.071 (null)
 - r(κ, anxiety) = +0.026 (null)
 
+High ω (high capture cost) → lower confidence ("this is dangerous, I might not make it"). But ω does NOT increase anxiety. The survival computation produces a prospective coping appraisal, not an affective threat response.
+
 ---
 
-## H5g: Confidence predicts error type, not error rate
+## H5d: Confidence predicts error type, not error rate
 
 ### Prediction
 
-Confident people don't make fewer errors — they make DIFFERENT errors. Confidence reduces overcautious errors but increases reckless errors.
+Confident people don't make fewer errors — they make different errors. Confidence reduces overcautious errors but increases reckless errors. This is Pouget et al.'s (2016) confidence-as-action-signal: confidence determines what you commit to, not whether you succeed.
 
 ### Test
 
@@ -192,80 +106,17 @@ r(confidence, overcautious) < 0 AND r(confidence, reckless) > 0, both p < .01.
 - r(confidence, n_overcautious) = **-0.224** (p = .0001)
 - r(confidence, n_reckless) = **+0.200** (p = .0006)
 
-Confidence tilts the error distribution without improving accuracy overall.
-
 ---
 
-## H5h: Anxiety at low threat predicts unnecessary avoidance
+## Summary
 
-### Prediction
+| Signal | What it monitors | What it predicts | Framework |
+|--------|-----------------|------------------|-----------|
+| **Anxiety calibration** | Threat environment (quality) | Foraging optimality | Fleming & Daw 2017 |
+| **Anxiety reactivity** | Threat changes (slope) | Adaptive choice shifting | Lazarus 1991 primary appraisal |
+| **Confidence** | Coping capacity (ω) | Error type (cautious vs reckless) | Pouget et al. 2016; Lazarus 1991 secondary appraisal |
 
-Anxiety at T=0.1 (low threat, where heavy is always optimal) predicts choosing light — unnecessary avoidance driven by anxiety that isn't warranted by the environment.
-
-### Test
-
-r(anxiety at T=0.1, P(heavy at T=0.1)). Expected negative.
-
-### Threshold
-
-r < -0.15, p < .01.
-
-### Exploratory benchmarks
-
-- T=0.1: r(anxiety, P(heavy)) = **-0.271** (p < .0001) — anxious at low threat → avoid unnecessarily
-- T=0.9: r(anxiety, P(heavy)) = -0.040 (null) — at high threat, everyone avoids regardless
-
-The overcaution problem is driven by people who are anxious when they shouldn't be.
-
----
-
-## H5i: Trial-level anxiety independently drives motor vigor beyond the survival computation
-
-### Prediction
-
-On probe trials (where both affect ratings and vigor are measured), within-person trial-level anxiety predicts trial-level pressing intensity after controlling for threat level. Residual anxiety (anxiety unexplained by threat) also predicts vigor. Confidence does NOT predict vigor after controlling for threat.
-
-This tests the affective gradient hypothesis (Shenhav 2024): if affect is an independent value signal (not merely a readout of the survival computation S), then anxiety should carry motor mobilization information beyond what threat probability explains. It also tests Lazarus's (1991) appraisal theory: primary appraisal (anxiety = "is this threatening?") should drive the coping response (vigor), while secondary appraisal (confidence = "can I cope?") should inform planning (choice) but not execution.
-
-### Test
-
-1. LMM: `vigor_norm ~ anxiety_z + threat_z + (1 | subj)` on probe trials. Test anxiety_z controlling for threat.
-2. LMM: `vigor_norm ~ confidence_z + threat_z + (1 | subj)` on probe trials. Confidence should be null.
-3. LMM: `vigor_norm ~ residual_anxiety + (1 | subj)` where residual anxiety = OLS residual from anxiety ~ threat. Tests whether anxiety BEYOND what threat explains drives pressing.
-
-### Threshold
-
-1. Anxiety: β > 0, p < .01 (controlling for threat)
-2. Confidence: |β| not significant (p > .05) controlling for threat
-3. Residual anxiety: β > 0, p < .01
-
-### Exploratory benchmarks
-
-| Test | β | z | p |
-|------|---|---|---|
-| Anxiety → vigor (controlling for T) | +0.009 | +3.64 | .0003 |
-| Confidence → vigor (controlling for T) | −0.001 | −0.58 | .56 |
-| Residual anxiety → vigor | +0.003 | +2.89 | .004 |
-| Between-subj: anxiety slope → vigor slope | r = +0.137 | — | .020 |
-| Between-subj: confidence → vigor slope | r = −0.021 | — | .72 |
-
-**Interpretation:** Anxiety is not an epiphenomenon of the survival computation — it carries independent information that the motor system uses. People who feel more anxious than the situation warrants press harder on that trial. This is adaptive: pressing harder improves survival probability. The effect is specific to anxiety (primary appraisal) and absent for confidence (secondary appraisal), consistent with Lazarus's two-stage appraisal model: anxiety evaluates threat and drives the coping motor response; confidence evaluates capability and informs choice (H5g) but not execution.
-
-This finding supports Shenhav's (2024) affective gradient hypothesis: the affective state (anxiety) creates a gradient toward safety that directly mobilizes motor resources, operating alongside — not downstream of — the normative survival computation S.
-
----
-
-## Summary: Anxiety as Computation, Signal, and Symptom
-
-| Anxiety dimension | What it captures | Predicts | Doesn't predict | Framework |
-|-------------------|-----------------|----------|-----------------|-----------|
-| **Calibration** (quality) | How well anxiety tracks threat | Optimality, earnings, escape | Clinical symptoms | Metacognition (Wells 2009) |
-| **Slope** (reactivity) | How strongly anxiety reacts to threat | Choice adaptation | Vigor slope, clinical symptoms | Appraisal (Lazarus 1991) |
-| **Trial-level** (within-person) | Moment-to-moment anxiety fluctuations | Motor vigor (beyond S) | — | Affective gradient (Shenhav 2024) |
-| **Mean level** (intensity) | Tonic anxiety bias | Clinical symptoms | Foraging success | Interoceptive PE (Paulus & Stein 2010) |
-| **Confidence** | Coping appraisal | Error type (H5g) | Vigor | Secondary appraisal (Lazarus 1991) |
-
-The computation (ω, κ) governs foraging STRATEGY. Trial-level anxiety provides an independent MOTOR MOBILIZATION signal. Affect QUALITY (calibration) governs foraging WISDOM. Affect LEVEL (mean anxiety) governs clinical DISTRESS. Confidence governs DECISION STYLE (cautious vs reckless errors).
+The first-order computation (ω, κ) governs foraging strategy — who avoids and who mobilizes. The second-order metacognitive monitors (anxiety, confidence) govern how wisely that strategy is deployed. Good anxiety calibration → appropriate avoidance → efficient foraging. Accurate confidence → appropriate risk-taking → balanced error profile. The monitors don't override the computation; they guide when and how it's applied.
 
 ---
 
@@ -273,16 +124,10 @@ The computation (ω, κ) governs foraging STRATEGY. Trial-level anxiety provides
 
 | Test | Statistic | Threshold | Discovery value |
 |------|-----------|-----------|-----------------|
-| H5b: Cal ΔR² optimality | ΔR² | > .03, p < .01 | +0.068 |
-| H5b: Cal ΔR² earnings | ΔR² | > .03, p < .01 | +0.058 |
-| H5c: Slope → choice shift | r | > .20, p < .01 | +0.389 |
-| H5d: Mean anx → STAI | r | > .15, p < .01 | +0.326 |
-| H5d: Cal → STAI | r | |r| < .15 | +0.117 |
-| H5e: ω+κ → clinical R² | R² | < .02 | 0.001 |
-| H5f: ω → confidence | r | < 0, p < .01 | -0.216 |
-| H5g: Conf → overcautious | r | < 0, p < .01 | -0.224 |
-| H5g: Conf → reckless | r | > 0, p < .01 | +0.200 |
-| H5h: Anx(T=0.1) → P(H) | r | < -.15, p < .01 | -0.271 |
-| H5i: Anxiety → vigor (ctrl T) | β | > 0, p < .01 | +0.009 (p=.0003) |
-| H5i: Confidence → vigor (ctrl T) | β | p > .05 | -0.001 (p=.56) |
-| H5i: Residual anxiety → vigor | β | > 0, p < .01 | +0.003 (p=.004) |
+| H5a: Cal ΔR² optimality | ΔR² | > .03, p < .01 | +0.068 |
+| H5a: Cal ΔR² earnings | ΔR² | > .03, p < .01 | +0.058 |
+| H5b: Slope → choice shift | r | > .20, p < .01 | +0.389 |
+| H5c: ω → confidence | r | < 0, p < .01 | -0.216 |
+| H5c: ω → anxiety | r | |r| < .10 | +0.071 |
+| H5d: Conf → overcautious | r | < 0, p < .01 | -0.224 |
+| H5d: Conf → reckless | r | > 0, p < .01 | +0.200 |
