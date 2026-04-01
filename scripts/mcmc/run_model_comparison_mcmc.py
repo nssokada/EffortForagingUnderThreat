@@ -305,14 +305,13 @@ def evaluate_fit(mcmc, data, name):
         delta = 4.0 - lam[cs] * (0.81 * cDH - 0.16) - beta * cT
         pH = expit(np.clip(delta / tau_v, -20, 20))
     else:
-        # M2, M3, M5: reconstruct from W grid search
-        gamma_v = float(np.mean(np.array(samples.get('gamma', samples.get('gr')))))
-        if 'gamma' not in samples:
-            gamma_v = float(np.clip(np.exp(gamma_v), 0.1, 3.0))
-        hazard_v = float(np.mean(np.array(samples.get('hazard', samples.get('hr')))))
-        if 'hazard' not in samples:
-            hazard_v = float(np.exp(hazard_v))
-        sp_v = 0.25
+        # M2, M3, M5: reconstruct from W grid search using raw params
+        gr_mean = float(np.mean(np.array(samples['gr'])))
+        gamma_v = float(np.clip(np.exp(gr_mean), 0.1, 3.0))
+        hr_mean = float(np.mean(np.array(samples['hr'])))
+        hazard_v = float(np.exp(hr_mean))
+        spr_mean = float(np.mean(np.array(samples['spr'])))
+        sp_v = float(np.clip(np.exp(spr_mean), 0.01, 1.0))
 
         if name == 'M2':
             mo = float(np.mean(np.array(samples['mo'])))
