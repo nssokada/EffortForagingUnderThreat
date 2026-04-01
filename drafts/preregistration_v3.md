@@ -182,6 +182,8 @@ All four models are fitted with identical inference: NumPyro HMC/NUTS, 4 chains 
 
 **H5h.** Anxiety at T=0.1 predicts unnecessary avoidance: r(anxiety at T=0.1, P(heavy at T=0.1)) < -0.15, p < .01.
 
+**H5i.** Trial-level anxiety independently predicts trial-level vigor beyond the survival computation. On probe trials, LMM: vigor_norm ~ anxiety_z + threat_z + (1 | subj), anxiety beta > 0, p < .01. Confidence does NOT predict vigor controlling for threat (p > .05). Residual anxiety (anxiety unexplained by threat) also predicts vigor (beta > 0, p < .01). This tests the affective gradient hypothesis (Shenhav 2024): anxiety carries motor mobilization information beyond what the objective threat level provides.
+
 ---
 
 ## 6. Analysis Pipeline
@@ -234,6 +236,8 @@ These values are from the exploratory sample and serve as benchmarks, not thresh
 | H5f: omega → confidence | r | -0.216 |
 | H5g: Conf → overcautious | r | -0.224 |
 | H5h: Anx(T=0.1) → P(H) | r | -0.271 |
+| H5i: Anxiety → vigor (ctrl T) | β | +0.009 (p=.0003) |
+| H5i: Residual anxiety → vigor | β | +0.003 (p=.004) |
 
 ---
 

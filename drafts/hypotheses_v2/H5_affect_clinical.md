@@ -219,15 +219,53 @@ The overcaution problem is driven by people who are anxious when they shouldn't 
 
 ---
 
-## Summary: The Triple Dissociation
+## H5i: Trial-level anxiety independently drives motor vigor beyond the survival computation
 
-| Anxiety dimension | Predicts | Doesn't predict |
-|-------------------|----------|-----------------|
-| **Calibration** (quality) | Optimality, earnings, escape | Clinical symptoms |
-| **Slope** (reactivity) | Choice adaptation, optimality | Vigor, clinical symptoms |
-| **Mean level** (intensity) | Clinical symptoms | Foraging success |
+### Prediction
 
-The computation (ω, κ) governs foraging STRATEGY. Affect QUALITY (calibration) governs foraging WISDOM. Affect LEVEL (mean anxiety) governs clinical DISTRESS. Three parallel systems, three independent contributions.
+On probe trials (where both affect ratings and vigor are measured), within-person trial-level anxiety predicts trial-level pressing intensity after controlling for threat level. Residual anxiety (anxiety unexplained by threat) also predicts vigor. Confidence does NOT predict vigor after controlling for threat.
+
+This tests the affective gradient hypothesis (Shenhav 2024): if affect is an independent value signal (not merely a readout of the survival computation S), then anxiety should carry motor mobilization information beyond what threat probability explains. It also tests Lazarus's (1991) appraisal theory: primary appraisal (anxiety = "is this threatening?") should drive the coping response (vigor), while secondary appraisal (confidence = "can I cope?") should inform planning (choice) but not execution.
+
+### Test
+
+1. LMM: `vigor_norm ~ anxiety_z + threat_z + (1 | subj)` on probe trials. Test anxiety_z controlling for threat.
+2. LMM: `vigor_norm ~ confidence_z + threat_z + (1 | subj)` on probe trials. Confidence should be null.
+3. LMM: `vigor_norm ~ residual_anxiety + (1 | subj)` where residual anxiety = OLS residual from anxiety ~ threat. Tests whether anxiety BEYOND what threat explains drives pressing.
+
+### Threshold
+
+1. Anxiety: β > 0, p < .01 (controlling for threat)
+2. Confidence: |β| not significant (p > .05) controlling for threat
+3. Residual anxiety: β > 0, p < .01
+
+### Exploratory benchmarks
+
+| Test | β | z | p |
+|------|---|---|---|
+| Anxiety → vigor (controlling for T) | +0.009 | +3.64 | .0003 |
+| Confidence → vigor (controlling for T) | −0.001 | −0.58 | .56 |
+| Residual anxiety → vigor | +0.003 | +2.89 | .004 |
+| Between-subj: anxiety slope → vigor slope | r = +0.137 | — | .020 |
+| Between-subj: confidence → vigor slope | r = −0.021 | — | .72 |
+
+**Interpretation:** Anxiety is not an epiphenomenon of the survival computation — it carries independent information that the motor system uses. People who feel more anxious than the situation warrants press harder on that trial. This is adaptive: pressing harder improves survival probability. The effect is specific to anxiety (primary appraisal) and absent for confidence (secondary appraisal), consistent with Lazarus's two-stage appraisal model: anxiety evaluates threat and drives the coping motor response; confidence evaluates capability and informs choice (H5g) but not execution.
+
+This finding supports Shenhav's (2024) affective gradient hypothesis: the affective state (anxiety) creates a gradient toward safety that directly mobilizes motor resources, operating alongside — not downstream of — the normative survival computation S.
+
+---
+
+## Summary: Anxiety as Computation, Signal, and Symptom
+
+| Anxiety dimension | What it captures | Predicts | Doesn't predict | Framework |
+|-------------------|-----------------|----------|-----------------|-----------|
+| **Calibration** (quality) | How well anxiety tracks threat | Optimality, earnings, escape | Clinical symptoms | Metacognition (Wells 2009) |
+| **Slope** (reactivity) | How strongly anxiety reacts to threat | Choice adaptation | Vigor slope, clinical symptoms | Appraisal (Lazarus 1991) |
+| **Trial-level** (within-person) | Moment-to-moment anxiety fluctuations | Motor vigor (beyond S) | — | Affective gradient (Shenhav 2024) |
+| **Mean level** (intensity) | Tonic anxiety bias | Clinical symptoms | Foraging success | Interoceptive PE (Paulus & Stein 2010) |
+| **Confidence** | Coping appraisal | Error type (H5g) | Vigor | Secondary appraisal (Lazarus 1991) |
+
+The computation (ω, κ) governs foraging STRATEGY. Trial-level anxiety provides an independent MOTOR MOBILIZATION signal. Affect QUALITY (calibration) governs foraging WISDOM. Affect LEVEL (mean anxiety) governs clinical DISTRESS. Confidence governs DECISION STYLE (cautious vs reckless errors).
 
 ---
 
@@ -245,3 +283,6 @@ The computation (ω, κ) governs foraging STRATEGY. Affect QUALITY (calibration)
 | H5g: Conf → overcautious | r | < 0, p < .01 | -0.224 |
 | H5g: Conf → reckless | r | > 0, p < .01 | +0.200 |
 | H5h: Anx(T=0.1) → P(H) | r | < -.15, p < .01 | -0.271 |
+| H5i: Anxiety → vigor (ctrl T) | β | > 0, p < .01 | +0.009 (p=.0003) |
+| H5i: Confidence → vigor (ctrl T) | β | p > .05 | -0.001 (p=.56) |
+| H5i: Residual anxiety → vigor | β | > 0, p < .01 | +0.003 (p=.004) |
