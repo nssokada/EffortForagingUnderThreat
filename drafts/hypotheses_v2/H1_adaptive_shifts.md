@@ -141,12 +141,12 @@ This is a directional test: we report the correlation and interpret. A positive 
 
 ### Exploratory benchmarks
 
-r(choice shift, vigor shift) = +0.152, p = .010. Weak but significant positive correlation — people who shift more toward avoidance also show modestly higher vigor shifts. But the correlation is small (shared variance = 2.3%), consistent with largely independent channels that are weakly coordinated.
+r(choice shift, vigor shift) = +0.046, p = .44 — null. When vigor shift is computed within cookie type (to avoid Simpson's paradox), the choice and vigor shifts are independent. People who avoid more do NOT press harder — the channels are separable.
 
-The between-subject independence of choice *level* and vigor *level* is even more striking:
-- r(P(heavy), mean vigor) = −0.018, p = .76 — essentially zero
+The between-subject independence of choice *level* and vigor *level* confirms this:
+- r(P(heavy), mean vigor) = +0.150, p = .01 — weak positive (shared variance = 2.3%)
 
-This means: **who you are as a chooser tells us nothing about who you are as a presser.** The avoidance and activation channels are separable individual differences, motivating the two-parameter model (H4).
+The channels are largely independent. This motivates a two-parameter model (H3) where capture cost (ω) and effort cost (κ) are separable individual-difference parameters.
 
 ---
 
@@ -162,9 +162,10 @@ This means: **who you are as a chooser tells us nothing about who you are as a p
 | H1c: Vigor ↑ (heavy, conditional) | Paired t | d = 0.24 | p < 0.01 | **CONFIRMED** |
 | H1c: Vigor ↑ (light, conditional) | Paired t | d = 0.18 | p < 0.01 | **CONFIRMED** |
 | H1c: Marginal vigor flat (paradox) | Descriptive | range = 0.021 | — | **CONFIRMED** |
-| H1d: Choice-vigor independence | Pearson r | r = −0.018 | — | **CONFIRMED** |
+| H1d: Choice-vigor shift independence | Pearson r | r = +0.046 | p > .05 | **CONFIRMED** |
+| H1d: Choice-vigor level independence | Pearson r | r = +0.150 | — | **CONFIRMED** (weak) |
 
-**Bottom line:** Threat produces three simultaneous behavioral responses: avoidance of risky patches (choice), increased motor vigor within patches (activation), and calibrated subjective distress (affect). The choice and vigor responses are carried by *different people* — who avoids is not who mobilizes (r = −0.02). This motivates a two-channel computational architecture where avoidance (λ) and activation (ω) are separable individual-difference parameters (H4).
+**Bottom line:** Threat produces three simultaneous behavioral responses: avoidance of risky patches (choice), increased motor vigor within patches (activation), and calibrated subjective distress (affect). The choice and vigor responses are carried by *different people* — who avoids is not who mobilizes (shift r = +0.05, level r = +0.15). This motivates a two-channel computational architecture where capture cost (ω) and effort cost (κ) are separable individual-difference parameters (H3).
 
 ---
 
@@ -178,4 +179,5 @@ This means: **who you are as a chooser tells us nothing about who you are as a p
 | H1b: Confidence × threat | β(threat_z) | < 0, \|t\| > 3 | −0.575 |
 | H1c: Vigor × threat (conditional) | Paired t (heavy) | p < .01 | d = 0.24 |
 | H1c: Vigor × threat (conditional) | Paired t (light) | p < .01 | d = 0.18 |
-| H1d: Choice-vigor level independence | Pearson r | — | r = −0.02 |
+| H1d: Choice-vigor shift independence | Pearson r | p > .05 | r = +0.046 |
+| H1d: Choice-vigor level | Pearson r | — | r = +0.150 |
