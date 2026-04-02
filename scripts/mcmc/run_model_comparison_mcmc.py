@@ -271,60 +271,72 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
         print(f"  WARNING: log_likelihood failed for {name}: {e}")
         return _empty_ic_result()
 
-    # Reshape: log_likelihood returns (total_samples, n_obs)
-    # We need (chains, draws, obs) for ArviZ
-    # For models with multiple observed sites (oc + ov), concatenate observations
-    ll_combined = None
+    # Reshape log-likelihoods per site: (chains, draws, obs)
+    # Compute WAIC and LOO per site, then sum elpd values.
+    # This is correct for models with multiple observed data streams
+    # (choice = Bernoulli, vigor = Normal) — observations within each
+    # site are exchangeable but across sites they are not.
+    ll_per_site = {}
     for site_name, ll_vals in ll.items():
-        arr = np.array(ll_vals)  # (total_samples, n_obs)
-        if ll_combined is None:
-            ll_combined = arr
-        else:
-            ll_combined = np.concatenate([ll_combined, arr], axis=1)
+        arr = np.array(ll_vals)  # (total_samples, n_obs_site)
+        total_samples = arr.shape[0]
+        try:
+            arr_reshaped = arr.reshape(n_chains_actual, n_draws, -1)
+        except ValueError:
+            draws_per_chain = total_samples // n_chains_actual
+            arr_reshaped = arr[:draws_per_chain * n_chains_actual].reshape(
+                n_chains_actual, draws_per_chain, -1)
+            print(f"  WARNING: {site_name} reshaped with trimming")
+        ll_per_site[site_name] = arr_reshaped
+        print(f"    {site_name}: {arr_reshaped.shape}")
 
-    if ll_combined is None:
+    if not ll_per_site:
         print(f"  WARNING: No log-likelihood sites found for {name}")
         return _empty_ic_result()
 
-    total_samples = ll_combined.shape[0]
-    n_obs = ll_combined.shape[1]
+    # Build InferenceData with separate sites
+    idata = az.from_dict(log_likelihood=ll_per_site)
 
-    # Reshape to (chains, draws, obs)
+    # WAIC: sum elpd across sites
+    waic_val = 0.0
+    p_waic = 0.0
+    se_waic_sq = 0.0
     try:
-        ll_reshaped = ll_combined.reshape(n_chains_actual, n_draws, n_obs)
-    except ValueError:
-        # Fallback: try dividing total by chain count
-        draws_per_chain = total_samples // n_chains_actual
-        ll_reshaped = ll_combined[:draws_per_chain * n_chains_actual].reshape(
-            n_chains_actual, draws_per_chain, n_obs)
-        print(f"  WARNING: Reshaped with trimming ({total_samples} → {draws_per_chain * n_chains_actual})")
-
-    idata = az.from_dict(
-        log_likelihood={'obs': ll_reshaped},
-    )
-
-    # WAIC
-    try:
-        waic_result = az.waic(idata)
-        waic_val = float(waic_result.elpd_waic) * -2  # Convert to deviance scale
-        p_waic = float(waic_result.p_waic)
-        se_waic = float(waic_result.se) * 2
+        for site_name in ll_per_site:
+            # Create single-site idata for per-site computation
+            site_idata = az.from_dict(log_likelihood={site_name: ll_per_site[site_name]})
+            w = az.waic(site_idata)
+            waic_val += float(w.elpd_waic) * -2
+            p_waic += float(w.p_waic)
+            se_waic_sq += float(w.se) ** 2 * 4  # variance on deviance scale
+            print(f"    WAIC({site_name}): elpd={float(w.elpd_waic):.1f}, p={float(w.p_waic):.1f}")
+        se_waic = np.sqrt(se_waic_sq)
     except Exception as e:
         print(f"  WARNING: WAIC computation failed for {name}: {e}")
         waic_val = np.nan
         p_waic = np.nan
         se_waic = np.nan
 
-    # PSIS-LOO
+    # PSIS-LOO: sum elpd across sites
+    loo_val = 0.0
+    p_loo = 0.0
+    se_loo_sq = 0.0
+    n_bad_k = 0
+    total_k = 0
     try:
-        loo_result = az.loo(idata)
-        loo_val = float(loo_result.elpd_loo) * -2  # Convert to deviance scale
-        p_loo = float(loo_result.p_loo)
-        se_loo = float(loo_result.se) * 2
-        # Count Pareto k warnings
-        k_vals = np.array(loo_result.pareto_k)
-        n_bad_k = int(np.sum(k_vals > 0.7))
-        pct_bad_k = 100 * n_bad_k / len(k_vals)
+        for site_name in ll_per_site:
+            site_idata = az.from_dict(log_likelihood={site_name: ll_per_site[site_name]})
+            l = az.loo(site_idata)
+            loo_val += float(l.elpd_loo) * -2
+            p_loo += float(l.p_loo)
+            se_loo_sq += float(l.se) ** 2 * 4
+            k_vals = np.array(l.pareto_k)
+            n_bad_k += int(np.sum(k_vals > 0.7))
+            total_k += len(k_vals)
+            print(f"    LOO({site_name}): elpd={float(l.elpd_loo):.1f}, p={float(l.p_loo):.1f}, "
+                  f"bad_k={int(np.sum(k_vals > 0.7))}/{len(k_vals)}")
+        se_loo = np.sqrt(se_loo_sq)
+        pct_bad_k = 100 * n_bad_k / total_k if total_k > 0 else np.nan
     except Exception as e:
         print(f"  WARNING: LOO computation failed for {name}: {e}")
         loo_val = np.nan
