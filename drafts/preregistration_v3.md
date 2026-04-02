@@ -19,7 +19,7 @@ How do humans jointly determine which patches to forage and how intensely to wor
 2. Vigor dynamics follow the predatory imminence continuum with distinct anticipatory and reactive signatures (H2).
 3. A joint fitness function W(u) with two per-subject parameters outperforms simpler alternatives (H3).
 4. The two parameters define ecologically meaningful foraging profiles that predict survival and optimality (H4).
-5. Three orthogonal dimensions of the anxiety response — quality, reactivity, and level — predict foraging success, behavioral adaptation, and clinical symptoms, respectively (H5).
+5. Metacognitive signals — anxiety calibration and confidence — monitor the survival computation and independently predict foraging efficiency and decision style (H5).
 
 ### Task
 
@@ -156,33 +156,25 @@ All four models are fitted with identical inference: NumPyro HMC/NUTS, 4 chains 
 
 ### H4: Foraging Profiles and Optimality
 
-**H4a.** Median-splitting on omega and kappa produces four profiles (Strategic, Resilient, Reckless, Helpless) with distinct earnings. ANOVA on earnings: p < .01.
+**H4a.** omega predicts escape rate on attack trials (OLS beta > 0, p < .01). People who perceive capture as costly adopt strategies that increase survival.
 
-**H4b.** omega predicts escape rate on attack trials (OLS beta > 0, p < .01). People who perceive capture as costly adopt strategies that increase survival.
+**H4b.** Among suboptimal foraging choices, the majority (> 65%) are overcautious (choosing light when heavy has higher expected reward). omega predicts the overcaution ratio (r > 0.30, p < .01).
 
-**H4c.** Among suboptimal foraging choices, the majority (> 65%) are overcautious (choosing light when heavy has higher expected reward). Overcaution is the dominant error.
+**H4c.** kappa predicts pressing intensity (r(kappa, mean vigor) < -0.30, p < .01). The effort cost parameter governs motor output — the activation side of the avoid-activate decomposition.
 
-**H4d.** omega predicts the overcaution ratio (r > 0.30, p < .01). High capture cost drives excessive avoidance.
+**H4d.** The omega-kappa angle predicts decision quality: r(atan2(kappa_z, omega_z), % optimal) < -0.15, p < .01. Effort-driven avoidance is less optimal than threat-driven avoidance because it is indiscriminate across threat levels.
 
-### H5: Three Dimensions of Anxiety
+### H5: Metacognitive Monitoring of the Foraging Computation
 
-**H5a.** Calibration (within-subject r between anxiety and threat) and mean anxiety are approximately orthogonal (|r| < 0.15).
+We test how accurately metacognitive signals — anxiety and confidence — monitor the first-order survival computation, and whether monitoring accuracy predicts foraging efficiency beyond the model parameters. Following the two-stage metacognitive architecture (Fleming & Daw 2017), the computation (ω, κ) is the first-order process; anxiety monitors threat (primary appraisal, Lazarus 1991) and confidence monitors coping capacity (secondary appraisal).
 
-**H5b.** Calibration predicts foraging optimality beyond omega and kappa. Hierarchical regression: delta-R-squared > 0.03 (p < .01) for at least two of: % optimal, escape rate, earnings.
+**H5a.** Anxiety calibration predicts foraging optimality beyond omega and kappa. Hierarchical regression: delta-R-squared > 0.03 (p < .01) for at least two of: % optimal, escape rate, earnings. The metacognitive monitor adds information the first-order computation doesn't contain.
 
-**H5c.** Anxiety slope predicts choice adaptation. r(anxiety slope, choice shift from T=0.1 to T=0.9) > 0.20, p < .01.
+**H5b.** Anxiety slope (reactivity to threat) predicts choice adaptation: r(anxiety slope, choice shift from T=0.1 to T=0.9) > 0.20, p < .01. Anxiety reactivity drives the avoidance channel but not vigor (slope-vigor r expected null).
 
-**H5d.** Mean task anxiety predicts clinical symptoms (r(mean anxiety, STAI-State) > 0.15, p < .01). Calibration does not (|r| < 0.15).
+**H5c.** Omega predicts subjective confidence (r < 0, p < .01) but not anxiety (|r| < 0.10). The computational capture-cost parameter maps onto a coping appraisal, not an affective state.
 
-**H5e.** omega and kappa do not predict clinical symptoms. R-squared(omega + kappa) < 0.02 for all clinical measures.
-
-**H5f.** omega predicts subjective confidence (r < 0, p < .01) but not anxiety (|r| < 0.10). The computational danger estimate maps onto prospective judgment, not affective state.
-
-**H5g.** Confidence predicts error type: r(confidence, n_overcautious) < 0 AND r(confidence, n_reckless) > 0, both p < .01.
-
-**H5h.** Anxiety at T=0.1 predicts unnecessary avoidance: r(anxiety at T=0.1, P(heavy at T=0.1)) < -0.15, p < .01.
-
-**H5i.** Trial-level anxiety independently predicts trial-level vigor beyond the survival computation. On probe trials, LMM: vigor_norm ~ anxiety_z + threat_z + (1 | subj), anxiety beta > 0, p < .01. Confidence does NOT predict vigor controlling for threat (p > .05). Residual anxiety (anxiety unexplained by threat) also predicts vigor (beta > 0, p < .01). This tests the affective gradient hypothesis (Shenhav 2024): anxiety carries motor mobilization information beyond what the objective threat level provides.
+**H5d.** Confidence predicts error type, not error rate: r(confidence, n_overcautious) < 0 AND r(confidence, n_reckless) > 0, both p < .01.
 
 ---
 
@@ -216,28 +208,25 @@ These values are from the exploratory sample and serve as benchmarks, not thresh
 
 | Hypothesis | Key statistic | Discovery value |
 |-----------|--------------|-----------------|
-| H1a: Threat → choice | beta(threat) | -1.28 |
-| H1b: Threat → anxiety | beta | +0.557 |
-| H1c: Vigor within heavy | d | +0.44 |
-| H1d: Choice-vigor independence | r | -0.018 |
+| H1a: Threat → choice | beta(threat) | -1.02 |
+| H1b: Threat → anxiety | beta | +0.580 |
+| H1c: Vigor within heavy | d | +0.24 |
+| H1d: Choice-vigor shift independence | r | +0.046 |
 | H2a: Threat → vigor (heavy) | d | +0.44 |
 | H2b: Encounter spike | d | +0.56 |
 | H2b: Threat-independent | p | 0.206 |
 | H2c: GAM encounter LRT | chi-sq | 760 |
-| H3a: M4 vs M1 | delta-BIC | > 0 (TBD confirmatory) |
-| H3c: M4 vs M3 | delta-BIC | > 0 (TBD confirmatory) |
-| H4b: omega → escape | beta | +0.060, p = .0002 |
-| H4c: Overcaution % | % | 79% |
-| H4d: omega → OC ratio | r | +0.810 |
-| H5b: Calibration delta-R-sq | delta-R-sq | +0.068 (optimality) |
-| H5c: Slope → choice shift | r | +0.389 |
-| H5d: Mean anx → STAI | r | +0.326 |
-| H5e: omega+kappa → clinical | R-sq | 0.001 |
-| H5f: omega → confidence | r | -0.216 |
-| H5g: Conf → overcautious | r | -0.224 |
-| H5h: Anx(T=0.1) → P(H) | r | -0.271 |
-| H5i: Anxiety → vigor (ctrl T) | β | +0.009 (p=.0003) |
-| H5i: Residual anxiety → vigor | β | +0.003 (p=.004) |
+| H3a: M4 vs M1 | delta-WAIC | TBD (MCMC) |
+| H3c: M4 vs M3 | delta-WAIC | TBD (MCMC) |
+| H4a: omega → escape | beta | +0.060, p = .0002 |
+| H4b: Overcaution % | % | 79% |
+| H4b: omega → OC ratio | r | +0.810 |
+| H4c: kappa → vigor | r | -0.736 |
+| H4d: angle → optimality | r | -0.315 |
+| H5a: Calibration delta-R-sq | delta-R-sq | +0.068 (optimality) |
+| H5b: Slope → choice shift | r | +0.389 |
+| H5c: omega → confidence | r | -0.216 |
+| H5d: Conf → overcautious | r | -0.224 |
 
 ---
 
@@ -248,8 +237,10 @@ The following analyses will be reported but are not part of the confirmatory tes
 1. **Separate-equations model (M_separate):** lambda (choice-only) + omega (vigor-only) with no shared W function. Tests whether the joint constraint hurts fit relative to unconstrained separate equations.
 2. **Parameter recovery:** Simulation-based verification that omega and kappa are identifiable from the joint likelihood.
 3. **Posterior predictive checks:** Figures showing model-predicted vs observed choice and vigor by condition.
-4. **Encounter spike individual differences:** CV and split-half reliability of the encounter motor response. cd (from the model) → spike correlation.
+4. **Encounter spike individual differences:** CV and split-half reliability of the encounter motor response. omega → spike correlation.
 5. **Clinical regression tables:** Full omega + kappa + affect → clinical symptom regressions for all questionnaire measures.
+6. **Trial-level anxiety → vigor:** LMM testing whether within-person anxiety fluctuations predict pressing intensity beyond threat level. Exploratory: small but significant effect (β = 0.004, p = .001), consistent with the affective gradient hypothesis (Shenhav 2024) but too small for individual-level prediction.
+7. **Threat response angle × clinical symptoms:** Whether the direction of one's threat response (avoidance-dominant vs activation-dominant) predicts apathy measures (AMI). Exploratory: trending signal for AMI Emotional and AMI Total.
 
 ---
 

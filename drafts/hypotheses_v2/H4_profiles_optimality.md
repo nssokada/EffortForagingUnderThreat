@@ -2,41 +2,11 @@
 
 ## Overview
 
-Individual differences in capture cost (ω) and effort cost (κ) define behaviorally distinct foraging profiles with consequential outcomes. The model parameters predict who survives, who earns, and what kind of errors people make.
+Individual differences in capture cost (ω) and effort cost (κ) predict who survives, what kind of errors people make, and how they allocate motor resources. The balance between threat-driven and effort-driven avoidance determines foraging wisdom.
 
 ---
 
-## H4a: ω and κ define four behavioral profiles
-
-### Prediction
-
-Median-splitting on ω and κ produces four profiles with distinct earnings:
-
-| | Low κ (effort-tolerant) | High κ (effort-averse) |
-|---|---|---|
-| **High ω** | Strategic — avoids danger, presses hard | Helpless — avoids AND presses weakly |
-| **Low ω** | Resilient — engages everything, presses hard | Reckless — engages danger, presses weakly |
-
-### Test
-
-ANOVA on earnings across quadrants.
-
-### Threshold
-
-p < 0.01. Strategic should earn most.
-
-### Exploratory benchmarks
-
-| Profile | N | P(heavy) | Escape | Vigor | Earnings |
-|---------|---|----------|--------|-------|----------|
-| Strategic (Hi-ω Lo-κ) | 42 | 0.352 | 0.450 | 1.253 | +22.5 |
-| Resilient (Lo-ω Lo-κ) | 103 | 0.608 | 0.337 | 1.026 | +16.1 |
-| Helpless (Hi-ω Hi-κ) | 103 | 0.242 | 0.431 | 0.867 | -2.6 |
-| Reckless (Lo-ω Hi-κ) | 42 | 0.529 | 0.317 | 0.796 | -10.8 |
-
----
-
-## H4b: ω predicts survival on attack trials
+## H4a: ω predicts survival on attack trials
 
 ### Prediction
 
@@ -57,11 +27,11 @@ OLS: escape_rate ~ ω_z + κ_z.
 
 ---
 
-## H4c: Overcaution is the dominant error
+## H4b: Overcaution is the dominant error, driven by ω
 
 ### Prediction
 
-Among suboptimal choices, the majority (> 65%) are overcautious — choosing light when heavy has higher expected reward. ω predicts who makes overcautious errors.
+Among suboptimal choices, the majority (> 65%) are overcautious — choosing light when heavy has higher expected reward. ω predicts who is overcautious.
 
 ### Test
 
@@ -76,7 +46,63 @@ Overcaution > 65% of errors. r(ω, overcaution ratio) > 0.30, p < .01.
 
 - 79% of errors are overcautious
 - r(ω, overcaution ratio) = +0.810 (p < .0001)
-- Heavy optimal at T ≤ 0.5 (all distances), light optimal at T = 0.9
+
+---
+
+## H4c: κ predicts pressing intensity
+
+### Prediction
+
+κ governs motor output — the effort cost parameter determines how hard people press. This is the activation side of the avoid-activate decomposition: ω drives avoidance (H4a-b), κ drives vigor.
+
+### Test
+
+r(κ, mean vigor).
+
+### Threshold
+
+r < -0.30, p < .01.
+
+### Exploratory benchmarks
+
+- r(κ, mean vigor) = -0.736 (p < .0001)
+- r(ω, mean vigor) = +0.08 (null)
+
+---
+
+## H4d: Effort-driven avoidance is less optimal than threat-driven avoidance
+
+### Prediction
+
+The ω-κ balance predicts decision quality. People whose avoidance is primarily effort-driven (high κ relative to ω) are less optimal than those whose avoidance is primarily threat-driven (high ω relative to κ). Threat-sensitive avoidance is context-appropriate — you avoid when it's dangerous. Effort-sensitive avoidance is indiscriminate — you avoid heavy cookies regardless of threat level.
+
+### Test
+
+r(ω-κ angle, % optimal), where angle = atan2(κ_z, ω_z). Higher angle = more effort-focused.
+
+### Threshold
+
+r < -0.15, p < .01.
+
+### Exploratory benchmarks
+
+- r(angle, optimality) = -0.315 (p < .0001)
+- r(angle, overcaution) = +0.436 (p < .0001)
+
+---
+
+## Descriptive: Four foraging profiles
+
+Median-splitting on ω and κ produces four profiles (reported descriptively, not as a preregistered test):
+
+| Profile | N | P(heavy) | Escape | Vigor | Earnings |
+|---------|---|----------|--------|-------|----------|
+| Strategic (Hi-ω Lo-κ) | 42 | 0.352 | 0.450 | 1.253 | +22.5 |
+| Resilient (Lo-ω Lo-κ) | 103 | 0.608 | 0.337 | 1.026 | +16.1 |
+| Helpless (Hi-ω Hi-κ) | 103 | 0.242 | 0.431 | 0.867 | -2.6 |
+| Reckless (Lo-ω Hi-κ) | 42 | 0.529 | 0.317 | 0.796 | -10.8 |
+
+Strategic foragers earned 33 points more than Reckless foragers, corresponding to real bonus payment differences.
 
 ---
 
@@ -84,7 +110,8 @@ Overcaution > 65% of errors. r(ω, overcaution ratio) > 0.30, p < .01.
 
 | Test | Statistic | Threshold | Discovery value |
 |------|-----------|-----------|-----------------|
-| H4a: Profile ANOVA | F(earnings) | p < .01 | Strategic: +22.5, Reckless: -10.8 |
-| H4b: ω → escape | β | > 0, p < .01 | +0.060, p = .0002 |
-| H4c: Overcaution % | % of errors | > 65% | 79% |
-| H4c: ω → overcaution | r | > .30, p < .01 | +0.810 |
+| H4a: ω → escape | β | > 0, p < .01 | +0.060, p = .0002 |
+| H4b: Overcaution % | % of errors | > 65% | 79% |
+| H4b: ω → overcaution | r | > .30, p < .01 | +0.810 |
+| H4c: κ → vigor | r | < -.30, p < .01 | -0.736 |
+| H4d: angle → optimality | r | < -.15, p < .01 | -0.315 |
