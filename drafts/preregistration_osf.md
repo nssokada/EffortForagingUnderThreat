@@ -16,7 +16,6 @@ We investigate three domains: foraging behavior (choice and vigor), computationa
 H1a. P(choose heavy) decreases with threat probability and distance.
 H1b. Anxiety increases and confidence decreases with threat.
 H1c. Within each cookie type, pressing rate increases with threat. All vigor analyses condition on cookie type.
-H1d. Per-subject choice shift and vigor shift (within cookie type) are approximately independent (|r| < 0.15).
 
 **H2: Vigor dynamics follow the predatory imminence continuum.**
 H2a. Threat increases pressing rate within cookie type (paired t, p < .01 both cookies).
@@ -155,7 +154,6 @@ Data collection stops when approximately 350 participants have completed the tas
 - H1a: Logistic model with cluster-robust SE: choice ~ threat_z + dist_z + threat_z:dist_z, clustered by subject.
 - H1b: Linear mixed models with random intercepts and slopes: response ~ threat_z + (1 + threat_z | subject), separately for anxiety and confidence.
 - H1c: Paired t-tests: within-subject mean normalized press rate at T=0.9 minus T=0.1, separately within heavy and light cookies.
-- H1d: Pearson r between per-subject choice shift and within-cookie vigor shift.
 
 **H2 (Vigor dynamics):**
 - H2a: Same as H1c (paired t within cookie type).

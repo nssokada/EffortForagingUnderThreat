@@ -121,7 +121,6 @@ gamma (hazard exponent), h (hazard scale), tau (choice noise), sigma_v (vigor no
 
 **H1c.** Within heavy and within light cookies separately, normalized press rate increases from T=0.1 to T=0.9 (paired t, p < .01 both, d > 0.15). The marginal (unconditional) effect appears flat due to Simpson's paradox.
 
-**H1d.** Per-subject P(heavy) and mean vigor are approximately independent (|r| < 0.10). Who avoids is not who mobilizes.
 
 ### H2: Vigor Dynamics Across the Predatory Imminence Continuum
 
@@ -211,7 +210,6 @@ These values are from the exploratory sample and serve as benchmarks, not thresh
 | H1a: Threat → choice | beta(threat) | -1.02 |
 | H1b: Threat → anxiety | beta | +0.580 |
 | H1c: Vigor within heavy | d | +0.24 |
-| H1d: Choice-vigor shift independence | r | +0.046 |
 | H2a: Threat → vigor (heavy) | d | +0.44 |
 | H2b: Encounter spike | d | +0.56 |
 | H2b: Threat-independent | p | 0.206 |

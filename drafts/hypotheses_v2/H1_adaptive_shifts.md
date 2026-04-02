@@ -78,28 +78,6 @@ p < 0.01 within both cookie types, d > 0.15.
 
 ---
 
-## H1d: Choice and vigor are separable channels
-
-### Prediction
-
-The choice shift (P(heavy) at T=0.1 minus T=0.9) and the vigor shift (within-cookie press rate increase from T=0.1 to T=0.9) are approximately independent. Who avoids is not who mobilizes.
-
-### Test
-
-1. Shift correlation: Pearson r between per-subject choice shift and within-cookie vigor shift.
-2. Level correlation: Pearson r between per-subject P(heavy) and mean vigor.
-
-### Threshold
-
-Shift: |r| < 0.15, p > .05. Level: report descriptively.
-
-### Exploratory benchmarks
-
-- Shift: r = +0.046, p = .44 (null — channels independent)
-- Level: r = +0.150, p = .01 (weak — shared variance 2.3%)
-
----
-
 ## Confirmation Plan
 
 | Test | Statistic | Threshold | Discovery value |
@@ -110,4 +88,3 @@ Shift: |r| < 0.15, p > .05. Level: report descriptively.
 | H1b: Confidence × threat | β(threat_z) | < 0, |t| > 3 | −0.582 |
 | H1c: Vigor × threat (heavy) | Paired t | p < .01, d > .15 | d = 0.24 |
 | H1c: Vigor × threat (light) | Paired t | p < .01, d > .15 | d = 0.18 |
-| H1d: Choice-vigor shift | Pearson r | |r| < .15, p > .05 | r = +0.046 |
