@@ -153,14 +153,45 @@ Data collection stops when approximately 350 participants have completed the tas
 - H2b: Encounter spike = per-subject mean reactive-epoch pressing rate on attack minus non-attack trials. One-sample t vs 0, p < .001, d > 0.20.
 - H2c: GAMs with natural cubic regression splines (K=10) fitted via MixedLM with cookie covariate and random intercepts. Likelihood ratio tests for smooth-by-condition interactions, both p < .01.
 
-**H3:**
-All four models fitted via NumPyro HMC/NUTS (4 chains x 2,000 warmup + 4,000 samples, target_accept = 0.95, max_tree_depth = 10). Convergence: R-hat < 1.01, bulk ESS > 400. Primary criterion: WAIC. Robustness: PSIS-LOO. Hypothesis confirmed only if both agree. For H3a (M4 vs M1), choice-only WAIC is used since M1 has no vigor likelihood.
+**H3: Computational model specification and comparison.**
 
-The four models:
-- M1 (Effort-only): kappa per-subject, no threat, no vigor model.
-- M2 (Threat-only): omega per-subject, population kappa.
-- M3 (Single-parameter): theta = omega = kappa.
-- M4 (Joint): omega + kappa per-subject, both entering W(u). Choice includes total demand cost (kappa * req * D); vigor uses quadratic deviation cost.
+We develop a joint fitness model grounded in optimal foraging theory (Bednekoff 2007; Brown 1999). The organism maximizes fitness W(u) to determine both which patch to select and how intensely to press:
+
+W(u) = S(u) * R - (1 - S(u)) * omega * (R + C) - kappa * (u - req)^2 * D
+
+where:
+- u = pressing rate (normalized by calibration maximum)
+- S(u, T, D) = exp(-h * T^gamma * D / speed(u)) is survival probability
+- speed(u) = sigmoid((u - 0.25 * req) / sigma_sp) is movement speed, saturating above the required pressing rate
+- R = cookie reward (5 for heavy, 1 for light)
+- C = 5 (capture penalty)
+- req = required pressing rate (0.9 for heavy, 0.4 for light)
+- D = distance from safe zone (1-3 for heavy, always 1 for light)
+- omega_i = per-subject avoidance sensitivity (subjective cost of capture)
+- kappa_i = per-subject activation intensity (subjective cost of effort)
+- h, gamma, sigma_sp = population parameters (hazard scale, hazard exponent, speed saturation width)
+
+Choice prediction: For each cookie j, compute V_j = max_u W_j(u) - kappa * req_j * D_j. The first term (max_u W) is the optimized fitness given the pressing rate. The second term (kappa * req * D) is the total demand cost — the sustained metabolic cost of choosing that cookie, proportional to the required pressing rate times the distance. P(heavy) = sigmoid((V_H - V_L) / tau), where tau is a population noise parameter.
+
+Vigor prediction: For the chosen cookie, u* = argmax_u W(u) determines the optimal pressing rate. The vigor likelihood uses per-subject condition cell means (subject x threat x distance x cookie, ~18 cells per subject, ~5,200 total): observed cell-mean rate ~ Normal(u* + b_cookie * is_heavy, sigma_v / sqrt(n_trials)).
+
+The total demand cost (kappa * req * D) enters the choice equation but not the vigor optimization. This reflects the distinction between deciding how much effort to commit (total demand for the full trial) and optimizing moment-to-moment pressing intensity (marginal deviation cost). Both are governed by the same kappa — a person's effort sensitivity determines both whether they take the hard job and how hard they work on it.
+
+Model fitting: All models fitted via NumPyro HMC/NUTS (4 chains x 2,000 warmup + 4,000 samples, target_accept = 0.95, max_tree_depth = 10). Convergence required: R-hat < 1.01 and bulk ESS > 400 for all parameters. If any model fails to converge, we double the sampling iterations before declaring non-convergence.
+
+Parameter recovery: We simulate 100 synthetic subjects from known omega and kappa values, fit the model to the simulated data, and correlate recovered with true parameters. Recovery benchmarks from the exploratory sample: omega r = 0.94, kappa r = 0.92.
+
+Model comparison: Primary criterion is WAIC computed from pointwise log-likelihoods via ArviZ. Robustness criterion is approximate LOO-CV via Pareto-smoothed importance sampling (PSIS-LOO). A hypothesis is supported only if WAIC and LOO agree. For H3a (joint vs effort-only), choice-only WAIC is used since the effort-only model has no vigor likelihood.
+
+The four models compared:
+
+M1 (Effort-only): kappa_i per-subject. Choice: delta_V = delta_R - kappa_i * delta_effort(D). No survival function, no threat term, no vigor model. Tests whether threat adds anything beyond effort cost.
+
+M2 (Threat-only): omega_i per-subject, population kappa. Choice and vigor both from W(u), but kappa is shared across all subjects. Tests whether individual effort sensitivity matters or only threat sensitivity.
+
+M3 (Single-parameter): theta_i per-subject, entering W(u) as both omega and kappa (theta = omega = kappa). Tests whether a single trait can serve both avoidance and activation roles.
+
+M4 (Joint model): omega_i and kappa_i per-subject, both entering W(u) through the fitness function described above. This is the full model. Both parameters are identifiable (recovery r > 0.90) and approximately orthogonal (r = 0.21 in the exploratory sample).
 
 **H4:**
 - H4a: OLS: escape_rate ~ omega_z + kappa_z. omega beta > 0, p < .01.
@@ -195,11 +226,13 @@ Non-response trials excluded. Per-subject indices computed from available trials
 
 ### Exploratory analysis
 
-1. Separate-equations model (lambda for choice, omega for vigor, no shared W) testing whether the joint constraint hurts fit.
-2. Scaled single-parameter model (M3b): theta as omega, alpha*theta as kappa, testing if M3 failure is a scale artifact.
-3. Parameter recovery via simulation.
-4. Posterior predictive checks.
-5. Encounter spike individual differences (CV, split-half reliability).
-6. Clinical regressions (omega + kappa + affect → questionnaire scores).
-7. Trial-level anxiety-vigor coupling.
-8. Four foraging profiles (Strategic, Resilient, Reckless, Helpless) with earnings and escape rates.
+1. **Separate-equations model:** lambda (choice-only) + omega (vigor-only) with no shared W function. Tests whether the joint constraint hurts fit relative to unconstrained separate equations.
+2. **Scaled single-parameter model (M3b):** theta as omega, alpha*theta as kappa (alpha = population scaling factor). Tests if M3's failure is merely a scale mismatch rather than genuine separability.
+3. **Parameter recovery:** Simulate 100 subjects from known omega and kappa, refit, and verify recovery (r > 0.85 for both).
+4. **Posterior predictive checks:** Model-predicted vs observed choice and vigor by condition.
+5. **Encounter spike individual differences:** CV, split-half reliability, and model parameter correlations with the reactive motor response.
+6. **Clinical regressions:** Full omega + kappa + affect measures → all questionnaire scores (DASS-21, PHQ-9, OASIS, STAI, AMI, MFIS, STICSA). We expect omega and kappa to be psychiatrically silent (R-squared < 0.02).
+7. **Trial-level anxiety-vigor coupling:** LMM testing whether within-person anxiety fluctuations predict pressing intensity beyond threat level.
+8. **Four foraging profiles:** Median split on omega x kappa producing Strategic (hi-omega, lo-kappa), Resilient (lo-omega, lo-kappa), Reckless (lo-omega, hi-kappa), and Helpless (hi-omega, hi-kappa) profiles with associated earnings and escape rates.
+9. **Bayesian robustness:** Key H4 and H5 regressions replicated with Bayesian linear models (bambi) reporting posterior credible intervals and Bayes factors.
+10. **Normative benchmark:** Calibrated agent analysis comparing participant behavior to a model-derived optimal strategy. Quantification of the overcaution cost in points and bonus payment.
