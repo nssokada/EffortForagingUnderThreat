@@ -47,28 +47,24 @@ p < .01 within heavy cookies AND p < .01 within light cookies.
 
 ---
 
-## H2b: Predator encounter triggers a threat-independent motor spike
+## H2b: Predator encounter triggers a rapid motor spike
 
 ### Prediction
 
-The appearance of the predator (on attack trials) produces a rapid increase in pressing rate relative to trials where the predator does not appear (non-attack trials), even though participants do not know the trial type in advance. This encounter spike does NOT scale with stated threat probability — it is the same magnitude at T=0.1, T=0.5, and T=0.9.
+The appearance of the predator (on attack trials) will produce a rapid increase in pressing rate relative to trials where the predator does not appear (non-attack trials).
 
 ### Test
 
-1. **Encounter spike:** For each participant, compute mean normalized press rate in the reactive epoch (encounterTime to encounterTime + 2s) on attack trials minus non-attack trials. One-sample t-test against zero.
-
-2. **Threat independence:** For each participant, compute the encounter spike separately at each threat level. Paired t-test comparing spike at T=0.9 vs T=0.1.
+For each participant, compute mean normalized press rate in the reactive epoch (encounterTime to encounterTime + 2s) on attack trials minus non-attack trials. One-sample t-test against zero.
 
 ### Threshold
 
-1. Encounter spike: p < .001
-2. Threat independence: p > .05 (the spike does NOT differ by threat level)
+p < .001, d > 0.20.
 
 ### Exploratory benchmarks
 
 - Encounter spike: Δ = +0.037, t = 9.59, p < 10⁻¹⁹, d = +0.56
 - 83% of participants show a positive spike
-- Threat modulation of spike: t = -1.05, p = .29 (threat-independent)
 - First significant 200ms bin: 300ms post-encounter
 
 ---
@@ -96,6 +92,18 @@ p < .01 for both LRTs.
 - Encounter LRT: χ² = 359, df = 10, p ≈ 0
 - Threat LRT (3 levels, joint): χ² = 292, df = 20, p ≈ 0
 - All pairwise threat comparisons significant (T=0.5 vs T=0.1: p = .001; T=0.9 vs T=0.1: p ≈ 0; T=0.9 vs T=0.5: p ≈ 0)
+
+---
+
+## Confirmation Plan
+
+| Test | Statistic | Threshold | Discovery value |
+|------|-----------|-----------|-----------------|
+| H2a: Vigor × threat (heavy) | Paired t | p < .01, d > .15 | d = +0.44 |
+| H2a: Vigor × threat (light) | Paired t | p < .01, d > .15 | d = +0.80 |
+| H2b: Encounter spike | One-sample t vs 0 | p < .001, d > .20 | d = +0.56 |
+| H2c: GAM encounter LRT | chi-sq | p < .01 | 760 |
+| H2c: GAM threat LRT | chi-sq | p < .01 | 292 |
 
 ---
 

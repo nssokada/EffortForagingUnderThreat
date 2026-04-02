@@ -19,8 +19,8 @@ H1c. Within each chosen effort level, pressing intensity will increase with thre
 **H2: Motor vigor will follow the predatory imminence continuum, with distinct anticipatory and reactive dynamics.**
 
 H2a. Within each effort level, pressing rate will increase with threat probability.
-H2b. Predator encounter will trigger a rapid motor spike that does not scale with threat probability.
-H2c. The temporal shape of the vigor timecourse will differ by encounter status and by threat level (GAM likelihood ratio tests).
+H2b. Predator encounter will trigger a rapid motor spike in pressing rate.
+H2c. The temporal shape of the vigor timecourse will differ by encounter status and by threat level.
 
 **H3: A joint fitness model with two per-subject parameters will outperform simpler alternatives.**
 
@@ -149,7 +149,7 @@ Data collection stops when approximately 350 participants have completed the tas
 
 **H2:**
 - H2a: Same paired t-tests as H1c.
-- H2b: Encounter spike = per-subject mean reactive-epoch pressing rate on attack minus non-attack trials. One-sample t vs 0 (p < .001). Threat modulation: paired t comparing spike at T=0.9 vs T=0.1 (p > .05).
+- H2b: Encounter spike = per-subject mean reactive-epoch pressing rate on attack minus non-attack trials. One-sample t vs 0, p < .001, d > 0.20.
 - H2c: GAMs with natural cubic regression splines (K=10) fitted via MixedLM with cookie covariate and random intercepts. Likelihood ratio tests for smooth-by-condition interactions, both p < .01.
 
 **H3:**
