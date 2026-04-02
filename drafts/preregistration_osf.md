@@ -2,7 +2,7 @@
 
 ## Description
 
-How do humans jointly determine which patches to forage and how intensely to work when foraging under predation risk? We developed a foraging task where participants choose between high-reward/high-effort and low-reward/low-effort patches while facing probabilistic predator attacks, then execute their choice by pressing keys to transport the reward to safety. Through behavioral analyses and computational modeling, we test whether a single fitness function — grounded in optimal foraging theory — simultaneously explains patch selection and motor execution through two individual-difference parameters: the subjective cost of capture (omega) and the subjective cost of effort (kappa). We further examine how metacognitive signals — anxiety and confidence — monitor the foraging computation and independently predict foraging efficiency and decision style.
+How do humans jointly determine which patches to forage and how intensely to work when foraging under predation risk? We developed a foraging task where participants choose between high-reward/high-effort and low-reward/low-effort patches while facing probabilistic predator attacks, then execute their choice by pressing keys to transport the reward to safety. Through behavioral analyses and computational modeling, we test whether a single fitness function — grounded in optimal foraging theory — simultaneously explains patch selection and motor execution through two individual-difference parameters: avoidance sensitivity (omega, the subjective cost of capture) and activation intensity (kappa, the subjective cost of effort). We further examine how metacognitive signals — anxiety and confidence — monitor the foraging computation and independently predict foraging efficiency and decision style.
 
 ---
 
@@ -123,8 +123,8 @@ Data collection stops when approximately 350 participants have completed the tas
 ### Indices
 
 **Model parameters (from the joint fitness model M4):**
-- omega: per-subject cost of capture.
-- kappa: per-subject cost of effort.
+- omega: per-subject avoidance sensitivity (subjective cost of capture).
+- kappa: per-subject activation intensity (subjective cost of effort). Enters choice through a total demand cost (kappa * req * D) and vigor through a quadratic deviation cost (kappa * (u-req)^2 * D).
 
 **Affect indices (from probe trial regressions):**
 - Anxiety calibration: within-subject r(anxiety, threat). Higher = anxiety better tracks danger.
@@ -159,7 +159,7 @@ The four models:
 - M1 (Effort-only): kappa per-subject, no threat, no vigor model.
 - M2 (Threat-only): omega per-subject, population kappa.
 - M3 (Single-parameter): theta = omega = kappa.
-- M4 (Joint): omega + kappa per-subject, both entering W(u).
+- M4 (Joint): omega + kappa per-subject, both entering W(u). Choice includes total demand cost (kappa * req * D); vigor uses quadratic deviation cost.
 
 **H4:**
 - H4a: OLS: escape_rate ~ omega_z + kappa_z. omega beta > 0, p < .01.

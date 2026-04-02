@@ -286,6 +286,11 @@ def make_m4(NS, NC, NV):
 # ============================================================
 
 def make_m5(NS, NC, NV):
+    """M5: Joint W(u) with hybrid cost.
+    Choice: V = max_u W(u) - kappa * req * D (total demand cost)
+    Vigor: u* = argmax_u W(u) with quadratic deviation cost
+    Both omega and kappa enter both channels.
+    """
     def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
         g, h, tau, sv, bc, sp = pop_vigor_params()
         mo = numpyro.sample('mo', dist.Normal(0, 1))
@@ -301,14 +306,19 @@ def make_m5(NS, NC, NV):
         numpyro.deterministic('kappa', kap)
 
         ug = jnp.linspace(.1, 1.5, 40)
-        _, VH = eu_sat(om[cs], kap[cs], cT, cDH,
-                        jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
-        _, VL = eu_sat(om[cs], kap[cs], cT, cDL,
-                        jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+
+        # Choice: V = max_u W(u) - kappa * req * D (total demand cost)
+        _, VH_base = eu_sat(om[cs], kap[cs], cT, cDH,
+                            jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
+        _, VL_base = eu_sat(om[cs], kap[cs], cT, cDL,
+                            jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+        VH = VH_base - kap[cs] * 0.9 * cDH  # total demand: req_H * D_H
+        VL = VL_base - kap[cs] * 0.4 * cDL  # total demand: req_L * D_L
         pH = jax.nn.sigmoid(jnp.clip((VH - VL) / tau, -20, 20))
         with numpyro.plate('c', NC):
             numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
 
+        # Vigor: u* from quadratic cost only (no total demand)
         us, _ = eu_sat(om[vs], kap[vs], vT, vD, vR, vq, g, h, sp, ug)
         rp = us + bc * vc
         numpyro.deterministic('rp', rp)
