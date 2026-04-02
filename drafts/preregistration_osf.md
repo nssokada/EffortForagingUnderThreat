@@ -193,18 +193,22 @@ M3 (Single-parameter): theta_i per-subject, entering W(u) as both omega and kapp
 
 M4 (Joint model): omega_i and kappa_i per-subject, both entering W(u) through the fitness function described above. This is the full model. Both parameters are identifiable (recovery r > 0.90) and approximately orthogonal (r = 0.21 in the exploratory sample).
 
+**H4 and H5: Bayesian linear models.**
+
+All H4 and H5 regressions fitted with Bayesian linear models (bambi; Capretto et al. 2022) using default weakly informative priors (bambi defaults: Normal(0, sigma) for coefficients scaled by data). Posterior sampling: 4 chains x 2,000 draws + 1,000 tuning. Inference criterion: 95% highest density interval (HDI) excludes zero for directional predictions.
+
 **H4:**
-- H4a: OLS: escape_rate ~ omega_z + kappa_z. omega beta > 0, p < .01.
-- H4b: Classify errors from empirical expected reward per T x D cell. Overcaution > 65%. r(omega, overcaution ratio) > 0.30, p < .01.
-- H4c: r(kappa, mean vigor) < -0.30, p < .01.
-- H4d: r(atan2(kappa_z, omega_z), % optimal) < -0.15, p < .01.
-- H4e: Per-subject choice consistency = fraction of trials matching model-predicted choice. Per-subject intensity pattern = within-subject r(model-predicted u*, actual cell-mean rate) across conditions. Joint regression: earnings ~ choice_consistency_z + intensity_pattern_z. Both betas > 0, both p < .01.
+- H4a: escape_rate ~ omega_z + kappa_z. omega posterior mean > 0, 95% HDI excludes zero.
+- H4b: Classify errors from empirical expected reward per T x D cell. Overcaution > 65% of errors (descriptive). overcaution_ratio ~ omega_z: posterior mean > 0.30 (standardized), 95% HDI excludes zero.
+- H4c: mean_vigor ~ kappa_z: posterior mean < 0, |standardized beta| > 0.30, 95% HDI excludes zero.
+- H4d: pct_optimal ~ angle_z (where angle = atan2(kappa_z, omega_z)): posterior mean < 0, 95% HDI excludes zero.
+- H4e: earnings ~ choice_consistency_z + intensity_pattern_z. Both posterior means > 0, both 95% HDIs exclude zero.
 
 **H5:**
-- H5a: Hierarchical regression. Step 1: outcome ~ omega_z + kappa_z. Step 2: + calibration_z. delta-R-squared > 0.03, p < .01, for at least two of: % optimal, escape, earnings.
-- H5b: r(anxiety slope, choice shift) > 0.20, p < .01.
-- H5c: r(omega, confidence) < 0, p < .01. |r(omega, anxiety)| < 0.10.
-- H5d: r(confidence, n_overcautious) < 0 AND r(confidence, n_reckless) > 0, both p < .01.
+- H5a: Bayesian model comparison. Fit outcome ~ omega_z + kappa_z (base) and outcome ~ omega_z + kappa_z + calibration_z (full) for each of: pct_optimal, escape_rate, earnings. Compare via LOO (ArviZ). Calibration improves model fit (delta-ELPD > 0, SE excludes zero) for at least two of the three outcomes.
+- H5b: choice_shift ~ anxiety_slope_z. Posterior mean > 0, standardized beta > 0.20, 95% HDI excludes zero.
+- H5c: mean_confidence ~ omega_z: posterior mean < 0, 95% HDI excludes zero. mean_anxiety ~ omega_z: 95% HDI includes zero (null prediction).
+- H5d: n_overcautious ~ confidence_z: posterior mean < 0, 95% HDI excludes zero. n_reckless ~ confidence_z: posterior mean > 0, 95% HDI excludes zero.
 
 ### Transformations
 
@@ -214,7 +218,10 @@ M4 (Joint model): omega_i and kappa_i per-subject, both entering W(u) through th
 
 ### Inference criteria
 
-p < 0.01 for all directional tests. delta-WAIC > 0 for model comparisons. Multiple comparison correction not applied — each test is a specific directional prediction from the exploratory sample.
+- H1, H2: Frequentist (p < 0.01 for directional tests, |t| > 3 for LMMs). These are standard behavioral tests where Bayesian methods add little.
+- H3: WAIC (primary) + PSIS-LOO (robustness). Delta > 0 with both agreeing.
+- H4, H5: Bayesian — 95% HDI excludes zero for directional predictions. Effect size thresholds specified per hypothesis.
+- Multiple comparison correction not applied — each test is a specific directional prediction from the exploratory sample.
 
 ### Data exclusion
 
@@ -234,5 +241,5 @@ Non-response trials excluded. Per-subject indices computed from available trials
 6. **Clinical regressions:** Full omega + kappa + affect measures → all questionnaire scores (DASS-21, PHQ-9, OASIS, STAI, AMI, MFIS, STICSA). We expect omega and kappa to be psychiatrically silent (R-squared < 0.02).
 7. **Trial-level anxiety-vigor coupling:** LMM testing whether within-person anxiety fluctuations predict pressing intensity beyond threat level.
 8. **Four foraging profiles:** Median split on omega x kappa producing Strategic (hi-omega, lo-kappa), Resilient (lo-omega, lo-kappa), Reckless (lo-omega, hi-kappa), and Helpless (hi-omega, hi-kappa) profiles with associated earnings and escape rates.
-9. **Bayesian robustness:** Key H4 and H5 regressions replicated with Bayesian linear models (bambi) reporting posterior credible intervals and Bayes factors.
+9. **Frequentist robustness:** Key H4 and H5 results replicated with OLS/Pearson r (p < .01) to confirm consistency across inference frameworks.
 10. **Normative benchmark:** Calibrated agent analysis comparing participant behavior to a model-derived optimal strategy. Quantification of the overcaution cost in points and bonus payment.
