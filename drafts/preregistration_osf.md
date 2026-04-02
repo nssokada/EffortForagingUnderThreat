@@ -30,16 +30,16 @@ H3c. The joint model will outperform a single-parameter model, demonstrating tha
 
 **H4: The model parameters will predict survival, error patterns, and decision quality.**
 
-H4a. Higher omega will predict higher escape rates on attack trials.
-H4b. The majority of suboptimal choices will be overcautious, and omega will predict who is overcautious.
-H4c. Higher kappa will predict lower pressing intensity.
-H4d. The omega-kappa balance will predict decision quality: effort-driven avoidance will be less optimal than threat-driven avoidance.
+H4a. Higher capture cost will predict higher escape rates on attack trials.
+H4b. The majority of suboptimal choices will be overcautious, and capture cost will predict who is overcautious.
+H4c. Higher effort cost will predict lower pressing intensity.
+H4d. The balance between capture cost and effort cost will predict decision quality: effort-driven avoidance will be less optimal than threat-driven avoidance.
 
 **H5: Anxiety and confidence will independently monitor the foraging computation and predict foraging efficiency beyond the model parameters.**
 
-H5a. Anxiety calibration (how well anxiety tracks threat) will predict foraging optimality beyond omega and kappa.
+H5a. Anxiety calibration (how well anxiety tracks threat) will predict foraging optimality beyond the model parameters.
 H5b. Anxiety reactivity (slope on threat) will predict adaptive choice shifting across threat levels.
-H5c. Omega will predict subjective confidence but not anxiety.
+H5c. Capture cost will predict subjective confidence but not anxiety.
 H5d. Confidence will predict the type of errors people make — fewer overcautious errors but more reckless errors — without affecting overall error rate.
 
 ---
