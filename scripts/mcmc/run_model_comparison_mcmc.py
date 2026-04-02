@@ -65,15 +65,48 @@ OUT_DIR = Path("results/stats/joint_optimal")
 
 def fit_mcmc(name, model_fn, data, num_warmup=2000, num_samples=4000,
              num_chains=4, target_accept_prob=0.95, max_tree_depth=10,
-             seed=42):
-    """Fit a single model via NUTS and return MCMC object + timing."""
+             seed=42, svi_init=False):
+    """Fit a single model via NUTS and return MCMC object + timing.
+
+    If svi_init=True, run a short SVI fit first and use the result as
+    initial values for NUTS (warm start). Helps models like M4 that have
+    difficult posterior geometry.
+    """
+    from numpyro.infer import SVI, Trace_ELBO, init_to_value
+    from numpyro.infer.autoguide import AutoNormal
 
     kw = {k: data[k] for k in KK}
+
+    init_strategy = None
+    if svi_init:
+        print(f"  Running SVI warm start for {name}...")
+        guide = AutoNormal(model_fn)
+        optimizer = numpyro.optim.ClippedAdam(step_size=0.001, clip_norm=10.0)
+        svi = SVI(model_fn, guide, optimizer, Trace_ELBO())
+        svi_state = svi.init(random.PRNGKey(seed), **kw)
+        update_fn = jax.jit(svi.update)
+        best_loss, best_params = float('inf'), None
+        for i in range(10000):
+            svi_state, loss = update_fn(svi_state, **kw)
+            l = float(loss)
+            if l < best_loss and not np.isnan(l):
+                best_loss = l
+                best_params = svi.get_params(svi_state)
+        print(f"  SVI warm start done (best loss: {best_loss:.1f})")
+
+        # Extract SVI median as init values
+        from numpyro.infer import Predictive
+        svi_samples = Predictive(model_fn, guide=guide, params=best_params,
+                                  num_samples=1)(random.PRNGKey(seed + 1), **kw)
+        init_vals = {k: v[0] for k, v in svi_samples.items()
+                     if not k.startswith('obs') and k not in ['oc', 'ov']}
+        init_strategy = init_to_value(values=init_vals)
 
     kernel = NUTS(
         model_fn,
         target_accept_prob=target_accept_prob,
         max_tree_depth=max_tree_depth,
+        init_strategy=init_strategy,
     )
     mcmc = MCMC(
         kernel,
@@ -87,6 +120,8 @@ def fit_mcmc(name, model_fn, data, num_warmup=2000, num_samples=4000,
     print(f"Fitting {name} via MCMC (NUTS)")
     print(f"  {num_chains} chains x {num_warmup} warmup + {num_samples} samples")
     print(f"  target_accept = {target_accept_prob}, max_tree_depth = {max_tree_depth}")
+    if svi_init:
+        print(f"  Using SVI warm start")
 
     t0 = time.time()
     mcmc.run(random.PRNGKey(seed), **kw)
@@ -192,33 +227,65 @@ def _bulk_ess(chains):
 # WAIC and LOO via ArviZ
 # ============================================================
 
-def compute_waic_loo(mcmc, model_fn, data, name):
+def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
     """Compute WAIC and PSIS-LOO from MCMC posterior samples.
 
     Returns dict with waic, loo, p_waic, p_loo, and warning counts.
+
+    Key fix: uses get_samples(group_by_chain=True) to get proper chain
+    structure, and computes log-likelihoods per-chain to ensure correct
+    reshape for ArviZ.
     """
     kw = {k: data[k] for k in KK}
 
-    # Compute pointwise log-likelihoods
+    # Get samples with chain structure preserved
     posterior_samples = mcmc.get_samples()
+    chain_samples = mcmc.get_samples(group_by_chain=True)
 
-    # Determine which observed sites this model has
-    # M1 has only 'oc' (choice), M2-M5 have 'oc' + 'ov' (choice + vigor)
-    ll = log_likelihood(model_fn, posterior_samples, **kw)
+    # Infer draws per chain from chain_samples
+    first_key = list(chain_samples.keys())[0]
+    n_chains_actual = chain_samples[first_key].shape[0]
+    n_draws = chain_samples[first_key].shape[1]
+    print(f"  {name}: {n_chains_actual} chains x {n_draws} draws")
 
-    # Build ArviZ InferenceData
-    num_chains = 4
-    n_samples_per_chain = len(list(posterior_samples.values())[0]) // num_chains
+    # Compute pointwise log-likelihoods using flattened samples
+    # numpyro.infer.log_likelihood expects flattened posterior samples
+    try:
+        ll = log_likelihood(model_fn, posterior_samples, **kw)
+    except Exception as e:
+        print(f"  WARNING: log_likelihood failed for {name}: {e}")
+        return _empty_ic_result()
 
-    # Reshape log-likelihoods for ArviZ: (chains, draws, obs)
-    ll_dict = {}
+    # Reshape: log_likelihood returns (total_samples, n_obs)
+    # We need (chains, draws, obs) for ArviZ
+    # For models with multiple observed sites (oc + ov), concatenate observations
+    ll_combined = None
     for site_name, ll_vals in ll.items():
         arr = np.array(ll_vals)  # (total_samples, n_obs)
-        arr = arr.reshape(num_chains, n_samples_per_chain, -1)
-        ll_dict[site_name] = arr
+        if ll_combined is None:
+            ll_combined = arr
+        else:
+            ll_combined = np.concatenate([ll_combined, arr], axis=1)
+
+    if ll_combined is None:
+        print(f"  WARNING: No log-likelihood sites found for {name}")
+        return _empty_ic_result()
+
+    total_samples = ll_combined.shape[0]
+    n_obs = ll_combined.shape[1]
+
+    # Reshape to (chains, draws, obs)
+    try:
+        ll_reshaped = ll_combined.reshape(n_chains_actual, n_draws, n_obs)
+    except ValueError:
+        # Fallback: try dividing total by chain count
+        draws_per_chain = total_samples // n_chains_actual
+        ll_reshaped = ll_combined[:draws_per_chain * n_chains_actual].reshape(
+            n_chains_actual, draws_per_chain, n_obs)
+        print(f"  WARNING: Reshaped with trimming ({total_samples} → {draws_per_chain * n_chains_actual})")
 
     idata = az.from_dict(
-        log_likelihood=ll_dict,
+        log_likelihood={'obs': ll_reshaped},
     )
 
     # WAIC
@@ -263,6 +330,14 @@ def compute_waic_loo(mcmc, model_fn, data, name):
         print(f"  {name}: Pareto k > 0.7: {n_bad_k} ({pct_bad_k:.1f}%)")
 
     return result
+
+
+def _empty_ic_result():
+    return {
+        'WAIC': np.nan, 'p_WAIC': np.nan, 'SE_WAIC': np.nan,
+        'LOO': np.nan, 'p_LOO': np.nan, 'SE_LOO': np.nan,
+        'n_pareto_k_bad': np.nan, 'pct_pareto_k_bad': np.nan,
+    }
 
 
 # ============================================================
@@ -416,7 +491,8 @@ def main():
 
         model_fn = make_fn(NS, data['N_choice'], data['N_vigor'])
 
-        # Fit
+        # Fit (M4 gets SVI warm start due to difficult geometry)
+        use_svi_init = (name == 'M4')
         mcmc, kw, elapsed = fit_mcmc(
             name, model_fn, data,
             num_warmup=args.num_warmup,
@@ -425,6 +501,7 @@ def main():
             target_accept_prob=args.target_accept,
             max_tree_depth=args.max_tree_depth,
             seed=args.seed,
+            svi_init=use_svi_init,
         )
 
         # Convergence
@@ -437,7 +514,7 @@ def main():
 
         # WAIC + LOO
         print(f"\n  Computing WAIC and LOO for {name}...")
-        ic_results = compute_waic_loo(mcmc, model_fn, data, name)
+        ic_results = compute_waic_loo(mcmc, model_fn, data, name, num_chains=args.num_chains)
 
         # Predictive evaluation
         metrics = evaluate_fit(mcmc, data, name)

@@ -209,7 +209,7 @@ def make_m3(NS, NC, NV):
 def make_m4(NS, NC, NV):
     def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
         g, h, tau, sv, bc, sp = pop_vigor_params()
-        beta_pop = numpyro.sample('beta_pop', dist.Normal(0, 5.))
+        beta_pop = numpyro.sample('beta_pop', dist.Normal(0, 2.))
         mk = numpyro.sample('mk', dist.Normal(-1, 1))
         kap_pop = jnp.exp(mk)
 
