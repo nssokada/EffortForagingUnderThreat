@@ -79,14 +79,14 @@ W(u) = S(u, T, D) . R - (1 - S(u, T, D)) . omega . (R + C) - kappa . (u - req)^2
 where:
 - S(u, T, D) = exp(-h . T^gamma . D / speed(u)) is survival probability
 - speed(u) = sigmoid((u - 0.25 . req) / sigma_sp) is movement speed, saturating above req
-- omega_i = per-subject cost of capture (how much being caught matters)
-- kappa_i = per-subject cost of effort (how costly pressing is)
+- omega_i = per-subject avoidance sensitivity (subjective cost of capture)
+- kappa_i = per-subject activation intensity (subjective cost of effort)
 - R = cookie reward (5 or 1), C = 5 (capture penalty), req = required pressing rate (0.9 or 0.4)
 - h, gamma, sigma_sp = population parameters (hazard scale, hazard exponent, speed saturation)
 
 ### Choice prediction
 
-For each choice trial, compute V_H = max_u W_H(u) and V_L = max_u W_L(u) via soft-argmax over a grid of 40 pressing rates (0.1 to 1.5). P(heavy) = sigmoid((V_H - V_L) / tau).
+For each choice trial, compute V_j = max_u W_j(u) - kappa . req_j . D_j via soft-argmax over a grid of 40 pressing rates (0.1 to 1.5). The total demand cost (kappa . req . D) captures the sustained metabolic cost of choosing cookie j. P(heavy) = sigmoid((V_H - V_L) / tau).
 
 ### Vigor prediction
 
@@ -102,8 +102,8 @@ Both omega and kappa enter both likelihoods through the same W function. Paramet
 
 | Parameter | Symbol | Enters choice | Enters vigor | Recovery r |
 |-----------|--------|--------------|-------------|-----------|
-| Cost of capture | omega | Yes (via V_H, V_L) | Yes (via u*) | 0.90 |
-| Cost of effort | kappa | Yes (via V_H, V_L) | Yes (via u*) | 0.78 |
+| Avoidance sensitivity | omega | Yes (via V_H, V_L) | Yes (via u*) | 0.94 |
+| Activation intensity | kappa | Yes (via V_H, V_L + total demand) | Yes (via u*) | 0.92 |
 
 ### Population parameters
 

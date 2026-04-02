@@ -17,8 +17,8 @@ We test whether a single fitness function W(u) with two per-subject parameters �
 W(u) = S(u)·R − (1 − S(u))·ω·(R + C) − κ·(u − req)²·D
 
 - S(u, T, D) = exp(−h·T^γ·D / speed(u)), speed(u) = sigmoid((u − 0.25·req) / σ_sp)
-- **Choice:** P(heavy) = sigmoid((max_u W_H(u) − max_u W_L(u)) / τ)
-- **Vigor:** Cell-mean rate ~ Normal(u*, σ_v/√n) where u* = argmax_u W(u)
+- **Choice:** V_j = max_u W_j(u) − κ·req_j·D_j (total demand cost). P(heavy) = sigmoid((V_H − V_L) / τ)
+- **Vigor:** Cell-mean rate ~ Normal(u*, σ_v/√n) where u* = argmax_u W(u) (quadratic cost only)
 
 ---
 
@@ -63,8 +63,8 @@ Per-subject condition cell means (subject × threat × distance × cookie, ~5,20
 | Choice acc | 0.779 |
 | Choice r² | 0.894 |
 | Vigor r² (cell means) | 0.386 |
-| ω recovery | r = 0.90 |
-| κ recovery | r = 0.78 |
+| ω recovery | r = 0.94 |
+| κ recovery | r = 0.92 |
 | ω↔κ | r = 0.27 |
 
 ---
