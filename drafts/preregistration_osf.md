@@ -13,7 +13,7 @@ How do humans jointly determine which patches to forage and how intensely to wor
 **H1: Threat will reduce high-effort choices, increase motor vigor, and shift anxiety upward and confidence downward.**
 
 H1a. High-effort choices will decrease with threat probability and distance.
-H1b. Anxiety will increase and confidence will decrease with threat.
+H1b. Anxiety will increase with threat and distance. Confidence will decrease with threat and distance.
 H1c. Within each chosen effort level, pressing intensity will increase with threat.
 
 **H2: Motor vigor will follow the predatory imminence continuum, with distinct anticipatory and reactive dynamics.**
@@ -144,7 +144,7 @@ Data collection stops when approximately 350 participants have completed the tas
 
 **H1:**
 - H1a: Logistic model with cluster-robust SE: choice ~ threat_z + dist_z + threat_z:dist_z, clustered by subject. Both beta(threat) and beta(distance) will be negative at p < .01.
-- H1b: Linear mixed models with random intercepts and slopes: response ~ threat_z + (1 + threat_z | subject), separately for anxiety and confidence. Anxiety beta > 0, |t| > 3. Confidence beta < 0, |t| > 3.
+- H1b: Linear mixed models: response ~ threat_z + dist_z + (1 + threat_z | subject), separately for anxiety and confidence. Anxiety: both beta(threat) > 0 and beta(dist) > 0, |t| > 3. Confidence: both beta(threat) < 0 and beta(dist) < 0, |t| > 3.
 - H1c: Paired t-tests: within-subject mean normalized press rate at T=0.9 minus T=0.1, separately within heavy and light cookies. Both p < .01, d > 0.15.
 
 **H2:**
