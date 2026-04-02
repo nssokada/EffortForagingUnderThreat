@@ -595,6 +595,27 @@ def main():
         else:
             print(f"  Vigor:  not modeled")
 
+        # Save M5 posterior samples (per-subject omega, kappa)
+        if name == 'M5' and passed:
+            samples = mcmc.get_samples()
+            mo_mean = float(np.mean(np.array(samples['mo'])))
+            so_mean = float(np.mean(np.array(samples['so'])))
+            mk_mean = float(np.mean(np.array(samples['mk'])))
+            sk_mean = float(np.mean(np.array(samples['sk'])))
+            or_mean = np.mean(np.array(samples['or']), axis=0)
+            kr_mean = np.mean(np.array(samples['kr']), axis=0)
+            omega_post = np.exp(mo_mean + so_mean * or_mean)
+            kappa_post = np.exp(mk_mean + sk_mean * kr_mean)
+            subj_map = pd.read_csv('data/model_input/subject_mapping.csv')
+            params_df = pd.DataFrame({
+                'subj': subj_map['subj'].values,
+                'omega': omega_post,
+                'kappa': kappa_post,
+            })
+            params_path = OUT_DIR / 'mcmc_m5_params.csv'
+            params_df.to_csv(params_path, index=False)
+            print(f"  Saved M5 posterior means to {params_path}")
+
     # ── Summary ──
     if results:
         df = pd.DataFrame(results)
