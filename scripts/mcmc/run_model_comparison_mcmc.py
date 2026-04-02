@@ -49,12 +49,14 @@ prepare_data = _cm.prepare_data
 make_m1 = _cm.make_m1
 make_m2 = _cm.make_m2
 make_m3 = _cm.make_m3
+make_m3b = _cm.make_m3b
 make_m4 = _cm.make_m4
 make_m5 = _cm.make_m5
 eu_sat = _cm.eu_sat
 C = _cm.C
 KK = _cm.KK
 PARAM_COUNTS = _cm.PARAM_COUNTS
+PARAM_COUNTS['M3b'] = lambda N: N + 10  # same as M3 + 1 for alpha
 
 OUT_DIR = Path("results/stats/joint_optimal")
 
@@ -345,10 +347,26 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
         n_bad_k = np.nan
         pct_bad_k = np.nan
 
+    # Also compute choice-only WAIC/LOO for fair M1 comparison
+    # (M1 has only choice likelihood, so comparing total WAIC is unfair)
+    waic_choice = np.nan
+    loo_choice = np.nan
+    if 'oc' in ll_per_site:
+        try:
+            oc_idata = az.from_dict(log_likelihood={'oc': ll_per_site['oc']})
+            w_oc = az.waic(oc_idata)
+            waic_choice = float(w_oc.elpd_waic) * -2
+            l_oc = az.loo(oc_idata)
+            loo_choice = float(l_oc.elpd_loo) * -2
+            print(f"    Choice-only: WAIC={waic_choice:.1f}, LOO={loo_choice:.1f}")
+        except Exception as e:
+            print(f"    Choice-only IC failed: {e}")
+
     result = {
         'WAIC': waic_val, 'p_WAIC': p_waic, 'SE_WAIC': se_waic,
         'LOO': loo_val, 'p_LOO': p_loo, 'SE_LOO': se_loo,
         'n_pareto_k_bad': n_bad_k, 'pct_pareto_k_bad': pct_bad_k,
+        'WAIC_choice': waic_choice, 'LOO_choice': loo_choice,
     }
 
     print(f"  {name}: WAIC = {waic_val:.1f} (p_WAIC = {p_waic:.1f}, SE = {se_waic:.1f})")
@@ -422,7 +440,7 @@ def evaluate_fit(mcmc, data, name):
             om = np.exp(mo + so * or_mean)
             mk = float(np.mean(np.array(samples['mk'])))
             kap_arr = np.full(len(om), np.exp(mk))
-        elif name == 'M3':
+        elif name in ('M3', 'M3b'):
             mt = float(np.mean(np.array(samples['mt'])))
             st = float(np.mean(np.array(samples['st'])))
             tr_mean = np.mean(np.array(samples['tr_']), axis=0)
@@ -472,6 +490,7 @@ MODEL_SPECS = [
     ('M1', make_m1, 1, 'Effort-only (kappa)'),
     ('M2', make_m2, 1, 'Threat-only (omega)'),
     ('M3', make_m3, 1, 'Single-param (theta=omega=kappa)'),
+    ('M3b', make_m3b, 1, 'Single-param + scaling (theta, alpha*theta)'),
     ('M4', make_m4, 2, 'Separate (lambda+omega)'),
     ('M5', make_m5, 2, 'Joint W(u) (omega+kappa)'),
 ]
@@ -562,6 +581,8 @@ def main():
             'choice_acc': metrics['choice_acc'],
             'choice_r2': metrics['choice_r2'],
             'vigor_r2': metrics['vigor_r2'],
+            'WAIC_choice': ic_results.get('WAIC_choice', np.nan),
+            'LOO_choice': ic_results.get('LOO_choice', np.nan),
             'converged': passed,
             'elapsed_min': elapsed / 60,
         }
@@ -605,10 +626,25 @@ def main():
                 row_alt = df[df['Model'] == alt]
                 if len(row_alt) == 0:
                     continue
-                alt_waic = row_alt['WAIC'].values[0]
-                alt_loo = row_alt['LOO'].values[0]
-                dw = alt_waic - m5_waic
-                dl = alt_loo - m5_loo
+
+                # For M1 (choice-only model), use choice-only WAIC/LOO
+                # to compare fairly against M5's choice component
+                if alt == 'M1':
+                    alt_waic = row_alt['WAIC'].values[0]  # M1 only has choice
+                    alt_loo = row_alt['LOO'].values[0]
+                    # Compare against M5's choice-only WAIC
+                    m5_waic_cmp = df.loc[df['Model'] == 'M5', 'WAIC_choice'].values[0]
+                    m5_loo_cmp = df.loc[df['Model'] == 'M5', 'LOO_choice'].values[0]
+                    print(f"\n  Note: M1 has choice-only likelihood.")
+                    print(f"  Comparing M1 WAIC vs M5 choice-only WAIC for fair comparison.")
+                else:
+                    alt_waic = row_alt['WAIC'].values[0]
+                    alt_loo = row_alt['LOO'].values[0]
+                    m5_waic_cmp = m5_waic
+                    m5_loo_cmp = m5_loo
+
+                dw = alt_waic - m5_waic_cmp
+                dl = alt_loo - m5_loo_cmp
 
                 waic_wins = dw > 0
                 loo_wins = dl > 0

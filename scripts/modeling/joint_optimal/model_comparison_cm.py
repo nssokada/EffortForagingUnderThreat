@@ -203,6 +203,44 @@ def make_m3(NS, NC, NV):
 
 
 # ============================================================
+# M3b: Single-parameter with scaling (θ, with α·θ for effort cost)
+# Fairer test than M3: allows the single trait to operate at different
+# scales in the two channels via a population scaling factor α.
+# ============================================================
+
+def make_m3b(NS, NC, NV):
+    def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
+        g, h, tau, sv, bc, sp = pop_vigor_params()
+        mt = numpyro.sample('mt', dist.Normal(0, 1))
+        st = numpyro.sample('st', dist.HalfNormal(.5))
+        # Scaling factor: κ_effective = α · θ (allows different scales)
+        alpha_raw = numpyro.sample('alpha_raw', dist.Normal(0, 1))
+        alpha = numpyro.deterministic('alpha', jnp.exp(alpha_raw))
+        with numpyro.plate('s', NS):
+            tr_ = numpyro.sample('tr_', dist.Normal(0, 1))
+        theta = jnp.exp(mt + st * tr_)
+        numpyro.deterministic('theta', theta)
+
+        ug = jnp.linspace(.1, 1.5, 40)
+
+        # θ enters as ω, α·θ enters as κ
+        _, VH = eu_sat(theta[cs], alpha * theta[cs], cT, cDH,
+                        jnp.full(NC, 5.), jnp.full(NC, .9), g, h, sp, ug)
+        _, VL = eu_sat(theta[cs], alpha * theta[cs], cT, cDL,
+                        jnp.full(NC, 1.), jnp.full(NC, .4), g, h, sp, ug)
+        pH = jax.nn.sigmoid(jnp.clip((VH - VL) / tau, -20, 20))
+        with numpyro.plate('c', NC):
+            numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
+
+        us, _ = eu_sat(theta[vs], alpha * theta[vs], vT, vD, vR, vq, g, h, sp, ug)
+        rp = us + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
+    return model
+
+
+# ============================================================
 # M4: Separate equations (λ choice-only + ω vigor-only)
 # ============================================================
 
