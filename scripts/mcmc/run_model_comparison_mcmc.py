@@ -72,12 +72,13 @@ def fit_mcmc(name, model_fn, data, num_warmup=2000, num_samples=4000,
     initial values for NUTS (warm start). Helps models like M4 that have
     difficult posterior geometry.
     """
-    from numpyro.infer import SVI, Trace_ELBO, init_to_value
+    from numpyro.infer import SVI, Trace_ELBO
     from numpyro.infer.autoguide import AutoNormal
+    from numpyro.infer.initialization import init_to_value
 
     kw = {k: data[k] for k in KK}
 
-    init_strategy = None
+    init_params = None
     if svi_init:
         print(f"  Running SVI warm start for {name}...")
         guide = AutoNormal(model_fn)
@@ -94,20 +95,34 @@ def fit_mcmc(name, model_fn, data, num_warmup=2000, num_samples=4000,
                 best_params = svi.get_params(svi_state)
         print(f"  SVI warm start done (best loss: {best_loss:.1f})")
 
-        # Extract SVI median as init values
+        # Extract SVI median as init values for NUTS
         from numpyro.infer import Predictive
         svi_samples = Predictive(model_fn, guide=guide, params=best_params,
                                   num_samples=1)(random.PRNGKey(seed + 1), **kw)
-        init_vals = {k: v[0] for k, v in svi_samples.items()
-                     if not k.startswith('obs') and k not in ['oc', 'ov']}
-        init_strategy = init_to_value(values=init_vals)
+        # Filter to only latent sites (not observed or deterministic)
+        init_params = {}
+        for k, v in svi_samples.items():
+            # Skip observed sites and deterministic sites
+            if k in ['oc', 'ov', 'rp', 'gamma', 'hazard', 'omega', 'kappa',
+                      'lambda', 'theta', 'baseline', 'g', 'h']:
+                continue
+            init_params[k] = v[0]
 
-    kernel = NUTS(
-        model_fn,
-        target_accept_prob=target_accept_prob,
-        max_tree_depth=max_tree_depth,
-        init_strategy=init_strategy,
-    )
+    # Build NUTS kernel
+    if init_params is not None:
+        kernel = NUTS(
+            model_fn,
+            target_accept_prob=target_accept_prob,
+            max_tree_depth=max_tree_depth,
+            init_strategy=init_to_value(values=init_params),
+        )
+    else:
+        kernel = NUTS(
+            model_fn,
+            target_accept_prob=target_accept_prob,
+            max_tree_depth=max_tree_depth,
+        )
+
     mcmc = MCMC(
         kernel,
         num_warmup=num_warmup,
