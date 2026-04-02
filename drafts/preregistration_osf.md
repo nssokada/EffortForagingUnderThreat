@@ -34,6 +34,7 @@ H4a. Higher capture cost will predict higher escape rates on attack trials.
 H4b. The majority of suboptimal choices will be overcautious, and capture cost will predict who is overcautious.
 H4c. Higher effort cost will predict lower pressing intensity.
 H4d. The balance between capture cost and effort cost will predict decision quality: effort-driven avoidance will be less optimal than threat-driven avoidance.
+H4e. Consistency with the joint fitness function — across both patch selection and motor intensity — will predict foraging earnings. Both choice consistency and intensity pattern match will independently contribute.
 
 **H5: Anxiety and confidence will independently monitor the foraging computation and predict foraging efficiency beyond the model parameters.**
 
@@ -166,6 +167,7 @@ The four models:
 - H4b: Classify errors from empirical expected reward per T x D cell. Overcaution > 65%. r(omega, overcaution ratio) > 0.30, p < .01.
 - H4c: r(kappa, mean vigor) < -0.30, p < .01.
 - H4d: r(atan2(kappa_z, omega_z), % optimal) < -0.15, p < .01.
+- H4e: Per-subject choice consistency = fraction of trials matching model-predicted choice. Per-subject intensity pattern = within-subject r(model-predicted u*, actual cell-mean rate) across conditions. Joint regression: earnings ~ choice_consistency_z + intensity_pattern_z. Both betas > 0, both p < .01.
 
 **H5:**
 - H5a: Hierarchical regression. Step 1: outcome ~ omega_z + kappa_z. Step 2: + calibration_z. delta-R-squared > 0.03, p < .01, for at least two of: % optimal, escape, earnings.

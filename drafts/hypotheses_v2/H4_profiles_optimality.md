@@ -91,6 +91,29 @@ r < -0.15, p < .01.
 
 ---
 
+## H4e: Consistency with W(u) across both channels predicts earnings
+
+### Prediction
+
+People who are more consistent with their own fitness function — choosing the cookie W(u) predicts AND pressing at the intensity W(u) predicts — will earn more. Both choice consistency and intensity pattern match will independently predict earnings.
+
+### Test
+
+Per-subject choice consistency = fraction of trials where actual choice matches model-predicted choice. Per-subject intensity pattern = within-subject r(model-predicted u*, actual cell-mean rate) across conditions. Joint regression: earnings ~ choice_consistency_z + intensity_pattern_z.
+
+### Threshold
+
+Both β > 0, both p < .01.
+
+### Exploratory benchmarks
+
+- Choice consistency → earnings: r = +0.252
+- Intensity pattern → earnings: r = +0.430
+- Joint R² = 0.23, both p < .001
+- The two consistencies are independent (r = +0.10)
+
+---
+
 ## Descriptive: Four foraging profiles
 
 Median-splitting on ω and κ produces four profiles (reported descriptively, not as a preregistered test):
@@ -115,3 +138,5 @@ Strategic foragers earned 33 points more than Reckless foragers, corresponding t
 | H4b: ω → overcaution | r | > .30, p < .01 | +0.810 |
 | H4c: κ → vigor | r | < -.30, p < .01 | -0.736 |
 | H4d: angle → optimality | r | < -.15, p < .01 | -0.315 |
+| H4e: choice consistency → earnings | β | > 0, p < .01 | R²=0.23 (joint) |
+| H4e: intensity pattern → earnings | β | > 0, p < .01 | both p < .001 |
