@@ -24,9 +24,9 @@ H2c. The temporal shape of the vigor timecourse will differ by encounter status 
 
 **H3: A joint fitness model with two per-subject parameters will outperform simpler alternatives.**
 
-H3a. The joint model (M4: omega + kappa) will outperform the effort-only model (M1), which ignores threat.
-H3b. M4 will outperform the threat-only model (M2), which lacks individual effort sensitivity.
-H3c. M4 will outperform the single-parameter model (M3), demonstrating that capture cost and effort cost are separable traits.
+H3a. The joint model will outperform an effort-only model that ignores threat.
+H3b. The joint model will outperform a threat-only model that lacks individual effort sensitivity.
+H3c. The joint model will outperform a single-parameter model, demonstrating that capture cost and effort cost are separable traits.
 
 **H4: The model parameters will predict survival, error patterns, and decision quality.**
 
