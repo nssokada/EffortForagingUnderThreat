@@ -4,7 +4,19 @@
       "Bash(git push:*)",
       "Bash(git checkout:*)",
       "Bash(git commit:*)",
-      "Bash(tar xzf:*)"
+      "Bash(tar xzf:*)",
+      "Bash(conda env:*)",
+      "Bash(/opt/anaconda3/envs/limaanalysis/bin/python -c \"import jax; print\\(jax.__version__\\)\")",
+      "Bash(/opt/anaconda3/envs/limaanalysis/bin/python -c \":*)",
+      "WebSearch",
+      "WebFetch(domain:pmc.ncbi.nlm.nih.gov)",
+      "WebFetch(domain:www.nature.com)",
+      "WebFetch(domain:www.shenhavlab.org)",
+      "WebFetch(domain:www.pnas.org)",
+      "WebFetch(domain:link.springer.com)",
+      "WebFetch(domain:www.ecologycenter.us)",
+      "WebFetch(domain:www.semanticscholar.org)",
+      "WebFetch(domain:cdnsciencepub.com)"
     ]
   },
   "hooks": {
