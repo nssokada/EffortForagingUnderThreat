@@ -61,7 +61,7 @@ def run_full_pipeline(
     
     # Default to all stages
     if stages is None:
-        stages = [1, 2, 3, 4, 5, 6]
+        stages = [1, 2, 3, 4, 5, 6, 7]
     
     # Create base output directory
     base_output = Path(config.output_base_dir)
@@ -293,6 +293,49 @@ def run_full_pipeline(
         print(f"  cell_means: {len(cell_means)} cells → {vigor_dir / 'cell_means.csv'}")
 
     # ==========================================================================
+    # Stage 7: Prepare Model Input
+    # ==========================================================================
+    if 7 in stages:
+        print("\n" + "=" * 60)
+        print("STAGE 7: Prepare Model Input")
+        print("=" * 60)
+
+        from prepare_model_input import main as prepare_model_input_main
+        import sys
+
+        # Get stage5 dir
+        if 'stage5' in stage_outputs:
+            s5_dir = Path(stage_outputs['stage5']['behavior_rich']['csv']).parent
+        else:
+            s5_dir = config.stage5_dir
+
+        vigor_dir = Path("results/stats/vigor_analysis")
+        model_input_dir = Path("data/model_input")
+
+        exclude = getattr(config, 'exclude_subjects', [])
+        exclude_args = []
+        if exclude:
+            exclude_args = ['--exclude'] + [str(e) for e in exclude]
+
+        # Call with args
+        old_argv = sys.argv
+        sys.argv = ['prepare_model_input',
+                     '--stage5_dir', str(s5_dir),
+                     '--vigor_dir', str(vigor_dir),
+                     '--output_dir', str(model_input_dir)] + exclude_args
+        prepare_model_input_main()
+        sys.argv = old_argv
+
+        results['stages']['stage7'] = {
+            'output_dir': str(model_input_dir),
+            'outputs': {
+                'choice_trials': str(model_input_dir / 'choice_trials.csv'),
+                'vigor_cell_means': str(model_input_dir / 'vigor_cell_means.csv'),
+                'subject_mapping': str(model_input_dir / 'subject_mapping.csv'),
+            }
+        }
+
+    # ==========================================================================
     # Create Final Summary
     # ==========================================================================
     print("\n" + "=" * 60)
@@ -358,7 +401,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Effort Foraging Under Threat Preprocessing Pipeline")
     parser.add_argument("--raw-data", "-r", required=True, help="Path to raw data directory")
     parser.add_argument("--output", "-o", help="Path to output base directory")
-    parser.add_argument("--stages", "-s", type=int, nargs="+", default=[1, 2, 3, 4, 5, 6],
+    parser.add_argument("--stages", "-s", type=int, nargs="+", default=[1, 2, 3, 4, 5, 6, 7],
                         help="Stages to run (default: all)")
     
     args = parser.parse_args()
