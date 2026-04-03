@@ -135,12 +135,16 @@ def fit_mcmc(name, model_fn, data, num_warmup=2000, num_samples=4000,
             max_tree_depth=max_tree_depth,
         )
 
+    # Use vectorized chains on GPU (all chains run simultaneously on 1 device)
+    # Fall back to sequential on CPU
+    _has_gpu = any('cuda' in str(d).lower() or 'gpu' in str(d).lower() for d in jax.devices())
     mcmc = MCMC(
         kernel,
         num_warmup=num_warmup,
         num_samples=num_samples,
         num_chains=num_chains,
         progress_bar=True,
+        chain_method='vectorized' if _has_gpu else 'sequential',
     )
 
     print(f"\n{'=' * 70}")
