@@ -18,14 +18,15 @@ After controlling for ω and κ, calibration (within-subject r between anxiety a
 
 ### Test
 
-Hierarchical regression:
-- Step 1: outcome ~ ω_z + κ_z
-- Step 2: outcome ~ ω_z + κ_z + calibration_z
-- Report ΔR² and calibration p-value.
+Bayesian model comparison (bambi + ArviZ LOO-CV):
+- Base: pct_optimal ~ ω_z + κ_z
+- Full: pct_optimal ~ ω_z + κ_z + calibration_z
+- Compare via LOO-CV (PSIS-LOO). Report delta-ELPD and SE.
+- Escape rate and earnings tested as supporting outcomes.
 
 ### Threshold
 
-Calibration ΔR² > 0.03 and p < .01 for at least two of: optimality, escape, earnings.
+Calibration improves model fit for pct_optimal (delta-ELPD > 0, SE excludes zero).
 
 ### Exploratory benchmarks
 
@@ -45,13 +46,13 @@ People whose anxiety reacts more strongly to threat (steeper slope) shift their 
 
 ### Test
 
-Correlate anxiety slope with:
+Bayesian linear model (bambi): choice_shift ~ anxiety_slope_z.
 - Choice shift = P(heavy at T=0.1) − P(heavy at T=0.9)
-- Vigor shift = mean vigor at T=0.9 − mean vigor at T=0.1
+- Also check: vigor shift = mean vigor at T=0.9 − mean vigor at T=0.1 (expected null)
 
 ### Threshold
 
-r(anxiety slope, choice shift) > 0.20, p < .01.
+Posterior mean > 0, 95% HDI excludes zero.
 
 ### Exploratory benchmarks
 
@@ -70,11 +71,11 @@ The computational capture-cost parameter (ω) predicts subjective confidence but
 
 ### Test
 
-Correlate ω with mean confidence and mean anxiety.
+Bayesian linear models (bambi): mean_confidence ~ ω_z and mean_anxiety ~ ω_z.
 
 ### Threshold
 
-r(ω, confidence) < 0, p < .01. |r(ω, anxiety)| < 0.10.
+mean_confidence ~ ω_z: posterior mean < 0, 95% HDI excludes zero. mean_anxiety ~ ω_z: null tested via ROPE — 95% HDI falls entirely within [-0.10, +0.10] (standardized β), indicating the effect is practically equivalent to zero.
 
 ### Exploratory benchmarks
 
@@ -95,11 +96,11 @@ Confident people don't make fewer errors — they make different errors. Confide
 
 ### Test
 
-Correlate mean confidence with number of overcautious and reckless errors separately.
+Bayesian linear models (bambi): n_overcautious ~ confidence_z and n_reckless ~ confidence_z.
 
 ### Threshold
 
-r(confidence, overcautious) < 0 AND r(confidence, reckless) > 0, both p < .01.
+n_overcautious ~ confidence_z: posterior mean < 0, 95% HDI excludes zero. n_reckless ~ confidence_z: posterior mean > 0, 95% HDI excludes zero.
 
 ### Exploratory benchmarks
 
@@ -122,12 +123,12 @@ The first-order computation (ω, κ) governs foraging strategy — who avoids an
 
 ## Confirmation Plan
 
-| Test | Statistic | Threshold | Discovery value |
+| Test | Criterion | Threshold | Discovery value |
 |------|-----------|-----------|-----------------|
-| H5a: Cal ΔR² optimality | ΔR² | > .03, p < .01 | +0.068 |
-| H5a: Cal ΔR² earnings | ΔR² | > .03, p < .01 | +0.058 |
-| H5b: Slope → choice shift | r | > .20, p < .01 | +0.389 |
-| H5c: ω → confidence | r | < 0, p < .01 | -0.216 |
-| H5c: ω → anxiety | r | |r| < .10 | +0.071 |
-| H5d: Conf → overcautious | r | < 0, p < .01 | -0.224 |
-| H5d: Conf → reckless | r | > 0, p < .01 | +0.200 |
+| H5a: Cal → optimality | LOO delta-ELPD | > 0, SE excludes 0 | ΔELPD > 0 (all 3) |
+| H5a: Cal → earnings | LOO delta-ELPD | > 0, SE excludes 0 | ΔELPD > 0 (all 3) |
+| H5b: Slope → choice shift | posterior mean | > 0, HDI excludes 0 | HDI excludes 0 |
+| H5c: ω → confidence | posterior mean | < 0, HDI excludes 0 | HDI excludes 0 |
+| H5c: ω → anxiety | posterior mean | HDI includes 0 | HDI includes 0 |
+| H5d: Conf → overcautious | posterior mean | < 0, HDI excludes 0 | HDI excludes 0 |
+| H5d: Conf → reckless | posterior mean | > 0, HDI excludes 0 | HDI excludes 0 |

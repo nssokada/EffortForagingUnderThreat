@@ -8,7 +8,7 @@ Model comparison via WAIC (primary) + PSIS-LOO (robustness), computed from
 posterior samples using ArviZ.
 
 Models (from model_comparison_cm.py):
-  M1: Effort-only (kappa per-subject, no threat, no vigor likelihood)
+  M1: Effort-only (kappa per-subject, no threat, null/intercept-only vigor)
   M2: Threat-only (omega per-subject, population kappa)
   M3: Single-parameter (theta = omega = kappa)
   M4: Separate equations (lambda choice + omega vigor, no shared W)
@@ -648,21 +648,12 @@ def main():
                 if len(row_alt) == 0:
                     continue
 
-                # For M1 (choice-only model), use choice-only WAIC/LOO
-                # to compare fairly against M5's choice component
-                if alt == 'M1':
-                    alt_waic = row_alt['WAIC'].values[0]  # M1 only has choice
-                    alt_loo = row_alt['LOO'].values[0]
-                    # Compare against M5's choice-only WAIC
-                    m5_waic_cmp = df.loc[df['Model'] == 'M5', 'WAIC_choice'].values[0]
-                    m5_loo_cmp = df.loc[df['Model'] == 'M5', 'LOO_choice'].values[0]
-                    print(f"\n  Note: M1 has choice-only likelihood.")
-                    print(f"  Comparing M1 WAIC vs M5 choice-only WAIC for fair comparison.")
-                else:
-                    alt_waic = row_alt['WAIC'].values[0]
-                    alt_loo = row_alt['LOO'].values[0]
-                    m5_waic_cmp = m5_waic
-                    m5_loo_cmp = m5_loo
+                # All models now have joint (choice + vigor) likelihood
+                # so compare on full WAIC/LOO directly
+                alt_waic = row_alt['WAIC'].values[0]
+                alt_loo = row_alt['LOO'].values[0]
+                m5_waic_cmp = m5_waic
+                m5_loo_cmp = m5_loo
 
                 dw = alt_waic - m5_waic_cmp
                 dl = alt_loo - m5_loo_cmp

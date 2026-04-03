@@ -1,7 +1,7 @@
 """
 5-Model Comparison on Cell-Mean Vigor + Saturating Survival
 
-M1: Effort-only (κ per-subject, no threat in choice, no vigor model)
+M1: Effort-only (κ per-subject, no threat in choice, null/intercept-only vigor)
 M2: Threat-only (ω per-subject, no per-subject effort)
 M3: Single-parameter (θ = ω = κ)
 M4: Separate equations (λ choice-only + ω vigor-only, no shared W)
@@ -127,7 +127,16 @@ def make_m1(NS, NC, NV):
         pH = jax.nn.sigmoid(jnp.clip(delta_V / tau, -20, 20))
         with numpyro.plate('c', NC):
             numpyro.sample('oc', dist.Bernoulli(probs=jnp.clip(pH, 1e-6, 1-1e-6)), obs=cc)
-        # No vigor model
+
+        # Null vigor model: intercept-only (no condition structure)
+        # Predicts vigor has no systematic T/D effects — just grand mean + cookie offset
+        mu_vigor = numpyro.sample('mu_vigor', dist.Normal(0.8, 0.5))
+        bc = numpyro.sample('bc', dist.Normal(0, 0.5))
+        sv = numpyro.sample('sv', dist.HalfNormal(0.3))
+        rp = mu_vigor + bc * vc
+        numpyro.deterministic('rp', rp)
+        with numpyro.plate('v', NV):
+            numpyro.sample('ov', dist.Normal(rp, sv / jnp.sqrt(vn)), obs=vr)
     return model
 
 
@@ -440,7 +449,7 @@ MODEL_SPECS = [
 ]
 
 PARAM_COUNTS = {
-    'M1': lambda N: N + 2,         # κ raw + mk, sk, τ
+    'M1': lambda N: N + 5,         # κ raw + mk, sk, τ + mu_vigor, bc, sv
     'M2': lambda N: N + 9,         # ω raw + pop params
     'M3': lambda N: N + 9,         # θ raw + pop params
     'M4': lambda N: 2 * N + 11,    # λ+ω raw + pop params + beta
@@ -472,11 +481,7 @@ if __name__ == '__main__':
         metrics = evaluate(fit, data)
 
         n_params = PARAM_COUNTS[name](NS)
-        # M1 has no vigor likelihood
-        if name == 'M1':
-            n_obs = data['N_choice']
-        else:
-            n_obs = data['N_choice'] + data['N_vigor']
+        n_obs = data['N_choice'] + data['N_vigor']
         bic = 2 * fit['best_loss'] + n_params * np.log(n_obs)
 
         row = {

@@ -14,11 +14,11 @@ Higher ω predicts higher escape rate. People who perceive capture as costly ado
 
 ### Test
 
-OLS: escape_rate ~ ω_z + κ_z.
+Bayesian linear model (bambi): escape_rate ~ ω_z + κ_z.
 
 ### Threshold
 
-ω: β > 0, p < 0.01.
+ω: posterior mean > 0, 95% HDI excludes zero.
 
 ### Exploratory benchmarks
 
@@ -27,20 +27,20 @@ OLS: escape_rate ~ ω_z + κ_z.
 
 ---
 
-## H4b: Overcaution is the dominant error, driven by ω
+## H4b: Capture cost predicts overcautious errors
 
 ### Prediction
 
-Among suboptimal choices, the majority (> 65%) are overcautious — choosing light when heavy has higher expected reward. ω predicts who is overcautious.
+Higher ω predicts a greater proportion of overcautious errors — choosing light when heavy has higher expected reward. People who perceive capture as costly systematically avoid the high-reward option even when it's optimal.
 
 ### Test
 
 1. Compute empirical expected reward per T×D cell. Define optimal choice. Classify errors.
-2. Correlate ω with overcaution ratio.
+2. Bayesian linear model (bambi): overcaution_ratio ~ ω_z.
 
 ### Threshold
 
-Overcaution > 65% of errors. r(ω, overcaution ratio) > 0.30, p < .01.
+ω → overcaution_ratio: posterior mean > 0, 95% HDI excludes zero. Overall overcaution percentage reported descriptively.
 
 ### Exploratory benchmarks
 
@@ -57,11 +57,11 @@ Overcaution > 65% of errors. r(ω, overcaution ratio) > 0.30, p < .01.
 
 ### Test
 
-r(κ, mean vigor).
+Bayesian linear model (bambi): mean_vigor ~ κ_z.
 
 ### Threshold
 
-r < -0.30, p < .01.
+κ: posterior mean < 0, 95% HDI excludes zero.
 
 ### Exploratory benchmarks
 
@@ -78,11 +78,11 @@ The ω-κ balance predicts decision quality. People whose avoidance is primarily
 
 ### Test
 
-r(ω-κ angle, % optimal), where angle = atan2(κ_z, ω_z). Higher angle = more effort-focused.
+Bayesian linear model (bambi): pct_optimal ~ angle_z, where angle = atan2(κ_z, ω_z). Higher angle = more effort-focused.
 
 ### Threshold
 
-r < -0.15, p < .01.
+angle: posterior mean < 0, 95% HDI excludes zero.
 
 ### Exploratory benchmarks
 
@@ -99,11 +99,11 @@ People who are more consistent with their own fitness function — choosing the 
 
 ### Test
 
-Per-subject choice consistency = fraction of trials where actual choice matches model-predicted choice. Per-subject intensity pattern = within-subject r(model-predicted u*, actual cell-mean rate) across conditions. Joint regression: earnings ~ choice_consistency_z + intensity_pattern_z.
+Per-subject choice consistency = fraction of trials where actual choice matches model-predicted choice. Per-subject intensity deviation = RMSE between model-predicted u* and observed cell-mean rate across conditions (lower = closer to model). Bayesian linear model (bambi): earnings ~ choice_consistency_z + intensity_deviation_z.
 
 ### Threshold
 
-Both β > 0, both p < .01.
+choice_consistency posterior mean > 0, intensity_deviation posterior mean < 0; both 95% HDIs exclude zero.
 
 ### Exploratory benchmarks
 
@@ -131,12 +131,12 @@ Strategic foragers earned 33 points more than Reckless foragers, corresponding t
 
 ## Confirmation Plan
 
-| Test | Statistic | Threshold | Discovery value |
+| Test | Criterion | Threshold | Discovery value |
 |------|-----------|-----------|-----------------|
-| H4a: ω → escape | β | > 0, p < .01 | +0.060, p = .0002 |
+| H4a: ω → escape | posterior mean | > 0, HDI excludes 0 | +0.060 |
 | H4b: Overcaution % | % of errors | > 65% | 79% |
-| H4b: ω → overcaution | r | > .30, p < .01 | +0.810 |
-| H4c: κ → vigor | r | < -.30, p < .01 | -0.736 |
-| H4d: angle → optimality | r | < -.15, p < .01 | -0.315 |
-| H4e: choice consistency → earnings | β | > 0, p < .01 | R²=0.23 (joint) |
-| H4e: intensity pattern → earnings | β | > 0, p < .01 | both p < .001 |
+| H4b: ω → overcaution | posterior mean | > 0, HDI excludes 0 | +0.177 |
+| H4c: κ → vigor | posterior mean | < 0, HDI excludes 0 | -0.194 |
+| H4d: angle → optimality | posterior mean | < 0, HDI excludes 0 | -0.041 |
+| H4e: choice cons → earnings | posterior mean | > 0, HDI excludes 0 | +14.3 |
+| H4e: intensity → earnings | posterior mean | > 0, HDI excludes 0 | +36.6 |

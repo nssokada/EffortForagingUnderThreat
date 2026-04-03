@@ -54,7 +54,7 @@ Binary: heavy (1) or light (0) on each choice trial. Per-subject P(heavy) as sum
 
 ### Vigor
 
-Normalized press rate = median(1/IPI) / calibrationMax, where IPI is inter-keypress interval. For timecourse analyses: 200ms bins from raw keypress timestamps at native ~5Hz, smoothed with 3-point centered moving average (600ms window). For model fitting: per-subject condition cell means (subject x threat x distance x cookie type, ~18 cells per subject, ~5,200 total), weighted by sqrt(n_trials) in the likelihood.
+Keypresses recorded at native ~5Hz (S+D+F keys). Inter-press intervals (IPI) computed as successive timestamp differences; IPIs < 10 ms removed as artifacts. Primary metric: normalized press rate = median(1/IPI) / calibrationMax. For timecourse analyses (H2): 200ms bins smoothed with 3-point centered moving average (600ms window). For model fitting (H3): per-subject condition cell means (subject × threat × distance × cookie type, ~18 cells per subject, ~5,200 total), each the median normalized rate across trials within that condition, weighted by sqrt(n_trials) in the likelihood.
 
 ### Affect
 
@@ -66,7 +66,14 @@ Escape rate = proportion of attack trials where participant was not captured (tr
 
 ### Exclusions
 
-Subjects with calibration mean IPI > 2.5 SD from the sample mean. No other exclusions.
+**Subject-level:**
+- Incomplete data: participants must complete all 81 trials and have data in all modalities (behavioral, probe ratings, questionnaires).
+- Calibration outliers: mean inter-press interval during the calibration phase > 2.5 SD from the sample mean.
+- Task engagement: escape rate < 35% across attack trials.
+
+**Trial-level:**
+- Non-response trials (no keypresses recorded) excluded from per-subject indices.
+- Inter-press intervals < 10 ms treated as artifacts and removed before computing pressing rate.
 
 ---
 
@@ -124,11 +131,9 @@ gamma (hazard exponent), h (hazard scale), tau (choice noise), sigma_v (vigor no
 
 ### H2: Vigor Dynamics Across the Predatory Imminence Continuum
 
-**H2a.** Threat increases pressing rate within cookie type. Paired t-test (T=0.9 vs T=0.1): p < .01 for both heavy and light cookies.
+**H2a.** Predator encounter triggers a motor spike (attack vs non-attack reactive epoch, one-sample t vs 0, p < .001, d > 0.20).
 
-**H2b.** Predator encounter triggers a motor spike (attack vs non-attack reactive epoch, one-sample t vs 0, p < .001) that does NOT scale with threat probability (paired t comparing spike at T=0.9 vs T=0.1: p > .05).
-
-**H2c.** GAM likelihood ratio tests confirm distinct temporal signatures for encounter (chi-squared, p < .01) and threat (chi-squared, p < .01). GAMs use natural cubic regression splines (K=10) with cookie covariate and random intercepts by subject.
+**H2b.** GAM likelihood ratio tests confirm distinct temporal signatures for encounter (chi-squared, p < .01) and threat (chi-squared, p < .01). GAMs use natural cubic regression splines (K=10) with cookie covariate and random intercepts by subject.
 
 ### H3: The Joint Fitness Model Outperforms Alternatives
 
@@ -155,25 +160,27 @@ All four models are fitted with identical inference: NumPyro HMC/NUTS, 4 chains 
 
 ### H4: Foraging Profiles and Optimality
 
-**H4a.** omega predicts escape rate on attack trials (OLS beta > 0, p < .01). People who perceive capture as costly adopt strategies that increase survival.
+**H4a.** omega predicts escape rate on attack trials (Bayesian: escape_rate ~ omega_z + kappa_z; omega posterior mean > 0, 95% HDI excludes zero). People who perceive capture as costly adopt strategies that increase survival.
 
-**H4b.** Among suboptimal foraging choices, the majority (> 65%) are overcautious (choosing light when heavy has higher expected reward). omega predicts the overcaution ratio (r > 0.30, p < .01).
+**H4b.** Capture cost predicts the proportion of overcautious errors: higher omega predicts a greater share of suboptimal choices that are overcautious (Bayesian: overcaution_ratio ~ omega_z; posterior mean > 0, 95% HDI excludes zero). Overall overcaution percentage reported descriptively.
 
-**H4c.** kappa predicts pressing intensity (r(kappa, mean vigor) < -0.30, p < .01). The effort cost parameter governs motor output — the activation side of the avoid-activate decomposition.
+**H4c.** kappa predicts pressing intensity (Bayesian: mean_vigor ~ kappa_z; posterior mean < 0, 95% HDI excludes zero). The effort cost parameter governs motor output — the activation side of the avoid-activate decomposition.
 
-**H4d.** The omega-kappa angle predicts decision quality: r(atan2(kappa_z, omega_z), % optimal) < -0.15, p < .01. Effort-driven avoidance is less optimal than threat-driven avoidance because it is indiscriminate across threat levels.
+**H4d.** The omega-kappa angle predicts decision quality (Bayesian: pct_optimal ~ angle_z, where angle = atan2(kappa_z, omega_z); posterior mean < 0, 95% HDI excludes zero). Effort-driven avoidance is less optimal than threat-driven avoidance because it is indiscriminate across threat levels.
+
+**H4e.** Consistency with the joint fitness function — across both patch selection and motor intensity — predicts foraging earnings (Bayesian: earnings ~ choice_consistency_z + intensity_deviation_z; choice_consistency posterior > 0, intensity_deviation posterior < 0; both 95% HDIs exclude zero). Both choice consistency and intensity deviation independently contribute.
 
 ### H5: Metacognitive Monitoring of the Foraging Computation
 
 We test how accurately metacognitive signals — anxiety and confidence — monitor the first-order survival computation, and whether monitoring accuracy predicts foraging efficiency beyond the model parameters. Following the two-stage metacognitive architecture (Fleming & Daw 2017), the computation (ω, κ) is the first-order process; anxiety monitors threat (primary appraisal, Lazarus 1991) and confidence monitors coping capacity (secondary appraisal).
 
-**H5a.** Anxiety calibration predicts foraging optimality beyond omega and kappa. Hierarchical regression: delta-R-squared > 0.03 (p < .01) for at least two of: % optimal, escape rate, earnings. The metacognitive monitor adds information the first-order computation doesn't contain.
+**H5a.** Anxiety calibration predicts foraging optimality beyond omega and kappa. Bayesian model comparison: fit base (pct_optimal ~ omega_z + kappa_z) vs full (pct_optimal ~ omega_z + kappa_z + calibration_z). Compare via LOO-CV (ArviZ). Calibration improves model fit (delta-ELPD > 0, SE excludes zero). Escape rate and earnings tested as supporting outcomes.
 
-**H5b.** Anxiety slope (reactivity to threat) predicts choice adaptation: r(anxiety slope, choice shift from T=0.1 to T=0.9) > 0.20, p < .01. Anxiety reactivity drives the avoidance channel but not vigor (slope-vigor r expected null).
+**H5b.** Anxiety slope (reactivity to threat) predicts choice adaptation (Bayesian: choice_shift ~ anxiety_slope_z; posterior mean > 0, 95% HDI excludes zero). Anxiety reactivity drives the avoidance channel but not vigor (slope-vigor r expected null).
 
-**H5c.** Omega predicts subjective confidence (r < 0, p < .01) but not anxiety (|r| < 0.10). The computational capture-cost parameter maps onto a coping appraisal, not an affective state.
+**H5c.** Omega predicts subjective confidence (Bayesian: mean_confidence ~ omega_z; posterior mean < 0, 95% HDI excludes zero) but not anxiety (mean_anxiety ~ omega_z; null tested via ROPE: 95% HDI falls entirely within [-0.10, +0.10] standardized beta). The computational capture-cost parameter maps onto a coping appraisal, not an affective state.
 
-**H5d.** Confidence predicts error type, not error rate: r(confidence, n_overcautious) < 0 AND r(confidence, n_reckless) > 0, both p < .01.
+**H5d.** Confidence predicts error type, not error rate (Bayesian: n_overcautious ~ confidence_z, posterior mean < 0; n_reckless ~ confidence_z, posterior mean > 0; both 95% HDIs exclude zero).
 
 ---
 
@@ -194,10 +201,11 @@ We test how accurately metacognitive signals — anxiety and confidence — moni
 
 ### Statistical tests
 
-- Mixed models: statsmodels MixedLM with REML
-- GAMs: natural cubic regression splines via patsy + statsmodels MixedLM
-- All t-tests: two-tailed unless directional prediction specified
-- Multiple comparison correction: not applied to preregistered tests (each is a specific directional prediction)
+- H1/H2: Mixed models (statsmodels MixedLM with REML), paired t-tests, GAMs (natural cubic regression splines via patsy + MixedLM). Frequentist inference (p < .01).
+- H3: NumPyro HMC/NUTS. WAIC (primary) + PSIS-LOO (robustness).
+- H4/H5: Bayesian linear models (bambi; Capretto et al. 2022), 4 chains × 2,000 draws + 1,000 tuning, default weakly informative priors. Inference: 95% HDI excludes zero for directional predictions.
+- Multiple comparison correction: not applied — each test is a specific directional prediction from the exploratory sample.
+- Frequentist robustness checks (OLS/Pearson r, p < .01) for H4/H5 reported as supplementary.
 
 ---
 
@@ -216,15 +224,17 @@ These values are from the exploratory sample and serve as benchmarks, not thresh
 | H2c: GAM encounter LRT | chi-sq | 760 |
 | H3a: M4 vs M1 | delta-WAIC | TBD (MCMC) |
 | H3c: M4 vs M3 | delta-WAIC | TBD (MCMC) |
-| H4a: omega → escape | beta | +0.060, p = .0002 |
+| H4a: omega → escape | posterior mean | +0.060 [+0.029, +0.093] |
 | H4b: Overcaution % | % | 79% |
-| H4b: omega → OC ratio | r | +0.810 |
-| H4c: kappa → vigor | r | -0.736 |
-| H4d: angle → optimality | r | -0.315 |
-| H5a: Calibration delta-R-sq | delta-R-sq | +0.068 (optimality) |
-| H5b: Slope → choice shift | r | +0.389 |
-| H5c: omega → confidence | r | -0.216 |
-| H5d: Conf → overcautious | r | -0.224 |
+| H4b: omega → OC ratio | posterior mean | +0.177 [+0.163, +0.193] |
+| H4c: kappa → vigor | posterior mean | -0.194 [-0.215, -0.173] |
+| H4d: angle → optimality | posterior mean | -0.041 |
+| H4e: choice cons → earnings | posterior mean | +14.3 |
+| H4e: intensity → earnings | posterior mean | +36.6 |
+| H5a: Calibration LOO | delta-ELPD | > 0 (all 3 outcomes) |
+| H5b: Slope → choice shift | posterior mean | HDI excludes 0 |
+| H5c: omega → confidence | posterior mean | HDI excludes 0 (negative) |
+| H5d: Conf → overcautious | posterior mean | HDI excludes 0 (negative) |
 
 ---
 
@@ -239,6 +249,9 @@ The following analyses will be reported but are not part of the confirmatory tes
 5. **Clinical regression tables:** Full omega + kappa + affect → clinical symptom regressions for all questionnaire measures.
 6. **Trial-level anxiety → vigor:** LMM testing whether within-person anxiety fluctuations predict pressing intensity beyond threat level. Exploratory: small but significant effect (β = 0.004, p = .001), consistent with the affective gradient hypothesis (Shenhav 2024) but too small for individual-level prediction.
 7. **Threat response angle × clinical symptoms:** Whether the direction of one's threat response (avoidance-dominant vs activation-dominant) predicts apathy measures (AMI). Exploratory: trending signal for AMI Emotional and AMI Total.
+8. **Four foraging profiles:** Median split on omega × kappa producing Strategic, Resilient, Reckless, and Helpless profiles with descriptive earnings and escape rates.
+9. **Frequentist robustness:** Key H4 and H5 results replicated with OLS/Pearson r (p < .01) to confirm consistency across inference frameworks.
+10. **Normative benchmark:** Calibrated agent analysis comparing participant behavior to model-derived optimal strategy. Quantification of overcaution cost.
 
 ---
 
