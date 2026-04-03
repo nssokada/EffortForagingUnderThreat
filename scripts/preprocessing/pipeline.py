@@ -61,7 +61,7 @@ def run_full_pipeline(
     
     # Default to all stages
     if stages is None:
-        stages = [1, 2, 3, 4, 5]
+        stages = [1, 2, 3, 4, 5, 6]
     
     # Create base output directory
     base_output = Path(config.output_base_dir)
@@ -236,7 +236,62 @@ def run_full_pipeline(
             'output_dir': str(config.stage5_dir),
             'outputs': {k: {kk: str(vv) for kk, vv in v.items()} for k, v in stage5_outputs.items()}
         }
-    
+
+    # ==========================================================================
+    # Stage 6: Vigor Computation
+    # ==========================================================================
+    if 6 in stages:
+        print("\n" + "=" * 60)
+        print("STAGE 6: Vigor Computation")
+        print("=" * 60)
+
+        from compute_vigor import process_trial_vigor, process_epoch_metrics, compute_cell_means
+
+        # Get stage5 output dir
+        if 'stage5' in stage_outputs:
+            s5_dir = Path(stage_outputs['stage5']['behavior_rich']['csv']).parent
+        else:
+            s5_dir = config.stage5_dir
+
+        import pandas as pd
+        beh_rich = pd.read_csv(s5_dir / "behavior_rich.csv", low_memory=False)
+
+        # Exclude calibration outliers
+        exclude = getattr(config, 'exclude_subjects', [])
+        if exclude:
+            beh_rich = beh_rich[~beh_rich['subj'].isin(exclude)]
+
+        print(f"  {len(beh_rich)} trials, {beh_rich['subj'].nunique()} subjects")
+
+        # Vigor output goes to results/stats/vigor_analysis/
+        vigor_dir = Path("results/stats/vigor_analysis")
+        vigor_dir.mkdir(parents=True, exist_ok=True)
+
+        print("  Computing trial-level vigor...")
+        trial_vigor = process_trial_vigor(beh_rich)
+        trial_vigor.to_csv(s5_dir / "trial_vigor.csv", index=False)
+
+        print("  Computing epoch metrics...")
+        epoch_metrics = process_epoch_metrics(beh_rich)
+        epoch_metrics.to_csv(vigor_dir / "vigor_metrics.csv", index=False)
+
+        print("  Computing cell means...")
+        cell_means = compute_cell_means(epoch_metrics)
+        cell_means.to_csv(vigor_dir / "cell_means.csv", index=False)
+
+        results['stages']['stage6'] = {
+            'output_dir': str(vigor_dir),
+            'outputs': {
+                'trial_vigor': str(s5_dir / "trial_vigor.csv"),
+                'vigor_metrics': str(vigor_dir / "vigor_metrics.csv"),
+                'cell_means': str(vigor_dir / "cell_means.csv"),
+            }
+        }
+
+        print(f"  trial_vigor: {len(trial_vigor)} trials → {s5_dir / 'trial_vigor.csv'}")
+        print(f"  vigor_metrics: {len(epoch_metrics)} rows → {vigor_dir / 'vigor_metrics.csv'}")
+        print(f"  cell_means: {len(cell_means)} cells → {vigor_dir / 'cell_means.csv'}")
+
     # ==========================================================================
     # Create Final Summary
     # ==========================================================================
@@ -303,7 +358,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run Effort Foraging Under Threat Preprocessing Pipeline")
     parser.add_argument("--raw-data", "-r", required=True, help="Path to raw data directory")
     parser.add_argument("--output", "-o", help="Path to output base directory")
-    parser.add_argument("--stages", "-s", type=int, nargs="+", default=[1, 2, 3, 4, 5],
+    parser.add_argument("--stages", "-s", type=int, nargs="+", default=[1, 2, 3, 4, 5, 6],
                         help="Stages to run (default: all)")
     
     args = parser.parse_args()
