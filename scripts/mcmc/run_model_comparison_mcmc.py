@@ -311,8 +311,8 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
         return _empty_ic_result()
 
     # Build posterior dict for InferenceData (LOO needs it)
-    posterior_dict = {k: np.array(v).reshape(n_chains_actual, n_draws, *np.array(v).shape[1:])
-                      for k, v in chain_samples.items()}
+    # chain_samples already has shape (chains, draws, ...) — no reshape needed
+    posterior_dict = {k: np.array(v) for k, v in chain_samples.items()}
 
     # Build InferenceData with both posterior and log_likelihood
     idata = az.from_dict(posterior=posterior_dict, log_likelihood=ll_per_site)
