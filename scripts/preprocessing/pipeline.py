@@ -245,6 +245,8 @@ def run_full_pipeline(
         print("STAGE 6: Vigor Computation")
         print("=" * 60)
 
+        import sys as _sys
+        _sys.path.insert(0, str(Path(__file__).parent))
         from compute_vigor import process_trial_vigor, process_epoch_metrics, compute_cell_means
 
         # Get stage5 output dir
@@ -300,8 +302,8 @@ def run_full_pipeline(
         print("STAGE 7: Prepare Model Input")
         print("=" * 60)
 
+        _sys.path.insert(0, str(Path(__file__).parent))
         from prepare_model_input import main as prepare_model_input_main
-        import sys
 
         # Get stage5 dir
         if 'stage5' in stage_outputs:
@@ -318,13 +320,13 @@ def run_full_pipeline(
             exclude_args = ['--exclude'] + [str(e) for e in exclude]
 
         # Call with args
-        old_argv = sys.argv
-        sys.argv = ['prepare_model_input',
+        old_argv = _sys.argv
+        _sys.argv = ['prepare_model_input',
                      '--stage5_dir', str(s5_dir),
                      '--vigor_dir', str(vigor_dir),
                      '--output_dir', str(model_input_dir)] + exclude_args
         prepare_model_input_main()
-        sys.argv = old_argv
+        _sys.argv = old_argv
 
         results['stages']['stage7'] = {
             'output_dir': str(model_input_dir),
