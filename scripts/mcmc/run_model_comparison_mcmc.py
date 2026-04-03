@@ -29,6 +29,9 @@ import argparse
 
 import importlib.util
 
+import numpyro
+numpyro.set_host_device_count(4)
+
 import jax
 jax.config.update('jax_enable_x64', True)
 import jax.numpy as jnp
