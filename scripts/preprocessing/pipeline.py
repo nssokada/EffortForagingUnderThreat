@@ -247,38 +247,58 @@ def run_full_pipeline(
 
         import sys as _sys
         _sys.path.insert(0, str(Path(__file__).parent))
-        from compute_vigor import process_trial_vigor, process_epoch_metrics, compute_cell_means
+        from compute_vigor import process_trial, compute_cell_means
 
-        # Get stage5 output dir
+        # Get stage2 and stage5 dirs
+        if 'stage2' in stage_outputs:
+            s2_dir = Path(stage_outputs['stage2']['processed']['pickle']).parent
+        else:
+            s2_dir = config.stage2_dir
         if 'stage5' in stage_outputs:
             s5_dir = Path(stage_outputs['stage5']['behavior_rich']['csv']).parent
         else:
             s5_dir = config.stage5_dir
 
         import pandas as pd
-        beh_rich = pd.read_csv(s5_dir / "behavior_rich.csv", low_memory=False)
 
-        # Exclude calibration outliers
+        # Load from pickle (preserves list columns like effortRate)
+        pkl_path = s2_dir / "processed_trials.pkl"
+        print(f"  Loading {pkl_path}...")
+        td = pd.read_pickle(pkl_path)
+
+        # Add subj mapping from stage5
+        mapping_path = s5_dir / "subject_mapping.csv"
+        if mapping_path.exists():
+            mapping = pd.read_csv(mapping_path)
+            if 'participantID' in mapping.columns and 'subj' in mapping.columns:
+                pid_to_subj = dict(zip(mapping['participantID'], mapping['subj']))
+                td['subj'] = td['participantID'].map(pid_to_subj)
+                td = td[td['subj'].notna()]
+                td['subj'] = td['subj'].astype(int)
+
         exclude = getattr(config, 'exclude_subjects', [])
         if exclude:
-            beh_rich = beh_rich[~beh_rich['subj'].isin(exclude)]
+            td = td[~td['subj'].isin(exclude)]
 
-        print(f"  {len(beh_rich)} trials, {beh_rich['subj'].nunique()} subjects")
+        print(f"  {len(td)} trials, {td['subj'].nunique()} subjects")
 
-        # Vigor output goes to results/stats/vigor_analysis/
+        # Process all trials
+        print("  Computing vigor metrics...")
+        all_epochs = []
+        for _, row in td.iterrows():
+            all_epochs.extend(process_trial(row))
+        epoch_df = pd.DataFrame(all_epochs)
+
+        # Save outputs
         vigor_dir = Path("results/stats/vigor_analysis")
         vigor_dir.mkdir(parents=True, exist_ok=True)
 
-        print("  Computing trial-level vigor...")
-        trial_vigor = process_trial_vigor(beh_rich)
+        trial_vigor = epoch_df[epoch_df['epoch'] == 'full'].copy()
         trial_vigor.to_csv(s5_dir / "trial_vigor.csv", index=False)
 
-        print("  Computing epoch metrics...")
-        epoch_metrics = process_epoch_metrics(beh_rich)
-        epoch_metrics.to_csv(vigor_dir / "vigor_metrics.csv", index=False)
+        epoch_df.to_csv(vigor_dir / "vigor_metrics.csv", index=False)
 
-        print("  Computing cell means...")
-        cell_means = compute_cell_means(epoch_metrics)
+        cell_means = compute_cell_means(epoch_df)
         cell_means.to_csv(vigor_dir / "cell_means.csv", index=False)
 
         results['stages']['stage6'] = {
@@ -290,8 +310,9 @@ def run_full_pipeline(
             }
         }
 
-        print(f"  trial_vigor: {len(trial_vigor)} trials → {s5_dir / 'trial_vigor.csv'}")
-        print(f"  vigor_metrics: {len(epoch_metrics)} rows → {vigor_dir / 'vigor_metrics.csv'}")
+        n_with_data = (trial_vigor['n_presses'] > 0).sum()
+        print(f"  trial_vigor: {len(trial_vigor)} trials ({n_with_data} with data) → {s5_dir / 'trial_vigor.csv'}")
+        print(f"  vigor_metrics: {len(epoch_df)} rows → {vigor_dir / 'vigor_metrics.csv'}")
         print(f"  cell_means: {len(cell_means)} cells → {vigor_dir / 'cell_means.csv'}")
 
     # ==========================================================================
