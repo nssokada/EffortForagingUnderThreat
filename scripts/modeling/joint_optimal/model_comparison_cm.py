@@ -399,7 +399,7 @@ def evaluate(fit, data, n_samples=300):
         delta = 4.0 - lam[cs] * (0.81 * cDH - 0.16) - beta * cT
         pH = expit(np.clip(delta / tau_v, -20, 20))
     else:
-        # M2, M3, M5: reconstruct from W grid search
+        # M2, M3, M4: reconstruct from W grid search
         gamma_v = float(np.array(samp['gamma']).mean())
         hazard_v = float(np.array(samp['hazard']).mean())
         sp_v = 0.25  # approximate
@@ -410,7 +410,7 @@ def evaluate(fit, data, n_samples=300):
         elif name == 'M3':
             theta = np.array(samp['theta']).mean(0)
             om = theta; kap_arr = theta
-        else:  # M5
+        else:  # M4
             om = np.array(samp['omega']).mean(0)
             kap_arr = np.array(samp['kappa']).mean(0)
 
@@ -445,11 +445,14 @@ def evaluate(fit, data, n_samples=300):
 # ============================================================
 
 MODEL_SPECS = [
-    ('M1', make_m1, 1, 'Effort-only (κ)'),
-    ('M2', make_m2, 1, 'Threat-only (ω)'),
+    # Preregistered
+    ('M1', make_m1, 1, 'Effort-only (κ, intercept-only vigor)'),
+    ('M2', make_m2, 1, 'Threat-only (ω, population κ)'),
     ('M3', make_m3, 1, 'Single-param (θ=ω=κ)'),
-    ('M4', make_m4, 2, 'Separate (λ+ω)'),
-    ('M5', make_m5, 2, 'Joint W(u) (ω+κ)'),
+    ('M4', make_m4, 2, 'Joint W(u) (ω+κ)'),
+    # Exploratory
+    ('M3b', make_m3b, 1, 'Single-param + scaling (θ, α·θ)'),
+    ('M_sep', make_m_sep, 2, 'Separate (λ+ω)'),
 ]
 
 PARAM_COUNTS = {
@@ -511,29 +514,28 @@ if __name__ == '__main__':
     # Comparison table
     if results:
         df = pd.DataFrame(results)
-        bic_m5 = df.loc[df['Model'] == 'M5', 'BIC'].values[0]
-        df['dBIC'] = df['BIC'] - bic_m5
+        if 'M4' in df['Model'].values:
+            bic_m4 = df.loc[df['Model'] == 'M4', 'BIC'].values[0]
+            df['dBIC'] = df['BIC'] - bic_m4
 
         print("\n" + "=" * 70)
         print("COMPARISON TABLE")
         print("=" * 70)
         cols = ['Model', 'Description', 'n_per_subj', 'ELBO', 'BIC', 'dBIC',
                 'choice_acc', 'choice_r2', 'vigor_r2']
-        print(df[cols].to_string(index=False))
+        print(df[[c for c in cols if c in df.columns]].to_string(index=False))
 
-        # Sub-hypothesis tests
-        print("\n" + "=" * 70)
-        print("HYPOTHESIS TESTS")
-        print("=" * 70)
-        m5_bic = df.loc[df['Model'] == 'M5', 'BIC'].values[0]
-        for alt in ['M1', 'M2', 'M3', 'M4']:
-            row_alt = df[df['Model'] == alt]
-            if len(row_alt) > 0:
-                alt_bic = row_alt['BIC'].values[0]
-                delta = alt_bic - m5_bic
-                h_name = {'M1': 'H3a', 'M2': 'H3b', 'M3': 'H3c', 'M4': 'H3d'}[alt]
-                verdict = "CONFIRMED" if delta > 0 else "FAILED"
-                print(f"  {h_name}: M5 vs {alt} — ΔBIC = {delta:+.0f} → {verdict}")
+        if 'M4' in df['Model'].values:
+            print("\n" + "=" * 70)
+            print("HYPOTHESIS TESTS")
+            print("=" * 70)
+            m4_bic = df.loc[df['Model'] == 'M4', 'BIC'].values[0]
+            for alt, h_name in [('M1', 'H3a'), ('M2', 'H3b'), ('M3', 'H3c')]:
+                row_alt = df[df['Model'] == alt]
+                if len(row_alt) > 0:
+                    delta = row_alt['BIC'].values[0] - m4_bic
+                    verdict = "CONFIRMED" if delta > 0 else "FAILED"
+                    print(f"  {h_name}: M4 vs {alt} — ΔBIC = {delta:+.0f} → {verdict}")
 
         OUT_DIR.mkdir(parents=True, exist_ok=True)
         df.to_csv(OUT_DIR / "model_comparison_cm.csv", index=False)
