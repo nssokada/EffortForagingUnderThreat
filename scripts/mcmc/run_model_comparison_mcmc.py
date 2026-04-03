@@ -29,11 +29,13 @@ import argparse
 
 import importlib.util
 
-import numpyro
-numpyro.set_host_device_count(4)
-
 import jax
 jax.config.update('jax_enable_x64', True)
+
+import numpyro
+# Use multiple CPU cores for parallel chains if no GPU available
+if not any('cuda' in str(d).lower() or 'gpu' in str(d).lower() for d in jax.devices()):
+    numpyro.set_host_device_count(4)
 import jax.numpy as jnp
 import numpyro
 import numpyro.distributions as dist
