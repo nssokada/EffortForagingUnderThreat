@@ -1,11 +1,15 @@
 """
-5-Model Comparison on Cell-Mean Vigor + Saturating Survival
+Preregistered Model Comparison on Cell-Mean Vigor + Saturating Survival
 
-M1: Effort-only (κ per-subject, no threat in choice, null/intercept-only vigor)
-M2: Threat-only (ω per-subject, no per-subject effort)
-M3: Single-parameter (θ = ω = κ)
-M4: Separate equations (λ choice-only + ω vigor-only, no shared W)
-M5: Joint W(u) (ω + κ, both enter both channels)
+Confirmatory (preregistered):
+  M1: Effort-only (κ per-subject, no threat, intercept-only vigor)
+  M2: Threat-only (ω per-subject, population κ)
+  M3: Single-parameter (θ = ω = κ)
+  M4: Joint W(u) (ω + κ, both enter both channels)
+
+Exploratory (not preregistered):
+  M3b: Scaled single-parameter (θ as ω, α·θ as κ)
+  M_sep: Separate equations (λ choice-only + ω vigor-only, no shared W)
 
 All vigor models use:
   - Cell-mean data (5,215 obs, subj × T × D × cookie)
@@ -250,10 +254,10 @@ def make_m3b(NS, NC, NV):
 
 
 # ============================================================
-# M4: Separate equations (λ choice-only + ω vigor-only)
+# M_sep: Separate equations (λ choice-only + ω vigor-only) [EXPLORATORY]
 # ============================================================
 
-def make_m4(NS, NC, NV):
+def make_m_sep(NS, NC, NV):
     def model(cs, cT, cDH, cDL, cc, vs, vT, vR, vq, vD, vr, vc, vn):
         g, h, tau, sv, bc, sp = pop_vigor_params()
         beta_pop = numpyro.sample('beta_pop', dist.Normal(0, 2.))
@@ -291,11 +295,11 @@ def make_m4(NS, NC, NV):
 
 
 # ============================================================
-# M5: Joint W(u) (ω + κ, both enter both)
+# M4: Joint W(u) (ω + κ, both enter both) [PREREGISTERED]
 # ============================================================
 
-def make_m5(NS, NC, NV):
-    """M5: Joint W(u) with hybrid cost.
+def make_m4(NS, NC, NV):
+    """M4: Joint W(u) with hybrid cost.
     Choice: V = max_u W(u) - kappa * req * D (total demand cost)
     Vigor: u* = argmax_u W(u) with quadratic deviation cost
     Both omega and kappa enter both channels.
@@ -449,11 +453,14 @@ MODEL_SPECS = [
 ]
 
 PARAM_COUNTS = {
+    # Preregistered
     'M1': lambda N: N + 5,         # κ raw + mk, sk, τ + mu_vigor, bc, sv
     'M2': lambda N: N + 9,         # ω raw + pop params
     'M3': lambda N: N + 9,         # θ raw + pop params
-    'M4': lambda N: 2 * N + 11,    # λ+ω raw + pop params + beta
-    'M5': lambda N: 2 * N + 10,    # ω+κ raw + pop params
+    'M4': lambda N: 2 * N + 10,    # ω+κ raw + pop params (was M5)
+    # Exploratory
+    'M3b': lambda N: N + 10,       # θ raw + pop params + alpha
+    'M_sep': lambda N: 2 * N + 11, # λ+ω raw + pop params + beta (was M4)
 }
 
 

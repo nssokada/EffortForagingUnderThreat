@@ -333,6 +333,36 @@ def run_stage5(
 
     outputs["subject_mapping"] = save_outputs(mapping_df, output_dir, "subject_mapping", logger=logger)
 
+    # -----------------------------
+    # Merge demographics (if available)
+    # -----------------------------
+    demographics_path = getattr(config, "demographics_path", None)
+    if demographics_path is None:
+        # Auto-detect: look for *demographics*.csv in the data root
+        data_root = Path(config.raw_data_dir).parent if config else None
+        if data_root:
+            demo_candidates = list(data_root.glob("*demographics*.csv"))
+            if demo_candidates:
+                demographics_path = demo_candidates[0]
+
+    if demographics_path and Path(demographics_path).exists():
+        demo_df = pd.read_csv(demographics_path)
+        if id_col in demo_df.columns:
+            # Keep only key demographic columns
+            demo_cols = [id_col]
+            for col in ["Age", "Sex", "age", "sex", "gender", "Gender"]:
+                if col in demo_df.columns and col not in demo_cols:
+                    demo_cols.append(col)
+            demo_kept = demo_df[demo_cols].copy()
+            demo_kept = demo_kept[demo_kept[id_col].isin(final_keepers)]
+            demo_kept["subj"] = demo_kept[id_col].map(mapping)
+            outputs["demographics"] = save_outputs(demo_kept, output_dir, "demographics", logger=logger)
+            logger.log(f"Merged demographics: {len(demo_kept)} participants ({demo_cols})")
+        else:
+            logger.log(f"Demographics file found but missing '{id_col}' column — skipping", "warning")
+    else:
+        logger.log("No demographics file found — skipping")
+
     report_path = output_dir / "participant_filter_report.txt"
     _write_filter_report(report_path, reasons, logger=logger)
     outputs["participant_filter_report"] = {"txt": report_path}

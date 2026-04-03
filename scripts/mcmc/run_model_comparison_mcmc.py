@@ -1,21 +1,25 @@
 """
-MCMC Model Comparison: M1-M5 on Cell-Mean Vigor + Saturating Survival
+MCMC Model Comparison on Cell-Mean Vigor + Saturating Survival
 
-Fits all 5 models with identical NUTS inference:
+Fits models with identical NUTS inference:
   4 chains x 2000 warmup + 4000 samples, target_accept=0.95, max_tree_depth=10
 
 Model comparison via WAIC (primary) + PSIS-LOO (robustness), computed from
 posterior samples using ArviZ.
 
-Models (from model_comparison_cm.py):
-  M1: Effort-only (kappa per-subject, no threat, null/intercept-only vigor)
+Preregistered models (default: --models M1,M2,M3,M4):
+  M1: Effort-only (kappa per-subject, no threat, intercept-only vigor)
   M2: Threat-only (omega per-subject, population kappa)
   M3: Single-parameter (theta = omega = kappa)
-  M4: Separate equations (lambda choice + omega vigor, no shared W)
-  M5: Joint W(u) (omega + kappa, both enter both channels)
+  M4: Joint W(u) (omega + kappa, both enter both channels)
+
+Exploratory models (--models M3b,M_sep):
+  M3b: Scaled single-parameter (theta, alpha*theta)
+  M_sep: Separate equations (lambda choice + omega vigor, no shared W)
 
 Usage:
   python scripts/mcmc/run_model_comparison_mcmc.py [--num_warmup 2000] [--num_samples 4000]
+  python scripts/mcmc/run_model_comparison_mcmc.py --models M1,M2,M3,M4  # confirmatory only
 """
 
 import sys
@@ -51,12 +55,13 @@ make_m2 = _cm.make_m2
 make_m3 = _cm.make_m3
 make_m3b = _cm.make_m3b
 make_m4 = _cm.make_m4
-make_m5 = _cm.make_m5
+make_m_sep = _cm.make_m_sep
 eu_sat = _cm.eu_sat
 C = _cm.C
 KK = _cm.KK
 PARAM_COUNTS = _cm.PARAM_COUNTS
-PARAM_COUNTS['M3b'] = lambda N: N + 10  # same as M3 + 1 for alpha
+PARAM_COUNTS['M3b'] = lambda N: N + 10
+PARAM_COUNTS['M_sep'] = PARAM_COUNTS.get('M4', lambda N: 2*N + 10)  # old M4 param count
 
 OUT_DIR = Path("results/stats/joint_optimal")
 
@@ -416,7 +421,7 @@ def evaluate_fit(mcmc, data, name):
         )
         delta = 4.0 - kap[cs] * (0.81 * cDH - 0.16)
         pH = expit(np.clip(delta / tau_v, -20, 20))
-    elif name == 'M4':
+    elif name == 'M_sep':
         ml = float(np.mean(np.array(samples['ml'])))
         sl = float(np.mean(np.array(samples['sl'])))
         lr_mean = np.mean(np.array(samples['lr']), axis=0)
@@ -425,7 +430,7 @@ def evaluate_fit(mcmc, data, name):
         delta = 4.0 - lam[cs] * (0.81 * cDH - 0.16) - beta * cT
         pH = expit(np.clip(delta / tau_v, -20, 20))
     else:
-        # M2, M3, M5: reconstruct from W grid search using raw params
+        # M2, M3, M4: reconstruct from W grid search using raw params
         gr_mean = float(np.mean(np.array(samples['gr'])))
         gamma_v = float(np.clip(np.exp(gr_mean), 0.1, 3.0))
         hr_mean = float(np.mean(np.array(samples['hr'])))
@@ -487,12 +492,14 @@ def evaluate_fit(mcmc, data, name):
 # ============================================================
 
 MODEL_SPECS = [
-    ('M1', make_m1, 1, 'Effort-only (kappa)'),
-    ('M2', make_m2, 1, 'Threat-only (omega)'),
+    # Preregistered (confirmatory)
+    ('M1', make_m1, 1, 'Effort-only (kappa, intercept-only vigor)'),
+    ('M2', make_m2, 1, 'Threat-only (omega, population kappa)'),
     ('M3', make_m3, 1, 'Single-param (theta=omega=kappa)'),
+    ('M4', make_m4, 2, 'Joint W(u) (omega+kappa)'),
+    # Exploratory (not preregistered)
     ('M3b', make_m3b, 1, 'Single-param + scaling (theta, alpha*theta)'),
-    ('M4', make_m4, 2, 'Separate (lambda+omega)'),
-    ('M5', make_m5, 2, 'Joint W(u) (omega+kappa)'),
+    ('M_sep', make_m_sep, 2, 'Separate (lambda+omega)'),
 ]
 
 
@@ -503,7 +510,7 @@ def main():
     parser.add_argument('--num_chains', type=int, default=4)
     parser.add_argument('--target_accept', type=float, default=0.95)
     parser.add_argument('--max_tree_depth', type=int, default=10)
-    parser.add_argument('--models', type=str, default='M1,M2,M3,M4,M5',
+    parser.add_argument('--models', type=str, default='M1,M2,M3,M4',
                         help='Comma-separated list of models to fit')
     parser.add_argument('--seed', type=int, default=42)
     args = parser.parse_args()
@@ -537,8 +544,8 @@ def main():
 
         model_fn = make_fn(NS, data['N_choice'], data['N_vigor'])
 
-        # Fit (M4 gets SVI warm start due to difficult geometry)
-        use_svi_init = (name == 'M4')
+        # Fit (M4/M_sep get SVI warm start due to difficult geometry)
+        use_svi_init = (name in ('M4', 'M_sep'))
         mcmc, kw, elapsed = fit_mcmc(
             name, model_fn, data,
             num_warmup=args.num_warmup,
@@ -595,8 +602,8 @@ def main():
         else:
             print(f"  Vigor:  not modeled")
 
-        # Save M5 posterior samples (per-subject omega, kappa)
-        if name == 'M5' and passed:
+        # Save M4 posterior samples (per-subject omega, kappa)
+        if name == 'M4' and passed:
             samples = mcmc.get_samples()
             mo_mean = float(np.mean(np.array(samples['mo'])))
             so_mean = float(np.mean(np.array(samples['so'])))
@@ -612,20 +619,20 @@ def main():
                 'omega': omega_post,
                 'kappa': kappa_post,
             })
-            params_path = OUT_DIR / 'mcmc_m5_params.csv'
+            params_path = OUT_DIR / 'mcmc_m4_params.csv'
             params_df.to_csv(params_path, index=False)
-            print(f"  Saved M5 posterior means to {params_path}")
+            print(f"  Saved M4 posterior means to {params_path}")
 
     # ── Summary ──
     if results:
         df = pd.DataFrame(results)
 
-        # Delta-WAIC relative to M5
-        if 'M5' in df['Model'].values:
-            waic_m5 = df.loc[df['Model'] == 'M5', 'WAIC'].values[0]
-            loo_m5 = df.loc[df['Model'] == 'M5', 'LOO'].values[0]
-            df['dWAIC'] = df['WAIC'] - waic_m5
-            df['dLOO'] = df['LOO'] - loo_m5
+        # Delta-WAIC relative to M4 (joint model)
+        if 'M4' in df['Model'].values:
+            waic_m4 = df.loc[df['Model'] == 'M4', 'WAIC'].values[0]
+            loo_m4 = df.loc[df['Model'] == 'M4', 'LOO'].values[0]
+            df['dWAIC'] = df['WAIC'] - waic_m4
+            df['dLOO'] = df['LOO'] - loo_m4
 
         print("\n" + "=" * 70)
         print("COMPARISON TABLE")
@@ -635,13 +642,13 @@ def main():
         print(df[[c for c in cols if c in df.columns]].to_string(index=False))
 
         # Hypothesis tests
-        if 'M5' in df['Model'].values:
+        if 'M4' in df['Model'].values:
             print("\n" + "=" * 70)
             print("HYPOTHESIS TESTS (preregistered)")
             print("=" * 70)
 
-            m5_waic = df.loc[df['Model'] == 'M5', 'WAIC'].values[0]
-            m5_loo = df.loc[df['Model'] == 'M5', 'LOO'].values[0]
+            m4_waic = df.loc[df['Model'] == 'M4', 'WAIC'].values[0]
+            m4_loo = df.loc[df['Model'] == 'M4', 'LOO'].values[0]
 
             for alt, h_name in [('M1', 'H3a'), ('M2', 'H3b'), ('M3', 'H3c')]:
                 row_alt = df[df['Model'] == alt]
@@ -652,11 +659,9 @@ def main():
                 # so compare on full WAIC/LOO directly
                 alt_waic = row_alt['WAIC'].values[0]
                 alt_loo = row_alt['LOO'].values[0]
-                m5_waic_cmp = m5_waic
-                m5_loo_cmp = m5_loo
 
-                dw = alt_waic - m5_waic_cmp
-                dl = alt_loo - m5_loo_cmp
+                dw = alt_waic - m4_waic
+                dl = alt_loo - m4_loo
 
                 waic_wins = dw > 0
                 loo_wins = dl > 0
@@ -667,7 +672,7 @@ def main():
                 else:
                     verdict = "FAILED"
 
-                print(f"  {h_name}: M5 vs {alt}")
+                print(f"  {h_name}: M4 vs {alt}")
                 print(f"    dWAIC = {dw:+.1f}, dLOO = {dl:+.1f} -> {verdict}")
 
         # Save
