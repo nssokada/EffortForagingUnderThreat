@@ -978,16 +978,24 @@ def create_behavior_rich_dataframe(
 ) -> pd.DataFrame:
     """Create the extended behavior_rich DataFrame."""
     cols_rich = [
+        # Identity + condition
         'participantID', 'trial', 'threat',
         'effort_L', 'effort_H', 'distance_L', 'distance_H',
-        'choice', 'outcome', 'type', 'trialEndState',
+        'choice', 'outcome', 'type', 'trialEndState', 'isAttackTrial',
+        # Cookie properties
+        'trialCookie_weight', 'trialCookie_rewardValue', 'trialReward',
+        # Timing
+        'trialEndTime', 'encounterTime', 'strikeTime', 'circaStrikeTime',
+        # Calibration + keypresses
         'effortPressCount', 'effortPressLatency', 'firstEffortTime', 'RTTime_choice',
+        'calibrationMax', 'alignedEffortRate',
+        # Epoch effort metrics
         'mean_preEncounter_effort', 'peak_preEncounter_effort', 'auc_preEncounter_effort',
         'mean_postEncounter_effort', 'peak_postEncounter_effort', 'auc_postEncounter_effort',
         'mean_onset_effort', 'peak_onset_effort', 'auc_onset_effort',
         'mean_circaStrike_effort', 'peak_circaStrike_effort', 'auc_circaStrike_effort',
         'mean_strike_effort', 'peak_strike_effort', 'auc_strike_effort',
-        'mean_trial_effort', 'peak_trial_effort', 'auc_trial_effort', 'isAttackTrial'
+        'mean_trial_effort', 'peak_trial_effort', 'auc_trial_effort',
     ]
     available_cols = [c for c in cols_rich if c in trial_data.columns]
 
@@ -999,7 +1007,6 @@ def create_behavior_rich_dataframe(
         'effortPressLatency': 'press_latency_calibration',
         'firstEffortTime': 'first_press_trial',
         'RTTime_choice': 'choice_RT',
-        'trialEndState': 'trial_EndState'
     }
     behavior_rich = behavior_rich.rename(columns={
         k: v for k, v in rename_map.items() if k in behavior_rich.columns
