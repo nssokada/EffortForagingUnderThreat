@@ -310,8 +310,12 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
         print(f"  WARNING: No log-likelihood sites found for {name}")
         return _empty_ic_result()
 
-    # Build InferenceData with separate sites
-    idata = az.from_dict(log_likelihood=ll_per_site)
+    # Build posterior dict for InferenceData (LOO needs it)
+    posterior_dict = {k: np.array(v).reshape(n_chains_actual, n_draws, *np.array(v).shape[1:])
+                      for k, v in chain_samples.items()}
+
+    # Build InferenceData with both posterior and log_likelihood
+    idata = az.from_dict(posterior=posterior_dict, log_likelihood=ll_per_site)
 
     # WAIC: sum elpd across sites
     waic_val = 0.0
@@ -341,7 +345,8 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
     total_k = 0
     try:
         for site_name in ll_per_site:
-            site_idata = az.from_dict(log_likelihood={site_name: ll_per_site[site_name]})
+            site_idata = az.from_dict(posterior=posterior_dict,
+                                      log_likelihood={site_name: ll_per_site[site_name]})
             l = az.loo(site_idata)
             loo_val += float(l.elpd_loo) * -2
             p_loo += float(l.p_loo)
@@ -367,7 +372,8 @@ def compute_waic_loo(mcmc, model_fn, data, name, num_chains=4):
     loo_choice = np.nan
     if 'oc' in ll_per_site:
         try:
-            oc_idata = az.from_dict(log_likelihood={'oc': ll_per_site['oc']})
+            oc_idata = az.from_dict(posterior=posterior_dict,
+                                    log_likelihood={'oc': ll_per_site['oc']})
             w_oc = az.waic(oc_idata)
             waic_choice = float(w_oc.elpd_waic) * -2
             l_oc = az.loo(oc_idata)
