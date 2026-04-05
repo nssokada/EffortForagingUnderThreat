@@ -71,7 +71,7 @@ The joint model (M4) does not outperform simpler alternatives; omega and kappa a
 ## 3. Key Arguments
 
 ### Argument 1: Threat drives simultaneous but dissociable behavioral responses
-- **Claim:** Threat shifts choice (avoidance), vigor (activation), and affect (anxiety up, confidence down) simultaneously, and within-cookie vigor effects are masked by Simpson's paradox in unconditional analyses.
+- **Claim:** Threat shifts choice (avoidance), vigor (activation), and affect (anxiety up, confidence down) simultaneously.
 - **Evidence:** H1 — all 5 tests pass in both samples (N=290, N=281). Threat: beta = -0.91 to -1.02 on choice (P < 0.001). Vigor within cookie: d = 0.24-0.76. Anxiety: beta = +0.53-0.58, confidence: beta = -0.58 to -0.67 (all P < 0.001).
 - **Significance:** Establishes that the task elicits the full defensive repertoire — avoidance, activation, and affective monitoring — not just one channel.
 

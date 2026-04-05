@@ -10,7 +10,7 @@ All hypotheses were preregistered prior to analysis of the confirmatory sample (
 
 **H1b.** Anxiety increased with threat (confirmatory: β = 0.53, z = 12.5, P < 0.001; exploratory: β = 0.58, z = 14.7, P < 0.001) and confidence decreased (confirmatory: β = −0.67, z = −15.3, P < 0.001; exploratory: β = −0.58, z = −13.7, P < 0.001). All |z| > 3, as preregistered.
 
-**H1c.** Within each cookie type, normalized press rate increased with threat (Fig. Xb). Controlling for cookie type in a linear mixed model, threat increased vigor in both samples (confirmatory: β = 0.017, z = 17.4, P < 0.001; exploratory: β = 0.020, z = 18.4, P < 0.001). Effect sizes were moderate for heavy cookies (confirmatory: d = 0.45; exploratory: d = 0.24) and large for light cookies (confirmatory: d = 0.76; exploratory: d = 0.44). The within-cookie analysis confirms that the threat–vigor relationship is not an artefact of Simpson's paradox.
+**H1c.** Within each cookie type, normalized press rate increased with threat (Fig. Xb). Controlling for cookie type in a linear mixed model, threat increased vigor in both samples (confirmatory: β = 0.017, z = 17.4, P < 0.001; exploratory: β = 0.020, z = 18.4, P < 0.001). Effect sizes were moderate for heavy cookies (confirmatory: d = 0.45; exploratory: d = 0.24) and large for light cookies (confirmatory: d = 0.76; exploratory: d = 0.44). The within-cookie analysis confirms that the threat–vigor relationship holds when controlling for cookie type.
 
 All 5 H1 tests passed in both samples.
 
