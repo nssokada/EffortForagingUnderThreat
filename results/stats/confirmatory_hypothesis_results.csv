@@ -1,0 +1,25 @@
+Hypothesis,Test,Statistic,Value,Threshold,p,Pass
+H1a,Threat → choice,β(threat),-0.908,"< 0, p < .01",2.77e-87,True
+H1a,Distance → choice,β(distance),-0.666,"< 0, p < .01",8.76e-108,True
+H1b,Threat → anxiety,β,0.534,"> 0, |t| > 3",5.62e-36,True
+H1b,Threat → confidence,β,-0.671,"< 0, |t| > 3",1.62e-52,True
+H1c,Threat → vigor (within cookie),��,0.017,"> 0, p < .01",1.72e-67,True
+H2a,Encounter spike,d,0.647,"p < .001, d > 0.20",8.73e-24,True
+H2b,GAM encounter LRT,χ²,1024.8,p < .01,0.00,True
+H2b,GAM threat LRT,χ²,114.8,p < .01,2.55e-15,True
+H3a,M4 vs M1 (effort-only),ΔWAIC,3785,> 0 (WAIC+LOO),ΔLOO=3779,True
+H3b,M4 vs M2 (threat-only),ΔWAIC,1621,> 0 (WAIC+LOO),ΔLOO=1618,True
+H3c,M4 vs M3 (single-param),ΔWAIC,3474,> 0 (WAIC+LOO),ΔLOO=3474,True
+H4a,ω → escape rate,β,0.046,HDI > 0,"[+0.017,+0.075]",True
+H4b,Overcaution %,%,90,descriptive,—,True
+H4b,ω → overcaution ratio,β,0.123,HDI > 0,"[+0.109,+0.137]",True
+H4c,κ → mean vigor,β,-0.196,HDI < 0,"[-0.217,-0.176]",True
+H4d,angle → optimality,β,-0.054,HDI < 0,"[-0.072,-0.036]",True
+H4e,choice consistency → earnings,β,8.366,HDI > 0,"[-2.283,+19.001]",False
+H4e,intensity deviation → earnings,β,-4.089,HDI < 0,"[-14.556,+7.440]",False
+H5a,Calibration → optimality (LOO),ΔELPD,>0,"ΔELPD > 0, SE excl 0",3/3 outcomes,True
+H5b,Anxiety slope → choice shift,β,0.099,HDI > 0,"[+0.065,+0.134]",True
+H5c,ω �� confidence,β,-0.181,HDI < 0,"[-0.340,-0.037]",True
+H5c,ω → anxiety (null/ROPE),β,-0.067,"HDI in [-0.1,+0.1]","[-0.221,+0.078]",True
+H5d,Confidence → overcautious errors,β,-1.48,HDI < 0,"[-2.39,-0.54]",True
+H5d,Confidence → reckless errors,β,0.29,HDI > 0,"[+0.07,+0.52]",True
