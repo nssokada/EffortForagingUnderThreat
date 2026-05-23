@@ -1,0 +1,9 @@
+sample,outcome,term,b,lo,hi,sig
+exploratory,mean_confidence,kap_excess_z,-0.101,-0.222,0.018,False
+exploratory,mean_confidence,om_excess_z,-0.165,-0.283,-0.04,True
+exploratory,ant_vigor,kap_excess_z,-0.911,-0.975,-0.845,True
+exploratory,ant_vigor,om_excess_z,0.486,0.415,0.548,True
+confirmatory,mean_confidence,kap_excess_z,-0.11,-0.235,0.009,False
+confirmatory,mean_confidence,om_excess_z,-0.107,-0.233,0.012,False
+confirmatory,ant_vigor,kap_excess_z,-0.879,-0.942,-0.816,True
+confirmatory,ant_vigor,om_excess_z,0.474,0.412,0.537,True

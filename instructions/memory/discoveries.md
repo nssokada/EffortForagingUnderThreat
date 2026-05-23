@@ -4,6 +4,16 @@ Summary of all empirical findings from the exploratory sample (N=293). Organized
 
 ---
 
+## Null results (do not revive without new idea)
+
+### Metacognitive sensitivity bridge (2026-04-08)
+Fleming-Lau per-subject Pearson r between probe ratings (anxiety/confidence) and binary trial outcome (escaped/captured). Computed on all rated trials in both samples (exp N~285, conf N~273).
+- Sensitivity does NOT track joint model position: all |b|<0.02, p>0.32 for `sens ~ omega_z + kappa_z` in both samples.
+- Sensitivity does NOT add incremental clinical prediction beyond (omega, kappa) for any of DASS21_Anx, DASS21_Dep, AMI_Total, AMI_Social, PHQ9, STAI_Trait, OASIS. Two single-sample hits (AMI_Social for anx-sens in exp, OASIS for anx-sens in conf) fail cross-sample replication.
+- Files: `results/stats/avoid_activate/agent1_metacog_sensitivity.csv` and `agent1_subject_sensitivity_{exp,conf}.csv`.
+
+---
+
 ## 1. Choice Modeling
 
 ### Winning model: Unified Additive-Effort Hyperbolic-Survival (L4a_add)

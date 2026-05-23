@@ -1,0 +1,11 @@
+sample,x,y,r,p,kind,b
+exploratory,anx_slope_T_z,enc_spike_z,-0.08167836891679063,0.16536735348995643,bivariate,
+exploratory,anx_slope_T_z,vigor_slope_T_z,0.02509180831047269,0.6704579077094104,bivariate,
+exploratory,enc_spike_z,vigor_slope_T_z,0.29379223868648435,3.4992555075678997e-07,bivariate,
+exploratory,anx_slope_T,enc_spike,,0.11556492261683107,partial,-0.08975998238275056
+exploratory,anx_slope_T,vigor_slope_T,,0.7656005418953089,partial,0.01750019624906261
+confirmatory,anx_slope_T_z,enc_spike_z,0.04327314250081995,0.46999012727228007,bivariate,
+confirmatory,anx_slope_T_z,vigor_slope_T_z,0.043000055682448184,0.4727995986829741,bivariate,
+confirmatory,enc_spike_z,vigor_slope_T_z,0.22443961715523061,0.00014821669343683888,bivariate,
+confirmatory,anx_slope_T,enc_spike,,0.503107207788795,partial,0.0363969929201592
+confirmatory,anx_slope_T,vigor_slope_T,,0.4888932171388422,partial,0.04109170081821609

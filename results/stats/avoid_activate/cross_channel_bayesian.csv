@@ -1,0 +1,5 @@
+sample,term,b,lo,hi,sig
+exploratory,omega_z,0.485,0.416,0.545,True
+exploratory,kappa_z,-0.909,-0.972,-0.843,True
+confirmatory,omega_z,0.473,0.408,0.535,True
+confirmatory,kappa_z,-0.877,-0.939,-0.813,True

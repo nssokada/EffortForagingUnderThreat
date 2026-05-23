@@ -1,0 +1,13 @@
+sample,affect,added,delta_elpd,b,lo,hi,sig
+exploratory,anxiety,S_pred_z,-0.29902113676234876,-0.025,-0.061,0.01,False
+exploratory,anxiety,u_pred_z,1.280852244341986,0.026,0.001,0.056,True
+exploratory,anxiety,W_pred_z,1.0389114977824647,0.018,-0.014,0.048,False
+exploratory,confidence,S_pred_z,-0.6185704373365297,-0.013,-0.049,0.021,False
+exploratory,confidence,u_pred_z,-0.6959108245227981,0.009,-0.017,0.037,False
+exploratory,confidence,W_pred_z,5.868070774308762,-0.048,-0.078,-0.019,True
+confirmatory,anxiety,S_pred_z,6.649818859444167,0.075,0.037,0.11,True
+confirmatory,anxiety,u_pred_z,-1.8766344222876796,-0.009,-0.039,0.019,False
+confirmatory,anxiety,W_pred_z,3.1560645564004517,0.043,0.012,0.074,True
+confirmatory,confidence,S_pred_z,-0.8622110780506773,0.017,-0.017,0.053,False
+confirmatory,confidence,u_pred_z,-1.8851545577063007,0.001,-0.029,0.029,False
+confirmatory,confidence,W_pred_z,-0.5069742572122777,-0.013,-0.043,0.016,False

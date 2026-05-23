@@ -1,0 +1,13 @@
+test,sample,n,b,lo,hi,sig
+mean_anxiety → DASS21_Anxiety (expected +),exploratory,290,0.252,0.137,0.363,True
+mean_anxiety → DASS21_Anxiety (expected +),confirmatory,281,0.195,0.08,0.31,True
+mean_anxiety → DASS21_Depression (expected +/0),exploratory,290,0.213,0.094,0.322,True
+mean_anxiety → DASS21_Depression (expected +/0),confirmatory,281,0.115,-0.003,0.235,False
+mean_confidence → DASS21_Depression (expected −),exploratory,290,-0.202,-0.323,-0.088,True
+mean_confidence → DASS21_Depression (expected −),confirmatory,281,-0.068,-0.189,0.049,False
+mean_confidence → AMI_Total (expected −),exploratory,290,-0.26,-0.374,-0.146,True
+mean_confidence → AMI_Total (expected −),confirmatory,281,-0.129,-0.243,-0.006,True
+anx_calibration → AMI_Total (expected +),exploratory,286,0.064,-0.055,0.178,False
+anx_calibration → AMI_Total (expected +),confirmatory,277,0.154,0.041,0.271,True
+anx_slope → AMI_Total (expected +),exploratory,290,0.016,-0.101,0.131,False
+anx_slope → AMI_Total (expected +),confirmatory,281,0.153,0.035,0.267,True

@@ -4,6 +4,29 @@ Chronological log of work sessions. Most recent first.
 
 ---
 
+## Session 2026-04-08 — Agent 1: Metacognitive Sensitivity Bridge (NULL)
+
+**Goal:** Test whether Fleming-Lau-style metacognitive sensitivity (correlation between probe rating and binary trial outcome escaped/captured) bridges the joint model (omega, kappa) to clinical phenotypes.
+
+**Script:** `scripts/analysis/agent1_metacog_sensitivity.py`
+**Outputs:** `results/stats/avoid_activate/agent1_metacog_sensitivity.csv`, `agent1_subject_sensitivity_{exp,conf}.csv`, `agent1_distribution_summary.json`
+
+**Per-subject sensitivity (all trials, not attack-restricted, MIN_PROBES=5):**
+- Exp: anx_sens N=283, median=0.21, range [-0.70, 0.66]; conf_sens N=286, median=0.25, range [-0.66, 0.81]
+- Conf: anx_sens N=273, median=0.28, range [-0.67, 0.82]; conf_sens N=272, median=0.28, range [-0.82, 0.85]
+- Distributions have real spread — not a floor/ceiling artifact.
+
+**Tests A & B (sensitivity ~ omega_z + kappa_z):** All four slopes |b|<0.02, all p>0.32 in both samples. Sensitivity is unrelated to joint model position.
+
+**Tests C & D (clinical_z ~ sens_z + omega_z + kappa_z) across 7 scales × 2 samples:**
+- Nothing survives cross-sample replication (no scale reaches p<0.05 with consistent sign in both samples).
+- Single-sample hits: AMI_Social (C, exp b=+0.121 p=0.042; conf p=0.073), OASIS_Total (C, conf b=+0.125 p=0.040; exp p=0.358). Both fail replication.
+- All confidence-sensitivity (D) tests null in both samples.
+
+**Verdict:** NULL. Metacognitive sensitivity does not bridge (omega, kappa) to clinical phenotypes. Sensitivity is not predicted by the joint model AND adds nothing beyond (omega, kappa) for clinical prediction. Do not develop as a paper thread.
+
+---
+
 ## Session 2026-03-27
 
 ### EVC-LQR Full Pipeline & Paper Draft

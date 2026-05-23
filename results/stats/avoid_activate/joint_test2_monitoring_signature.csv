@@ -1,0 +1,17 @@
+sample,outcome,term,b,lo,hi,sig
+exploratory,mean_anxiety,kap_excess_z,0.009,-0.119,0.134,False
+exploratory,mean_anxiety,om_excess_z,0.073,-0.048,0.206,False
+exploratory,anx_calibration,kap_excess_z,-0.08,-0.2,0.048,False
+exploratory,anx_calibration,om_excess_z,0.044,-0.082,0.171,False
+exploratory,anx_slope,kap_excess_z,-0.059,-0.183,0.065,False
+exploratory,anx_slope,om_excess_z,-0.01,-0.135,0.115,False
+exploratory,choice_shift,kap_excess_z,-0.097,-0.222,0.022,False
+exploratory,choice_shift,om_excess_z,-0.116,-0.241,0.007,False
+confirmatory,mean_anxiety,kap_excess_z,0.014,-0.108,0.139,False
+confirmatory,mean_anxiety,om_excess_z,-0.058,-0.182,0.065,False
+confirmatory,anx_calibration,kap_excess_z,-0.021,-0.146,0.105,False
+confirmatory,anx_calibration,om_excess_z,-0.005,-0.132,0.12,False
+confirmatory,anx_slope,kap_excess_z,-0.016,-0.139,0.105,False
+confirmatory,anx_slope,om_excess_z,0.015,-0.11,0.139,False
+confirmatory,choice_shift,kap_excess_z,-0.122,-0.24,0.002,False
+confirmatory,choice_shift,om_excess_z,0.005,-0.119,0.122,False

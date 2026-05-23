@@ -1,0 +1,17 @@
+sample,term,b,lo,hi,sig
+exploratory,threat_z,0.004,-0.001,0.009,False
+exploratory,dist_z,0.007,0.002,0.012,True
+exploratory,omega_z,0.122,0.117,0.127,True
+exploratory,kappa_z,-0.212,-0.217,-0.207,True
+exploratory,threat_z:omega_z,-0.003,-0.008,0.002,False
+exploratory,dist_z:omega_z,-0.002,-0.007,0.004,False
+exploratory,threat_z:kappa_z,0.004,-0.001,0.009,False
+exploratory,dist_z:kappa_z,0.006,0.001,0.011,True
+confirmatory,threat_z,0.006,0.001,0.011,True
+confirmatory,dist_z,0.012,0.006,0.017,True
+confirmatory,omega_z,0.124,0.119,0.13,True
+confirmatory,kappa_z,-0.217,-0.222,-0.212,True
+confirmatory,threat_z:omega_z,0.003,-0.002,0.008,False
+confirmatory,dist_z:omega_z,0.003,-0.003,0.008,False
+confirmatory,threat_z:kappa_z,-0.005,-0.01,0.0,False
+confirmatory,dist_z:kappa_z,0.006,-0.0,0.011,False

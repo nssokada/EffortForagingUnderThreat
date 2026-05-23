@@ -1,0 +1,17 @@
+test,sample,n,b,lo,hi,sig
+escape_rate ~ AMI_Total,exploratory,290,0.308,0.198,0.414,True
+escape_rate ~ AMI_Total,confirmatory,281,0.424,0.32,0.528,True
+earnings ~ AMI_Total,exploratory,290,0.291,0.186,0.407,True
+earnings ~ AMI_Total,confirmatory,281,0.387,0.283,0.495,True
+choice_shift ~ AMI_Total,exploratory,290,0.121,0.011,0.238,True
+choice_shift ~ AMI_Total,confirmatory,281,0.234,0.115,0.344,True
+pct_opt ~ AMI_Total,exploratory,290,0.05,-0.066,0.164,False
+pct_opt ~ AMI_Total,confirmatory,281,-0.035,-0.155,0.081,False
+escape_rate ~ AMI_Total + ω + κ,exploratory,290,0.294,0.182,0.4,True
+escape_rate ~ AMI_Total + ω + κ,confirmatory,281,0.404,0.304,0.514,True
+earnings ~ AMI_Total + ω + κ,exploratory,290,0.288,0.174,0.399,True
+earnings ~ AMI_Total + ω + κ,confirmatory,281,0.405,0.292,0.516,True
+choice_shift ~ AMI_Total + ω + κ,exploratory,290,0.128,0.014,0.246,True
+choice_shift ~ AMI_Total + ω + κ,confirmatory,281,0.249,0.131,0.362,True
+pct_opt ~ AMI_Total + ω + κ,exploratory,290,0.083,-0.002,0.167,False
+pct_opt ~ AMI_Total + ω + κ,confirmatory,281,0.092,0.015,0.16,True

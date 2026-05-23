@@ -1,0 +1,13 @@
+sample,clinical,b,lo,hi,sig
+exploratory,AMI_Total,0.032,-0.093,0.145,False
+exploratory,PHQ9_Total,-0.078,-0.192,0.039,False
+exploratory,DASS21_Depression,-0.074,-0.191,0.038,False
+exploratory,DASS21_Anxiety,-0.094,-0.209,0.024,False
+exploratory,STAI_Trait,-0.011,-0.124,0.105,False
+exploratory,OASIS_Total,-0.108,-0.227,0.004,False
+confirmatory,AMI_Total,0.1,-0.011,0.22,False
+confirmatory,PHQ9_Total,-0.021,-0.144,0.091,False
+confirmatory,DASS21_Depression,0.01,-0.105,0.128,False
+confirmatory,DASS21_Anxiety,0.009,-0.104,0.128,False
+confirmatory,STAI_Trait,-0.027,-0.144,0.089,False
+confirmatory,OASIS_Total,-0.026,-0.148,0.086,False

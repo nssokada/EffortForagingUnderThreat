@@ -1,0 +1,17 @@
+sample,probe,term,b,lo,hi,sig
+exploratory,anxiety,rating_z,-0.096,-0.219,0.024,False
+exploratory,anxiety,T_z,0.109,0.015,0.208,True
+exploratory,anxiety,D_z,-0.157,-0.262,-0.052,True
+exploratory,anxiety,is_heavy,-1.696,-1.904,-1.479,True
+exploratory,confidence,rating_z,0.055,-0.064,0.179,False
+exploratory,confidence,T_z,-0.006,-0.109,0.105,False
+exploratory,confidence,D_z,-0.111,-0.211,-0.014,True
+exploratory,confidence,is_heavy,-2.306,-2.525,-2.068,True
+confirmatory,anxiety,rating_z,-0.156,-0.284,-0.026,True
+confirmatory,anxiety,T_z,0.178,0.005,0.369,True
+confirmatory,anxiety,D_z,0.027,-0.087,0.139,False
+confirmatory,anxiety,is_heavy,-1.307,-1.544,-1.07,True
+confirmatory,confidence,rating_z,0.049,-0.076,0.177,False
+confirmatory,confidence,T_z,-0.156,-0.257,-0.054,True
+confirmatory,confidence,D_z,-0.117,-0.227,-0.005,True
+confirmatory,confidence,is_heavy,-2.269,-2.522,-1.989,True

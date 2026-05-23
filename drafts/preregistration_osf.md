@@ -109,12 +109,14 @@ Data collection stops when approximately 350 participants have completed the tas
 ### Measured variables
 
 **Behavioral:**
+
 - Choice: binary (heavy = 1, light = 0) on each choice trial.
 - Pressing rate: keypresses recorded at native ~5Hz (S+D+F keys). Inter-press intervals (IPI) computed as successive timestamp differences; IPIs < 10 ms removed as artifacts. Primary metric: normalized press rate = median(1/IPI) / calibrationMax. For timecourse analyses (H2): 200ms bins smoothed with 3-point centered moving average (600ms window). For model fitting (H3): per-subject condition cell means (subject × threat × distance × cookie type, ~18 cells per subject), each the median normalized rate across trials within that condition.
 - Trial outcome: escaped or captured. Reward earned per trial.
 - Total earnings: sum of rewards across all trials (determines bonus payment).
 
 **Affective (probe trials only):**
+
 - Anxiety rating (1-10): "How anxious are you about this trial?"
 - Confidence rating (1-10): "How confident are you that you will succeed?"
 
@@ -123,10 +125,12 @@ Data collection stops when approximately 350 participants have completed the tas
 ### Indices
 
 **Model parameters (from the joint fitness model M4):**
+
 - omega: per-subject avoidance sensitivity (subjective cost of capture).
-- kappa: per-subject activation intensity (subjective cost of effort). Enters choice through a total demand cost (kappa * req * D) and vigor through a quadratic deviation cost (kappa * (u-req)^2 * D).
+- kappa: per-subject activation intensity (subjective cost of effort). Enters choice through a total demand cost (kappa _ req _ D) and vigor through a quadratic deviation cost (kappa _ (u-req)^2 _ D).
 
 **Affect indices (from probe trial regressions):**
+
 - Anxiety calibration: within-subject r(anxiety, threat), computed from ~18 anxiety probe trials per subject (6 per threat level). Higher = anxiety better tracks danger.
 - Anxiety slope: within-subject regression slope of anxiety on threat.
 - Mean confidence: average confidence rating across probes.
@@ -134,13 +138,15 @@ Data collection stops when approximately 350 participants have completed the tas
 Note: With ~18 probes per subject, individual calibration and slope estimates will have substantial sampling error. We will report split-half reliability of these indices (see Exploratory analysis 4).
 
 **Behavioral indices:**
+
 - Escape rate: proportion of attack trials survived.
 - Overcaution ratio: proportion of errors that are overcautious (chose light when heavy had higher expected reward).
 - Omega-kappa angle: atan2(kappa_z, omega_z). Higher = more effort-driven avoidance.
 
 **Model consistency indices (H4e):**
+
 - Choice consistency: per-subject fraction of choice trials where actual choice matches model prediction (predict heavy if V_H > V_L given subject's omega and kappa, light otherwise).
-- Intensity deviation: per-subject RMSE between model-predicted optimal pressing rate (u* = argmax_u W(u)) and observed cell-mean rate, computed across the subject's condition cells. Lower = vigor closer to model prediction.
+- Intensity deviation: per-subject RMSE between model-predicted optimal pressing rate (u\* = argmax_u W(u)) and observed cell-mean rate, computed across the subject's condition cells. Lower = vigor closer to model prediction.
 
 ---
 
@@ -149,11 +155,13 @@ Note: With ~18 probes per subject, individual calibration and slope estimates wi
 ### Statistical models
 
 **H1:**
+
 - H1a: We will fit a logistic model with cluster-robust SE: choice ~ threat_z + dist_z + threat_z:dist_z, clustered by subject. We predict both beta(threat) and beta(distance) will be negative.
 - H1b: We will fit linear mixed models: response ~ threat_z + dist_z + (1 + threat_z | subject), separately for anxiety and confidence. We predict anxiety increases with threat and distance, and confidence decreases with threat and distance.
 - H1c: We will compute paired t-tests on within-subject mean normalized press rate at T=0.9 minus T=0.1, separately within heavy and light cookies. We predict both comparisons will be positive (vigor increases with threat).
 
 **H2:**
+
 - H2a: We will compute the encounter spike as per-subject mean reactive-epoch pressing rate on attack minus non-attack trials, tested with a one-sample t-test against zero. We predict a positive spike.
 - H2b: We will fit GAMs with natural cubic regression splines (K=10) via MixedLM with cookie covariate and random intercepts. We will use likelihood ratio tests for smooth-by-condition interactions to test for distinct temporal signatures by encounter status and threat level.
 
@@ -161,12 +169,13 @@ Note: With ~18 probes per subject, individual calibration and slope estimates wi
 
 We will fit a joint fitness model grounded in optimal foraging theory (Bednekoff 2007; Brown 1999). The organism maximizes fitness W(u) to determine both which patch to select and how intensely to press:
 
-W(u) = S(u) * R - (1 - S(u)) * omega * (R + C) - kappa * (u - req)^2 * D
+W(u) = S(u) _ R - (1 - S(u)) _ omega _ (R + C) - kappa _ (u - req)^2 \* D
 
 where:
+
 - u = pressing rate (normalized by calibration maximum)
-- S(u, T, D) = exp(-h * T^gamma * D / speed(u)) is survival probability
-- speed(u) = sigmoid((u - 0.25 * req) / sigma_sp) is movement speed, saturating above the required pressing rate
+- S(u, T, D) = exp(-h _ T^gamma _ D / speed(u)) is survival probability
+- speed(u) = sigmoid((u - 0.25 \* req) / sigma_sp) is movement speed, saturating above the required pressing rate
 - R = cookie reward (5 for heavy, 1 for light)
 - C = 5 (capture penalty)
 - req = required pressing rate (0.9 for heavy, 0.4 for light)
@@ -176,6 +185,7 @@ where:
 - h, gamma, sigma_sp = population parameters (hazard scale, hazard exponent, speed saturation width)
 
 Population parameter priors (all weakly informative):
+
 - gamma: Normal(0, 0.5) on log-scale, clipped to [0.1, 3.0]
 - h: Normal(0, 1) on log-scale
 - sigma_sp: Normal(-1, 0.5) on log-scale, clipped to [0.01, 1.0]
@@ -184,14 +194,15 @@ Population parameter priors (all weakly informative):
 - b_cookie: Normal(0, 0.5)
 
 Per-subject parameter priors (hierarchical, non-centered):
-- omega_i = exp(m_omega + s_omega * z_i), where m_omega ~ Normal(0, 1), s_omega ~ HalfNormal(1.0), z_i ~ Normal(0, 1)
-- kappa_i = exp(m_kappa + s_kappa * z_i), where m_kappa ~ Normal(-1, 1), s_kappa ~ HalfNormal(0.5), z_i ~ Normal(0, 1)
 
-Choice prediction: For each cookie j, compute V_j = max_u W_j(u) - kappa * req_j * D_j. The first term (max_u W) is the optimized fitness given the pressing rate. The second term (kappa * req * D) is the total demand cost — the sustained metabolic cost of choosing that cookie, proportional to the required pressing rate times the distance. P(heavy) = sigmoid((V_H - V_L) / tau), where tau is a population noise parameter.
+- omega_i = exp(m_omega + s_omega \* z_i), where m_omega ~ Normal(0, 1), s_omega ~ HalfNormal(1.0), z_i ~ Normal(0, 1)
+- kappa_i = exp(m_kappa + s_kappa \* z_i), where m_kappa ~ Normal(-1, 1), s_kappa ~ HalfNormal(0.5), z_i ~ Normal(0, 1)
 
-Vigor prediction: For the chosen cookie, u* = argmax_u W(u) determines the optimal pressing rate. The vigor likelihood uses per-subject condition cell means (subject x threat x distance x cookie, ~18 cells per subject, ~5,200 total): observed cell-mean rate ~ Normal(u* + b_cookie * is_heavy, sigma_v / sqrt(n_trials)). We use cell means rather than trial-level data because the fitness function predicts a single optimal rate per condition — trial-to-trial variance within a condition reflects motor noise, not parametric signal. The sqrt(n_trials) denominator ensures that cells with fewer observations receive proportionally less weight.
+Choice prediction: For each cookie j, compute V_j = max_u W_j(u) - kappa _ req_j _ D_j. The first term (max_u W) is the optimized fitness given the pressing rate. The second term (kappa _ req _ D) is the total demand cost — the sustained metabolic cost of choosing that cookie, proportional to the required pressing rate times the distance. P(heavy) = sigmoid((V_H - V_L) / tau), where tau is a population noise parameter.
 
-The total demand cost (kappa * req * D) enters the choice equation but not the vigor optimization. This reflects the distinction between deciding how much effort to commit (total demand for the full trial) and optimizing moment-to-moment pressing intensity (marginal deviation cost). Both are governed by the same kappa — a person's effort sensitivity determines both whether they take the hard job and how hard they work on it.
+Vigor prediction: For the chosen cookie, u* = argmax_u W(u) determines the optimal pressing rate. The vigor likelihood uses per-subject condition cell means (subject x threat x distance x cookie, ~18 cells per subject, ~5,200 total): observed cell-mean rate ~ Normal(u* + b_cookie \* is_heavy, sigma_v / sqrt(n_trials)). We use cell means rather than trial-level data because the fitness function predicts a single optimal rate per condition — trial-to-trial variance within a condition reflects motor noise, not parametric signal. The sqrt(n_trials) denominator ensures that cells with fewer observations receive proportionally less weight.
+
+The total demand cost (kappa _ req _ D) enters the choice equation but not the vigor optimization. This reflects the distinction between deciding how much effort to commit (total demand for the full trial) and optimizing moment-to-moment pressing intensity (marginal deviation cost). Both are governed by the same kappa — a person's effort sensitivity determines both whether they take the hard job and how hard they work on it.
 
 Model fitting: All models will be fitted via NumPyro HMC/NUTS (4 chains x 2,000 warmup + 4,000 samples, target_accept = 0.95, max_tree_depth = 10). We will require convergence: R-hat < 1.01 and bulk ESS > 400 for all parameters. If any model fails to converge, we will double the sampling iterations before declaring non-convergence.
 
@@ -201,7 +212,7 @@ Model comparison: We will use WAIC computed from pointwise log-likelihoods via A
 
 The four models compared:
 
-M1 (Effort-only): kappa_i per-subject. Choice: delta_V = delta_R - kappa_i * delta_effort(D). No survival function, no threat term. Vigor: intercept-only (cell mean ~ Normal(mu + b_cookie * is_heavy, sigma_v / sqrt(n_trials))) with no condition structure. Tests whether threat adds anything beyond effort cost.
+M1 (Effort-only): kappa_i per-subject. Choice: delta_V = delta_R - kappa_i _ delta_effort(D). No survival function, no threat term. Vigor: intercept-only (cell mean ~ Normal(mu + b_cookie _ is_heavy, sigma_v / sqrt(n_trials))) with no condition structure. Tests whether threat adds anything beyond effort cost.
 
 M2 (Threat-only): omega_i per-subject, population kappa. Choice and vigor both from W(u), but kappa is shared across all subjects. Tests whether individual effort sensitivity matters or only threat sensitivity.
 
@@ -214,6 +225,7 @@ M4 (Joint model): omega_i and kappa_i per-subject, both entering W(u) through th
 All H4 and H5 regressions will be fitted with Bayesian linear models (bambi; Capretto et al. 2022) using default weakly informative priors (bambi defaults: Normal(0, sigma) for coefficients scaled by data). Posterior sampling: 4 chains x 2,000 draws + 1,000 tuning.
 
 **H4:**
+
 - H4a: We will fit escape_rate ~ omega_z + kappa_z. We predict omega will be positive.
 - H4b: We will classify errors from empirical expected reward per T x D cell and fit overcaution_ratio ~ omega_z. We predict omega will be positive. We will report the overall overcaution percentage descriptively.
 - H4c: We will fit mean_vigor ~ kappa_z. We predict kappa will be negative.
@@ -221,6 +233,7 @@ All H4 and H5 regressions will be fitted with Bayesian linear models (bambi; Cap
 - H4e: We will fit earnings ~ choice_consistency_z + intensity_deviation_z. We predict choice_consistency will be positive and intensity_deviation will be negative (less deviation = more earnings).
 
 **H5:**
+
 - H5a: We will compare base (pct_optimal ~ omega_z + kappa_z) and full (pct_optimal ~ omega_z + kappa_z + calibration_z) models via LOO-CV. We predict calibration will improve model fit. Escape rate and earnings will be tested as supporting outcomes.
 - H5b: We will fit choice_shift ~ anxiety_slope_z. We predict anxiety slope will be positive.
 - H5c: We will fit mean_confidence ~ omega_z and mean_anxiety ~ omega_z. We predict omega will be negative for confidence and practically zero for anxiety (ROPE test).
@@ -242,6 +255,7 @@ All H4 and H5 regressions will be fitted with Bayesian linear models (bambi; Cap
 ### Data exclusion
 
 **Subject-level:**
+
 - Incomplete data: participants must complete all 81 trials and have data in all modalities (behavioral, probe ratings, questionnaires).
 - Calibration outliers: mean inter-press interval during the calibration phase > 2.5 SD from the sample mean.
 - Task engagement: escape rate < 35% across attack trials.
@@ -249,6 +263,7 @@ All H4 and H5 regressions will be fitted with Bayesian linear models (bambi; Cap
 In the exploratory sample, these criteria excluded 60 of 350 participants (57 for incomplete data or task engagement, 3 calibration outliers), yielding N = 290 analyzed.
 
 **Trial-level:**
+
 - Non-response trials (no keypresses recorded) will be excluded from per-subject indices.
 - Inter-press intervals < 10 ms will be treated as artifacts and removed before computing pressing rate.
 
@@ -259,7 +274,7 @@ Non-response trials will be excluded. Per-subject indices will be computed from 
 ### Exploratory analysis
 
 1. **Separate-equations model:** We will fit a model with lambda (choice-only) + omega (vigor-only) and no shared W function, to test whether the joint constraint hurts fit relative to unconstrained separate equations.
-2. **Scaled single-parameter model (M3b):** We will fit theta as omega with alpha*theta as kappa (alpha = population scaling factor), to test whether M3's failure is merely a scale mismatch rather than genuine separability.
+2. **Scaled single-parameter model (M3b):** We will fit theta as omega with alpha\*theta as kappa (alpha = population scaling factor), to test whether M3's failure is merely a scale mismatch rather than genuine separability.
 3. **Posterior predictive checks:** We will generate model-predicted vs observed choice and vigor by condition.
 4. **Affect index reliability:** We will compute split-half reliability (odd/even probe trials) for anxiety calibration, anxiety slope, and mean confidence to assess the stability of these indices given the limited number of probes per subject (~18).
 5. **Encounter spike individual differences:** We will compute CV, split-half reliability, and model parameter correlations with the reactive motor response.

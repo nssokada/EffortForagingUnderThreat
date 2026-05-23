@@ -1,0 +1,9 @@
+sample,channel,slope,param,r,p
+exploratory,choice,choice_threat_slope,omega_z,0.1515882338763793,0.009730494167272265
+exploratory,choice,choice_threat_slope,kappa_z,0.1396140456847399,0.017362704690835545
+exploratory,choice,choice_dist_slope,omega_z,0.23798445075198724,4.236267212353389e-05
+exploratory,choice,choice_dist_slope,kappa_z,0.1434471478554072,0.014488270375132117
+confirmatory,choice,choice_threat_slope,omega_z,0.03251199713028967,0.5873263692521117
+confirmatory,choice,choice_threat_slope,kappa_z,0.12094203735146232,0.042789104698793594
+confirmatory,choice,choice_dist_slope,omega_z,0.12287607129760027,0.03955143474374373
+confirmatory,choice,choice_dist_slope,kappa_z,0.08827586402648027,0.1399277826263457

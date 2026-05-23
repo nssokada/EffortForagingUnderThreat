@@ -1,0 +1,5 @@
+sample,affect,delta_elpd,shortfall_b,shortfall_lo,shortfall_hi,sig
+exploratory,anxiety,2.189343912003096,0.082,0.021,0.144,True
+exploratory,confidence,-0.5355190350273915,0.031,-0.03,0.092,False
+confirmatory,anxiety,-0.03417685099157097,0.052,-0.019,0.128,False
+confirmatory,confidence,3.854743082184541,0.111,0.045,0.183,True

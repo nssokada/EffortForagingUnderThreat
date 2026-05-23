@@ -1,0 +1,9 @@
+sample,measure,param,predicted_r
+exploratory,level,om_z,0.07200064155587159
+exploratory,level,kap_z,-0.8857583632446787
+exploratory,slope,om_z,-0.05015221261802702
+exploratory,slope,kap_z,-0.6446187082841603
+confirmatory,level,om_z,0.20978817467100686
+confirmatory,level,kap_z,-0.8528443397436785
+confirmatory,slope,om_z,0.002658759313010231
+confirmatory,slope,kap_z,-0.45792439773909155
