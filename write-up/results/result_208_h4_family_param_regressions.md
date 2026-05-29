@@ -119,7 +119,7 @@ The H4a–d results license the use of ω and κ as substantive individual-diffe
 - **H4e failure is the only confirmatory replication failure in the prereg H1–H5 family.** It deserves a paragraph in the manuscript, framed as a clean null on an indirect linkage, not a contradiction of the underlying joint-model framework.
 - **All H4 regressions use point-estimate posterior means of ω and κ as predictors,** ignoring posterior uncertainty in the parameters. A fully propagated Bayesian regression on the joint posterior would tighten or loosen these intervals; the cached results use the simpler approach (per the prereg).
 - **`overcaution_ratio` is an empirical quantity computed from condition-cell expected rewards, not a model-derived quantity.** It depends on which cells are classified as "heavy is optimal" via the task's reward structure, not the fitted model. This makes H4b a model-to-behavior test rather than a self-consistency test.
-- **Angle metric (H4d) compresses ω and κ into a single dimension.** This is the prereg specification, but it discards magnitude information. A 2D analysis (separate ω and κ effects) is in the related [[result_204]] and the exploratory choice-vigor coupling block (400s).
+- **Angle metric (H4d) compresses ω and κ into a single dimension.** This is the prereg specification, but it discards magnitude information. A 2D analysis (separate ω and κ effects) is in the related [[result_204]] and the exploratory choice-vigor coupling block (400s). Both the angle and the separate-parameter treatments rest on identifiable per-subject parameters: recovery is strong for *both* ω and κ (r ≈ 0.92 each, with calibrated credible intervals) under the production M4 + MCMC ([[result_205]]), so subject-level κ — not just its population distribution — is a reliable input here.
 - **Pooled exploratory + confirmatory analyses are not reported here** because the prereg specifies sample-by-sample replication. Combined-sample regressions are documented in `instructions/memory/allocation_analysis.md` for downstream clinical analyses.
 
 ## Replication
@@ -145,6 +145,7 @@ PYTHONPATH=notebooks/analysis \
 **Related results:**
 - [[result_201]] — Joint model M4 fit (source of ω, κ used here as predictors).
 - [[result_204]] — M4 vs M3 (single-parameter), establishing ω and κ as separable.
+- [[result_205]] — Parameter recovery: both ω and κ are well-recovered per-subject (r ≈ 0.92), licensing their use as individual-difference predictors here.
 - [[result_402]] — β creates choice-vigor dissociation (extends H4 to a third parameter).
 - [[result_502]] — Anxiety calibration as additional individual-difference predictor (H5a/b).
 
