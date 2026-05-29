@@ -76,6 +76,7 @@ Old versions (kept for reference): `fig_h1_threat_shifts.pdf` (v1, 1×3 lines), 
 - `.devcontainer/Dockerfile` — updated with conda, needs rebuild
 
 ## Already done
+- ✅ **MCMC parameter recovery (production M4), 2026-05-28** — r_ω=0.924, r_κ=0.918, calibrated coverage, max R-hat=1.001. result_205 now `supported`. Overturned the old "κ unrecoverable" claim (was a recovery-harness model-spec artifact). Script: `param_recovery_m4_mcmc.py`. See [[joint_model_development]]. TODO: rerun `--sample confirmatory` for a replication row; update result_208 prose to drop the κ caveat.
 - ✅ MCMC complete — choice, vigor, and joint models all run. Outputs in `results/stats/mcmc_*.csv`
 - ✅ Posterior bootstrap CIs for coupling
 - ✅ PPCs and parameter recovery

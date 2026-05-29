@@ -148,3 +148,8 @@ Icon
 *.bak
 *.orig
 Thumbs.db
+
+# Large regenerable MCMC posterior-draw dumps (exceed GitHub 100MB limit) — re-run scripts to remake
+results/stats/joint_optimal/*_samples.npz
+# Smoke-test scratch artifacts
+results/stats/joint_optimal/_smoke_*
