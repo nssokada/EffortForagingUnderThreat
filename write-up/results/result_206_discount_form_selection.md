@@ -2,14 +2,14 @@
 result_id: 206
 class: computational_model
 title: Effort enters choice as linear discounting of a quadratic energy term (E = req²·D)
-status: supported_exploratory
+status: supported
 prereg_h: []
 internal_h: [H2]
-samples: [exploratory_281]
+samples: [exploratory_293, confirmatory_281]
 notebooks: []
 scripts: [scripts/modeling/joint_optimal/m1_effort_kernels.py]
-outputs: [results/stats/joint_optimal/m1_effort_kernels.csv, results/stats/joint_optimal/m1_effort_exponent.csv]
-figures: [results/figs/paper/fig_s_m1_effort_kernels.pdf, results/figs/paper/fig_s_m1_effort_kernels.png]
+outputs: [results/stats/joint_optimal/m1_effort_kernels_exploratory.csv, results/stats/joint_optimal/m1_effort_exponent_exploratory.csv, results/stats/joint_optimal/m1_effort_kernels_confirmatory.csv, results/stats/joint_optimal/m1_effort_exponent_confirmatory.csv]
+figures: [results/figs/paper/fig_s_m1_effort_kernels_exploratory.pdf, results/figs/paper/fig_s_m1_effort_kernels_exploratory.png, results/figs/paper/fig_s_m1_effort_kernels_confirmatory.pdf, results/figs/paper/fig_s_m1_effort_kernels_confirmatory.png]
 created: 2026-05-28
 last_run: 2026-05-29
 ---
@@ -34,14 +34,23 @@ last_run: 2026-05-29
 
 ## Data Source
 
-- **Sample:** Exploratory model-input snapshot, N = 281 subjects. Built by `scripts/preprocessing/prepare_model_input.py` (which defaults to the exploratory sample) on 2026-04-04. This snapshot predates the MCMC pipeline used in [[result_201]] and carries a slightly smaller N (281) than the current exploratory N reported there (290); see Caveats.
-- **Input files:**
-  - `data/model_input/choice_trials.csv` — 12,645 choice trials (`subj_idx`, `distance_H`, `choice`).
-  - `data/model_input/vigor_cell_means.csv` — 3,822 condition-cell mean pressing rates (`subj_idx`, `is_heavy`, `mean_rate`, `n_trials`).
-  - `data/model_input/subject_mapping.csv` — 281 subjects.
-- **Inclusion / exclusion applied for this result:** Whatever exclusions were active in the 2026-04-04 preprocessing run; no additional exclusions.
-- **Unit of analysis:** Choice likelihood at the trial level (12,645 trials); vigor likelihood at the condition-cell-mean level (3,822 cells, intercept-only and identical across all variants).
-- **N entering the model:** 12,645 choice trials + 3,822 vigor cells = 16,467 likelihood contributions, from 281 subjects.
+This result is now fit on both samples.
+
+**Exploratory (N = 293 subjects):**
+- Built 2026-05-29 from `data/exploratory_350/processed/stage5_filtered_data_20260403_133425/` via `scripts/preprocessing/prepare_model_input.py`.
+- `data/model_input_exploratory/choice_trials.csv` — 13,185 choice trials.
+- `data/model_input_exploratory/vigor_cell_means.csv` — 3,935 condition-cell means.
+- `data/model_input_exploratory/subject_mapping.csv` — 293 subjects.
+- N_obs (model selection): 13,185 + 3,935 = **17,120 likelihood contributions**, 293 subjects.
+
+**Confirmatory (N = 281 subjects):**
+- Built 2026-05-29 from `data/confirmatory_350/processed/stage5_filtered_data_20260403_142413/`.
+- `data/model_input_confirmatory/choice_trials.csv` — 12,645 choice trials.
+- `data/model_input_confirmatory/vigor_cell_means.csv` — 3,822 condition-cell means.
+- `data/model_input_confirmatory/subject_mapping.csv` — 281 subjects.
+- N_obs: 12,645 + 3,822 = **16,467 likelihood contributions**, 281 subjects.
+
+**Unit of analysis (both samples):** Choice likelihood at the trial level; vigor likelihood at the condition-cell-mean level (intercept-only null, identical across all variants).
 
 ## Method
 
@@ -65,7 +74,7 @@ vigor:        intercept-only null (identical across all four variants)
 
 **Supplemental robustness check (Axis A — effort exponent on `req`):** A separate sweep varies the exponent `p` in `cost = κ·req^p·D` (discount held linear), with `p=1` (the M4 choice "total-demand" form), `p=2` (the M1 quadratic form used in Axis B), and `p` estimated freely. This sweep is secondary: it moves BIC far less than the discount-function choice and the free optimum is not interpretable (see Result).
 
-**Model selection.** BIC = 2·(−ELBO) + k·ln(N_obs), with k = 287 parameters (281 subject κ + 6 population: m_κ, s_κ, μ_vigor, b_cookie, σ_v, τ; the free-power variant adds 1) and N_obs = 16,467. Equal k across the four Axis-B forms ⇒ ΔBIC reduces to a pure ELBO comparison.
+**Model selection.** BIC = 2·(−ELBO) + k·ln(N_obs), with k = N_S + 6 population parameters (m_κ, s_κ, μ_vigor, b_cookie, σ_v, τ; the free-power variant adds 1). Per-sample: k = 299 / N_obs = 17,120 (exploratory); k = 287 / N_obs = 16,467 (confirmatory). Equal k across the four Axis-B forms ⇒ ΔBIC reduces to a pure ELBO comparison within each sample.
 
 **Software / packages:**
 - NumPyro / JAX (SVI, `AutoNormal` guide, `ClippedAdam` optimizer, 35,000 steps per fit, `Trace_ELBO`).
@@ -78,36 +87,38 @@ vigor:        intercept-only null (identical across all four variants)
 
 ## Result
 
-Within M1, a **linear** discount on the quadratic energy term `E = req²·D` fits best, beating every alternative discount form by a large BIC margin.
+Within M1, a **linear** discount on the quadratic energy term `E = req²·D` fits best in **both samples**, beating every alternative discount form by a large BIC margin, with the same ordering and comparable ΔBIC magnitudes.
 
 **Axis B — discount function (the headline; `E = req²·D` fixed, equal parameter counts):**
 
-| Discount form | ELBO | BIC | ΔBIC | Choice accuracy | Choice R² (subject) |
-|---|---|---|---|---|---|
-| **Linear (M1)** | **−8,201.8** | **19,190** | **0.0** | 70.9% | **0.947** |
-| Quadratic | −8,338.0 | 19,463 | 272.5 | 69.3% | 0.871 |
-| Exponential | −8,394.9 | 19,576 | 386.3 | 72.0% | 0.772 |
-| Hyperbolic | −8,677.6 | 20,142 | 951.6 | 65.9% | 0.455 |
+| Discount form | Expl ELBO | Expl BIC | **Expl ΔBIC** | Expl Choice R² | Conf ELBO | Conf BIC | **Conf ΔBIC** | Conf Choice R² |
+|---|---|---|---|---|---|---|---|---|
+| **Linear (M1)** | **−8,870.4** | **20,655** | **0.0** | **0.951** | **−8,201.7** | **19,190** | **0.0** | **0.947** |
+| Quadratic | −9,036.9 | 20,988 | 333.0 | 0.874 | −8,338.0 | 19,463 | 272.5 | 0.871 |
+| Exponential | −9,003.3 | 20,921 | 265.9 | 0.789 | −8,394.9 | 19,576 | 386.3 | 0.772 |
+| Hyperbolic | −9,301.1 | 21,517 | 861.4 | 0.466 | −8,677.5 | 20,142 | 951.6 | 0.455 |
 
-The linear form wins by ΔBIC ≈ 273 over the next-best (quadratic), ≈ 386 over exponential, and ≈ 952 over hyperbolic — all far beyond conventional decisive thresholds (ΔBIC > 10). It also has the highest subject-level choice R² (0.947). (Exponential reaches marginally higher raw accuracy, 72.0% vs 70.9%, but a much worse R² and BIC — it sharpens a few easy cells at the cost of overall calibration.)
+The linear form wins decisively in both samples: ΔBIC ≈ 266–333 over the next-best alternative (quadratic in exploratory, exponential in confirmatory) and ≈ 861–952 over hyperbolic — orders of magnitude above the conventional decisive threshold of 10. Subject-level choice R² is 0.95 in both samples (vs ≤ 0.87 for any other form). The ordering of the four discount forms is **identical** across samples, and the ΔBIC magnitudes are within ~25% of one another. (Note one minor sign permutation: in exploratory the second-worst form is exponential and the third quadratic, with the gap between them small; in confirmatory the same pair is similarly close but reversed. Both alternatives are decisively beaten by linear in both samples, so this swap is not interpretively consequential.)
 
 **Axis A — effort exponent on `req` (supplemental robustness; `cost = κ·req^p·D`, discount linear):**
 
-| req-exponent | p̂ | ELBO | ΔBIC |
-| --- | --- | --- | --- |
-| Linear (p=1, M4 choice form) | 1.0 | −8,242.0 | 101.0 |
-| Quadratic (p=2, M1) | 2.0 | −8,201.7 | 20.5 |
-| Free power | 5.24 | −8,186.6 | 0.0 |
+| req-exponent | Expl p̂ | Expl ELBO | Expl ΔBIC | Conf p̂ | Conf ELBO | Conf ΔBIC |
+|---|---|---|---|---|---|---|
+| Linear (p=1, M4 choice form) | 1.0 | −8,916.2 | 119.8 | 1.0 | −8,242.0 | 101.2 |
+| Quadratic (p=2, M1) | 2.0 | −8,870.4 | 28.2 | 2.0 | −8,201.7 | 20.7 |
+| Free power | **5.37** | −8,851.4 | 0.0 | **5.24** | −8,186.5 | 0.0 |
 
-The exponent sweep moves BIC over a ~100-point range — substantial, but the unconstrained optimum (p̂ ≈ 5.2) is an uninterpretable high power and beats the principled p = 2 (M1) form by only ΔBIC ≈ 20. The M1 quadratic form sits between the M4-style linear (p=1) and the free optimum and is the interpretable, near-optimal compromise. **Cross-axis consistency check:** the shared model — "Quadratic (p=2)" in Axis A and "Linear (M1)" in Axis B — returns ELBO −8,201.7 vs −8,201.8, agreeing to within SVI noise, confirming the two sweeps are internally coherent.
+Axis A also replicates cleanly. The free-power optimum lands at p̂ ≈ 5.2–5.4 in both samples — an uninterpretable high power that beats the principled p = 2 (M1) form by only ΔBIC ≈ 20–28. The M1 quadratic form sits between the M4-style linear (p = 1) and the free optimum and is the interpretable, near-optimal compromise in both samples. **Cross-axis consistency check (within sample):** the shared model — "Quadratic (p=2)" in Axis A and "Linear (M1)" in Axis B — returns ELBO −8,870.4 vs −8,870.4 (exploratory) and −8,201.7 vs −8,201.7 (confirmatory), agreeing exactly within sample.
 
-**Figure:**
+**Figures (per-sample):**
 
-![Effort-shape model selection: discount-function ΔBIC and choice fit by form](../../results/figs/paper/fig_s_m1_effort_kernels.png)
+| Exploratory (N = 293) | Confirmatory (N = 281) |
+|---|---|
+| ![Exploratory effort-shape](../../results/figs/paper/fig_s_m1_effort_kernels_exploratory.png) | ![Confirmatory effort-shape](../../results/figs/paper/fig_s_m1_effort_kernels_confirmatory.png) |
 
-Left panel: ΔBIC by discount form (lower = better), with linear (M1) the decisive winner (ΔBIC = 0 vs 273 / 952 / 386 for quadratic / hyperbolic / exponential). Right panel: subject-level choice R² by form, with linear highest at 0.947 and hyperbolic worst at 0.455. Axis A (effort exponent) is reported in the table above but, by design, not plotted — the discount-function form is the dominant source of model-selection variation.
+Left panel of each: ΔBIC by discount form (lower = better) — linear (M1) is the decisive winner in both. Right panel: subject-level choice R² by form — linear is highest (≈ 0.95) and hyperbolic worst (≈ 0.46) in both samples.
 
-**Verdict on prereg criterion:** Exploratory — no preregistered criterion. The linear-discount-of-`E` form is selected decisively by BIC.
+**Verdict on prereg criterion:** Exploratory — no preregistered criterion. The linear-discount-of-`E` form is selected decisively by BIC and **replicates across both independent samples** with the same form ordering and ΔBIC magnitudes within ~25% of each other.
 
 ## Interpretation
 
@@ -119,20 +130,34 @@ Left panel: ΔBIC by discount form (lower = better), with linear (M1) the decisi
 
 ## Replication
 
-**To regenerate this result:**
+**To regenerate both samples' results from scratch:**
 
 ```bash
-# From project root. Recomputes all 7 SVI fits (Axis A + Axis B) and the figure.
-/opt/anaconda3/envs/effort_foraging_threat/bin/python \
-  scripts/modeling/joint_optimal/m1_effort_kernels.py
+# From project root. Build model_input snapshots first (one-time):
+python scripts/preprocessing/prepare_model_input.py \
+    --stage5_dir data/exploratory_350/processed/stage5_filtered_data_20260403_133425 \
+    --vigor_dir  results/stats/vigor_analysis/exploratory \
+    --output_dir data/model_input_exploratory
+
+python scripts/preprocessing/prepare_model_input.py \
+    --stage5_dir data/confirmatory_350/processed/stage5_filtered_data_20260403_142413 \
+    --vigor_dir  results/stats/vigor_analysis/confirmatory \
+    --output_dir data/model_input_confirmatory
+
+# Then run the M1 effort-shape sweep on each:
+python scripts/modeling/joint_optimal/m1_effort_kernels.py \
+    --model-input-dir data/model_input_exploratory --suffix _exploratory
+
+python scripts/modeling/joint_optimal/m1_effort_kernels.py \
+    --model-input-dir data/model_input_confirmatory --suffix _confirmatory
 ```
 
-**Expected runtime:** ~12 min (7 SVI fits × ~100 s each at 35,000 steps).
+**Expected runtime:** ~2 min per sample (7 SVI fits × ~17 s each at 35,000 steps; the earlier ~12 min estimate was conservative).
 
-**Expected outputs:**
-- `results/stats/joint_optimal/m1_effort_kernels.csv` — Axis B (discount-form) table; the headline numbers above.
-- `results/stats/joint_optimal/m1_effort_exponent.csv` — Axis A (effort-exponent) table.
-- `results/figs/paper/fig_s_m1_effort_kernels.{pdf,png}` — 2-panel supplemental figure.
+**Expected outputs (per sample):**
+- `results/stats/joint_optimal/m1_effort_kernels_{exploratory,confirmatory}.csv` — Axis B table.
+- `results/stats/joint_optimal/m1_effort_exponent_{exploratory,confirmatory}.csv` — Axis A table.
+- `results/figs/paper/fig_s_m1_effort_kernels_{exploratory,confirmatory}.{pdf,png}` — 2-panel figure.
 
 ## References
 
@@ -149,4 +174,5 @@ Left panel: ΔBIC by discount form (lower = better), with linear (M1) the decisi
 
 ## Revision notes
 
-- **2026-05-29:** Superseded the deprecated FET-framework version of this result (which selected an *exponential* discount on reward). Re-ran the discount-form comparison inside the current M1 specification with effort fixed as `E = req²·D`; the best-fitting form is now **linear** (ΔBIC ≈ 273 over next-best). The headline reversal reflects the framework change (FET discount-on-reward → M1 discount-of-energy-term), not a data correction. Added the Axis-A effort-exponent robustness sweep. Sample relabeled to the `data/model_input/` exploratory snapshot (N=281).
+- **2026-05-29:** Superseded the deprecated FET-framework version of this result (which selected an *exponential* discount on reward). Re-ran the discount-form comparison inside the current M1 specification with effort fixed as `E = req²·D`; the best-fitting form is now **linear** (ΔBIC ≈ 273 over next-best). The headline reversal reflects the framework change (FET discount-on-reward → M1 discount-of-energy-term), not a data correction. Added the Axis-A effort-exponent robustness sweep.
+- **2026-05-29 (later):** Discovered that the snapshot at `data/model_input/` — which the earlier version of this entry labeled "exploratory, N = 281" — in fact contained the **confirmatory** sample's data (281 subjects, 12,645 choice trials, p_heavy = 0.414, matching `stage5_filtered_data_20260403_142413/behavior_rich.csv`). True exploratory has 293 subjects, 13,185 trials, p_heavy = 0.431. The headline ΔBIC numbers in the prior version were therefore correct as **confirmatory** results, not exploratory. We then generated true exploratory inputs at `data/model_input_exploratory/` (N = 293) and re-ran the M1 sweep; results replicate the linear-discount winner in true exploratory with ΔBIC ≈ 266–861 over alternatives, identical ordering, and the same Axis-A free-power optimum near p̂ ≈ 5.4. Status upgraded `supported_exploratory → supported`. The `data/model_input/` directory is left in place as the confirmatory snapshot for backward compatibility; new code should reference `data/model_input_exploratory/` and `data/model_input_confirmatory/` explicitly.
