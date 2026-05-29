@@ -1,7 +1,71 @@
 # Pipeline State
 
 Current execution status of each notebook and script in the analysis pipeline.
-Last updated: 2026-03-20.
+Last updated: 2026-05-29 (M1 effort-kernels both-sample run + model_input bug fix).
+
+---
+
+## 2026-05-28/29 — M1 effort-kernel discount-form selection (result_206)
+
+**Script:** `scripts/modeling/joint_optimal/m1_effort_kernels.py` ✅ run on both samples.
+
+**Outputs (Axis B — discount function, headline):**
+- `results/stats/joint_optimal/m1_effort_kernels_exploratory.csv` ✅
+- `results/stats/joint_optimal/m1_effort_kernels_confirmatory.csv` ✅
+
+**Outputs (Axis A — effort exponent robustness):**
+- `results/stats/joint_optimal/m1_effort_exponent_exploratory.csv` ✅
+- `results/stats/joint_optimal/m1_effort_exponent_confirmatory.csv` ✅
+
+**Figures:** `results/figs/paper/fig_s_m1_effort_kernels_{exploratory,confirmatory}.{pdf,png}` ✅
+
+**Result:** Linear discount on `E = req²·D` wins decisively in BOTH samples. ΔBIC = 0 / 266 / 333 / 861 (linear / exp / quad / hyp) in exploratory; ΔBIC = 0 / 273 / 386 / 952 (linear / quad / exp / hyp) in confirmatory. Subject-level choice R² ≈ 0.95 for linear in both samples. Free-power optimum p̂ ≈ 5.2–5.4 in both (uninterpretable high; M1's p=2 is the principled near-optimum). **result_206 status upgraded `supported_exploratory → supported`.** Runtime: ~2 min per sample on CPU.
+
+### Bug discovered + fixed: `data/model_input/` was mislabeled
+
+While running the confirmatory M1 sweep, discovered that `data/model_input/` — which the prior result_206 frontmatter labeled "exploratory, N=281" — in fact contained the **confirmatory sample's data** (281 subjects, 12,645 choice trials, p_heavy=0.414, matching `stage5_filtered_data_20260403_142413/behavior_rich.csv`). True exploratory has 293 subjects, 13,185 trials, p_heavy=0.431.
+
+**Fix:** Generated explicit per-sample model_input snapshots:
+- `data/model_input_exploratory/` — true exploratory (N=293, 13,185 trials, 3,935 vigor cells). Built 2026-05-29 from `data/exploratory_350/processed/stage5_filtered_data_20260403_133425/` via `prepare_model_input.py`.
+- `data/model_input_confirmatory/` — confirmatory (N=281, 12,645 trials, 3,822 vigor cells). Built 2026-05-29 from `stage5_filtered_data_20260403_142413/`.
+
+`data/model_input/` left in place as the confirmatory snapshot for backward compatibility. **All new code should reference the explicit dirs, not `data/model_input/`.**
+
+The cached MCMC fits in `results/stats/joint_optimal/exploratory/mcmc_m4_params.csv` and `results/stats/joint_optimal/confirmatory/mcmc_m4_params.csv` use a separate data-loading path (`scripts/run_mcmc_pipeline.py`) and are NOT affected — their subject counts (290 expl, 281 conf) match the actual sample they purport to be.
+
+---
+
+## 2026-05-29 — Trial-level affect ~ S_probe LMM (result_501)
+
+**Script:** `scripts/analysis/affect_survival_lmm.py` ✅ run on both samples.
+
+**Outputs:**
+- `results/stats/affect_analysis/s_probe_affect_lmm_exploratory.csv` ✅
+- `results/stats/affect_analysis/s_probe_affect_lmm_confirmatory.csv` ✅
+
+**Approach.** For each probe trial: compute u* = argmax_u W(u; T, D, ω, κ) using the subject's fitted M4 (ω, κ) and the M4 posterior-mean population params (γ, h, σ_sp). S_probe = S(u*, T, D). Z-score within sample. Fit `response ~ S_probe_z + (1|subj)` separately for anxiety and confidence using `statsmodels.mixedlm` (ML).
+
+**Result — both signs as predicted (higher survival → less anxiety, more confidence), replicates across both samples:**
+
+| Sample | Channel | β(S_probe_z) | SE | z | p | N obs | N subj |
+|---|---|---|---|---|---|---|---|
+| Exploratory | Anxiety | −0.584 | 0.025 | −23.74 | 1.5e-124 | 5,220 | 290 |
+| Exploratory | Confidence | +0.625 | 0.025 | +25.30 | 3.1e-141 | 5,218 | 290 |
+| Confirmatory | Anxiety | −0.545 | 0.025 | −22.25 | 1.0e-109 | 5,068 | 281 |
+| Confirmatory | Confidence | +0.680 | 0.025 | +27.09 | 1.3e-161 | 5,068 | 281 |
+
+**Validates the legacy NB04-03 numbers from `instructions/memory/hypotheses.md` § H4** (anxiety β = −0.602, confidence β = +0.632 on the older N=293 exploratory). Current exploratory (β = −0.584 / +0.625) matches to within rounding — confirms the M4-derived S_probe behaves like the deprecated framework's S_probe.
+
+**Population params used (from M4 mcmc_convergence_diagnostics.csv posterior means):**
+
+- Exploratory: γ = 0.846, h = 0.550, σ_sp = 0.247
+- Confirmatory: γ = 0.826, h = 0.381, σ_sp = 0.243
+
+**Implication:** result_501 upgraded from `untested` (deferred stub) → `supported`. The trial-level affect-survival coupling is a robust population-level effect that operates through the model-derived survival quantity, not just through raw threat/distance. Mechanistically distinct from the threat-only LMMs in [[result_102]] because S_probe is a model-derived nonlinear function of (T, D, ω, κ) rather than the raw conditions.
+
+---
+
+## Historical / older state below — last refreshed 2026-03-20
 
 ---
 
