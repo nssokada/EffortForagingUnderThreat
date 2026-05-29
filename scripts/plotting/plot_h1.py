@@ -197,9 +197,17 @@ def plot_h1b():
 # H1c: Vigor by threat, within cookie type (grouped bars)
 # ============================================================
 
+def _sig_stars(p):
+    """Convert a p-value to APA-style significance stars."""
+    if p < 1e-3:  return '***'
+    if p < 1e-2:  return '**'
+    if p < 5e-2:  return '*'
+    return 'n.s.'
+
+
 def plot_h1c():
     n_samples = len(samples)
-    fig, axes = plt.subplots(1, n_samples, figsize=(4.5 * n_samples, 3.5), sharey=True)
+    fig, axes = plt.subplots(1, n_samples, figsize=(4.5 * n_samples, 3.8), sharey=True)
     if n_samples == 1:
         axes = [axes]
 
@@ -216,6 +224,11 @@ def plot_h1c():
             ax.text(0.5, 0.5, 'No vigor data', transform=ax.transAxes, ha='center')
             continue
 
+        # Restrict to type==1 (free-choice trials). The prereg's H1c specifies
+        # "within each chosen effort level" — "chosen" implies type==1 (where the
+        # subject freely selected). Probe trials (type 5, 6) are forced and not
+        # part of the prereg-named test. The within-subject selection-into-heavy
+        # at high threat is part of the question the prereg asks, not an artifact.
         tv_valid = tv[(tv['type'] == 1) & tv['norm_rate'].notna()].copy()
         tv_valid['T_round'] = tv_valid['T_round'].round(1)
 
@@ -226,13 +239,19 @@ def plot_h1c():
         tv_valid = tv_valid.merge(sc_mean, on=['subj', 'cookie'])
         tv_valid['vigor_delta'] = tv_valid['norm_rate'] - tv_valid['sc_mean']
 
+        # Track per-cookie bar tops so significance brackets clear the highest bar.
+        # tops_by_cookie[cookie_x_index] = max(mean + 1.96*sem) across the three threats
+        tops_by_cookie = {ci: -np.inf for ci in range(len(cookies))}
+
         for t_idx, T in enumerate(threat_levels):
             means, sems = [], []
-            for cookie_val, _, _ in cookies:
+            for ci, (cookie_val, _, _) in enumerate(cookies):
                 sub = tv_valid[(tv_valid['T_round'] == T) & (tv_valid['cookie'] == cookie_val)]
                 subj_means = sub.groupby('subj')['vigor_delta'].mean()
-                means.append(subj_means.mean())
-                sems.append(subj_means.sem())
+                m = subj_means.mean()
+                se = subj_means.sem()
+                means.append(m); sems.append(se)
+                tops_by_cookie[ci] = max(tops_by_cookie[ci], m + 1.96 * se)
 
             offset = (t_idx - 1) * bar_width
             ax.bar(x_pos + offset, means, bar_width * 0.88,
@@ -248,11 +267,71 @@ def plot_h1c():
         ax.set_xticklabels([f'{lbl}\n(req = {req})' for _, lbl, req in cookies], fontsize=9)
         ax.set_title(s['label'], fontsize=11, color=Colors.DARK_GREY, pad=10)
 
+        # ── Significance brackets: paired-t per threat-pair, within cookie ──
+        # Three brackets per cookie:
+        #   short, low:  T=0.1 vs T=0.5   (adjacent, EXPLORATORY — Bonferroni×2 within cookie)
+        #   short, low:  T=0.5 vs T=0.9   (adjacent, EXPLORATORY — Bonferroni×2 within cookie)
+        #   long, high:  T=0.1 vs T=0.9   (PREREGISTERED, uncorrected — prereg line 221)
+        bracket_color = Colors.INK
+        # Common bracket baseline across both cookies in this panel for visual alignment.
+        baseline = max(tops_by_cookie.values())
+        y_span = baseline - min(0.0, *tops_by_cookie.values())
+        pad = 0.08 * max(y_span, 0.02)         # gap unit above the tallest bar
+        tick = 0.30 * pad                       # downward tick at bracket ends
+
+        def _paired_p(sub_df, t_lo, t_hi):
+            ps = (sub_df[sub_df['T_round'].isin([t_lo, t_hi])]
+                  .groupby(['subj', 'T_round'])['norm_rate'].mean()
+                  .unstack('T_round')
+                  .dropna(subset=[t_lo, t_hi]))
+            _, p = ttest_rel(ps[t_hi], ps[t_lo])
+            return p
+
+        def _draw_bracket(x_lo, x_hi, y_top, stars, fontsize, weight):
+            ax.plot([x_lo, x_lo, x_hi, x_hi],
+                    [y_top - tick, y_top, y_top, y_top - tick],
+                    color=bracket_color, lw=0.9, zorder=5)
+            ax.text((x_lo + x_hi) / 2, y_top + 0.2 * pad, stars,
+                    ha='center', va='bottom', fontsize=fontsize,
+                    color=bracket_color, zorder=5, fontweight=weight)
+
+        for ci, (cookie_val, _, _) in enumerate(cookies):
+            sub_c = tv_valid[tv_valid['cookie'] == cookie_val]
+
+            # x-positions of T=0.1 / T=0.5 / T=0.9 bar centers within this cookie
+            x_01 = x_pos[ci] - bar_width
+            x_05 = x_pos[ci]
+            x_09 = x_pos[ci] + bar_width
+
+            # ── Adjacent comparisons (EXPLORATORY) — Bonferroni × 2 within cookie ──
+            p_01_05 = _paired_p(sub_c, 0.1, 0.5) * 2  # Bonferroni for 2 adjacent tests
+            p_05_09 = _paired_p(sub_c, 0.5, 0.9) * 2
+            y_adj = baseline + pad
+            _draw_bracket(x_01, x_05, y_adj, _sig_stars(p_01_05), fontsize=9, weight='normal')
+            _draw_bracket(x_05, x_09, y_adj, _sig_stars(p_05_09), fontsize=9, weight='normal')
+
+            # ── Preregistered comparison (UNCORRECTED): T=0.1 vs T=0.9 ──
+            p_01_09 = _paired_p(sub_c, 0.1, 0.9)
+            y_ext = baseline + 3.0 * pad   # high enough to clear adjacent stars
+            _draw_bracket(x_01, x_09, y_ext, _sig_stars(p_01_09), fontsize=11, weight='bold')
+
+        # Headroom for the highest bracket + stars
+        ymin, ymax = ax.get_ylim()
+        ax.set_ylim(ymin, max(ymax, baseline + 4.2 * pad))
+
         if ax == axes[0]:
-            leg = ax.legend(fontsize=8, frameon=True, labelcolor=Colors.INK)
+            leg = ax.legend(fontsize=8, frameon=True, labelcolor=Colors.INK,
+                            loc='lower left')
             leg.get_frame().set_facecolor('white')
             leg.get_frame().set_edgecolor('#E5E7EB')
             leg.get_frame().set_linewidth(0.8)
+
+    # Caption note: bracket convention + correction policy
+    fig.text(0.5, -0.04,
+             'Top bracket (bold): preregistered paired t-test, T=0.9 vs T=0.1, within cookie (uncorrected).  '
+             'Lower brackets: adjacent threat-pair paired t-tests (exploratory; Bonferroni ×2 within cookie).\n'
+             '* p<.05    ** p<.01    *** p<.001',
+             ha='center', va='top', fontsize=8, color=Colors.DARK_GREY)
 
     plt.tight_layout()
     fig.savefig(OUT_DIR / 'h1c_vigor_by_threat.png', dpi=300, bbox_inches='tight', facecolor='white')

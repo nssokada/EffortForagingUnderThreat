@@ -9,8 +9,8 @@ Threat probability and distance will simultaneously reduce high-effort choices, 
 | Test | Model | Threshold |
 |------|-------|-----------|
 | H1a: Threat → choice | Logistic, cluster-robust SE | β(threat) < 0, β(distance) < 0, both P < .01 |
-| H1b: Threat → anxiety | LMM: response ~ threat_z + (1 + threat_z \| subj) | β > 0, \|t\| > 3 |
-| H1b: Threat → confidence | LMM: response ~ threat_z + (1 + threat_z \| subj) | β < 0, \|t\| > 3 |
+| H1b: Threat/distance → anxiety | LMM: response ~ threat_z + dist_z + (1 + threat_z \| subject) | β(threat) > 0, β(dist) > 0, both \|t\| > 3 |
+| H1b: Threat/distance → confidence | LMM: response ~ threat_z + dist_z + (1 + threat_z \| subject) | β(threat) < 0, β(dist) < 0, both \|t\| > 3 |
 | H1c: Threat → vigor | Paired t: T=0.9 vs T=0.1, within heavy and light | Both P < .01 |
 
 ## Results
@@ -29,14 +29,16 @@ Both threat and distance reduce P(heavy). The interaction indicates that at high
 
 ### H1b: Affect
 
-Linear mixed models: response ~ threat_z + (1 + threat_z | subj).
+Linear mixed models: response ~ threat_z + dist_z + (1 + threat_z | subject), fit separately for anxiety and confidence.
 
-|  | Exploratory | Confirmatory |
-|--|-------------|--------------|
-| Anxiety: β(threat) | +0.58 (z = 14.7, P < 0.001) | +0.53 (z = 12.5, P < 0.001) |
-| Confidence: β(threat) | −0.58 (z = −13.7, P < 0.001) | −0.67 (z = −15.3, P < 0.001) |
+|  | Exploratory (N = 290) | Confirmatory (N = 281) |
+|--|----------------------|----------------------|
+| Anxiety: β(threat) | +0.580 (z = +14.67, P < 0.001) | +0.534 (z = +12.51, P < 0.001) |
+| Anxiety: β(distance) | +0.230 (z = +9.93, P < 0.001) | +0.276 (z = +12.22, P < 0.001) |
+| Confidence: β(threat) | −0.582 (z = −13.72, P < 0.001) | −0.671 (z = −15.25, P < 0.001) |
+| Confidence: β(distance) | −0.295 (z = −12.84, P < 0.001) | −0.260 (z = −11.25, P < 0.001) |
 
-All |z| > 3. Anxiety and confidence respond in opposite directions — threat increases subjective danger appraisal while decreasing coping appraisal. **Confirmed in both samples.**
+All |z| > 3 with signs in the predicted direction for both threat and distance. Anxiety and confidence respond in opposite directions to each manipulation — threat and distance both raise subjective danger appraisal while lowering coping appraisal. **Confirmed in both samples.**
 
 ### H1c: Vigor
 
@@ -56,9 +58,11 @@ The vigor effect is larger in the confirmatory sample. The within-cookie analysi
 | H1a: threat → choice | PASS | PASS |
 | H1a: distance → choice | PASS | PASS |
 | H1b: threat → anxiety | PASS | PASS |
+| H1b: distance → anxiety | PASS | PASS |
 | H1b: threat → confidence | PASS | PASS |
+| H1b: distance → confidence | PASS | PASS |
 | H1c: threat → vigor | PASS | PASS |
-| **Total** | **5/5** | **5/5** |
+| **Total** | **7/7** | **7/7** |
 
 ## Interpretation
 
