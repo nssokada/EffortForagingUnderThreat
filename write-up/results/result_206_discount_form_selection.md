@@ -20,7 +20,7 @@ last_run: 2026-05-29
 
 ## Overview
 
-<TODO — Stage 2>
+Within the joint fitness framework, the effort-only null model M1 says option value equals reward minus a cost term in the energy `E = req²·D` (quadratic instantaneous press cost × duration). But which *functional form* should discount reward by `E` — linear, quadratic, hyperbolic, or exponential? We fit four otherwise-identical M1 variants with equal parameter counts and compared by ΔBIC, in both samples. A **linear** discount on `E` wins decisively (ΔBIC ≥ 266 over every alternative in both samples), with identical form ordering across samples and subject-level choice R² ≈ 0.95 (vs ≤ 0.87 for any alternative). The result establishes M1's linear-discount-of-quadratic-energy as the principled null model that the joint M4 ([[result_201]]) is compared against in [[result_202]].
 
 ## Hypothesis
 
@@ -122,11 +122,20 @@ Left panel of each: ΔBIC by discount form (lower = better) — linear (M1) is t
 
 ## Interpretation
 
-<TODO — Stage 2/3>
+A linear discount on the quadratic energy term `E = req²·D` provides the best account of choice in both samples, by a wide margin. The ΔBIC gap to the next-best alternative is 266 (confirmatory) to 333 (exploratory) — orders of magnitude beyond the conventional decisive threshold of 10 — and the gap to the worst alternative (hyperbolic) is 861–952. The four discount forms produce the *same ranking* in both samples, with ΔBIC magnitudes within ~25% of each other. Subject-level choice R² for the linear form is 0.95 in both samples, vs 0.87 (quadratic), 0.79 (exponential), and 0.46 (hyperbolic). Exponential reaches marginally higher raw classification accuracy (~72% vs ~71%) but at a substantial cost to calibrated subject-level fit — it sharpens a few easy decision cells at the expense of the rest.
+
+The substantive reading combines two distinct theoretical commitments. First, `E = req²·D` is the canonical physical-cost form: instantaneous press-rate squared (an approximation to metabolic power expenditure) integrated over duration `D`. The Axis A robustness check confirms that the principled exponent p = 2 sits in a near-optimal region of the BIC surface — a free-power fit reaches a slightly lower BIC (ΔBIC ≈ 20–28) only at an uninterpretable high power (p̂ ≈ 5.2–5.4), which is the kind of overfit a sample-specific kernel can absorb without theoretical meaning. Second, that this `E` enters value *linearly subtractive* — `V = R − κ·E` — separates effort from reward as an additive cost rather than as a multiplicative discount on reward (the hyperbolic / exponential family standard in delay- and probability-discounting literatures). Subjects appear to treat effort like a metabolic budget item: you pay it independent of what you earn, not as a fractional shrinking of what reward feels worth.
+
+This is the M1 specification that the model-comparison results use as the effort-only null. In [[result_202]], the joint W(u) framework (M4) beats this M1 by ΔWAIC ≈ 3,800–4,700, establishing that survival weighting and threat-dependent value computation add structure beyond what the principled effort-only model captures. Because the M1 baseline here is itself the BIC-best variant within a four-form sweep, that comparison is a fair test: M4 doesn't win because M1 was a strawman, it wins despite M1 being the best version of itself. The same `E = req²·D` cost term re-appears in M4's vigor likelihood as a quadratic deviation cost — `κ · (u − req)² · D` — which is the analog of the same physical-cost intuition applied to within-trial pressing intensity rather than between-trial choice.
 
 ## Caveats & Limitations
 
-<TODO — Stage 2>
+- **BIC uses the best SVI ELBO loss, not an MCMC marginal likelihood.** The four Axis-B variants are fit with stochastic variational inference (NumPyro AutoNormal guide, 35,000 ClippedAdam steps); the BIC is then 2·(−best ELBO) + k·ln(N_obs). ELBO can drift slightly across re-runs even at convergence, but the ΔBIC gaps observed here (≥ 266) are orders of magnitude above any plausible SVI noise floor — the qualitative conclusion is robust to inference method.
+- **The vigor likelihood is intercept-only across all four variants.** It contributes equally to every model's BIC and therefore does no discrimination — only the choice likelihood does the work. This is by design: M1 is the effort-only null with no condition-structured vigor model, and the question is purely about the choice-side discount form. M4's vigor likelihood (see [[result_201]]) does carry the condition structure and is tested separately in [[result_202]].
+- **The analysis fixes `E = req²·D` and varies the discount.** It does not test the orthogonal question — "what shape of cost argument best fits given a linear discount?" — beyond the Axis A robustness sweep, which confirms p = 2 is near-optimal. A fully crossed search (cost shape × discount shape) would explore more of the model space but is not the prereg-licensed question.
+- **Axis A's free-power optimum (p̂ ≈ 5.2–5.4) beats principled p = 2 by ΔBIC ≈ 20–28 in both samples.** This is a real BIC improvement but lacks theoretical interpretation — a 5.4-power cost on press rate has no canonical physical or behavioral motivation. We report p = 2 as the principled near-optimum, consistent with the energy-cost reading; reporting the free p̂ as the "winner" would substitute uninterpretable fit for theoretical structure.
+- **Only four discount families tested.** Power-law, generalized hyperbolic, sigmoid, and other functional forms exist in the discounting literature; we test the four most common candidates that map cleanly onto interpretable parameter counts. The decisive linear-vs-everything-else margin makes broader sweeps unlikely to change the conclusion, but the claim is "linear beats this canonical alternatives set," not "linear beats every possible form."
+- **Exploratory model_input snapshot built 2026-05-29.** The snapshot uses the current `stage5_filtered_data_20260403_133425/` directory (N = 293 exploratory). An earlier version of this entry was inadvertently fit on the confirmatory data while labeled "exploratory" (see Revision notes 2026-05-29 later); the current numbers were re-derived from the correct provenance.
 
 ## Replication
 
