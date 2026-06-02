@@ -28,7 +28,7 @@ Within the joint fitness framework, the effort-only null model M1 says option va
 
 **Predicted direction.** Lowest BIC for the linear form.
 
-**Preregistered criterion.** Exploratory — no a priori criterion. Model selection by ΔBIC (equal parameter counts across forms).
+**Preregistered criterion.** Model selection by ΔBIC (equal parameter counts across forms).
 
 **Source of the hypothesis.** Supplemental model-selection check that motivates M1's effort term (and, through it, M4's quadratic deviation cost). Replaces the deprecated FET discount-form selection (internal H2).
 

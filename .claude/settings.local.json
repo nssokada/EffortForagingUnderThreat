@@ -16,7 +16,22 @@
       "WebFetch(domain:link.springer.com)",
       "WebFetch(domain:www.ecologycenter.us)",
       "WebFetch(domain:www.semanticscholar.org)",
-      "WebFetch(domain:cdnsciencepub.com)"
+      "WebFetch(domain:cdnsciencepub.com)",
+      "Bash(python3 -c ' *)",
+      "Bash(git add *)",
+      "Bash(/opt/anaconda3/envs/effort_foraging_threat/bin/python scripts/preprocessing/prepare_model_input.py --stage5_dir data/confirmatory_350/processed/stage5_filtered_data_20260403_142413 --vigor_dir results/stats/vigor_analysis/confirmatory --output_dir data/model_input_confirmatory)",
+      "Bash(tail -60 /tmp/m1_conf_run.log && echo \"---CSVs produced---\" && ls -la results/stats/joint_optimal/m1_effort_*confirmatory* results/figs/paper/fig_s_m1_effort_kernels_confirmatory* 2>&1)",
+      "Bash(/opt/anaconda3/envs/effort_foraging_threat/bin/python scripts/preprocessing/prepare_model_input.py --stage5_dir data/exploratory_350/processed/stage5_filtered_data_20260403_133425 --vigor_dir results/stats/vigor_analysis/exploratory --output_dir data/model_input_exploratory)",
+      "Bash(/opt/anaconda3/envs/effort_foraging_threat/bin/python scripts/modeling/joint_optimal/m1_effort_kernels.py --model-input-dir data/model_input_exploratory --suffix _exploratory)",
+      "Bash(tee /tmp/m1_expl_run.log)",
+      "Bash(/opt/anaconda3/envs/effort_foraging_threat/bin/python3 -c ' *)",
+      "Bash(awk -F',' '{printf \"%-30s mean=%-15s rhat=%s\\\\n\",$2,$3,$5}')",
+      "Bash(PYTHONPATH=/Users/nokada/Desktop/EffortForagingUnderThreat/notebooks/analysis /opt/anaconda3/envs/effort_foraging_threat/bin/jupyter nbconvert --to notebook --execute notebooks/analysis/H2_vigor_dynamics.ipynb --inplace --ExecutePreprocessor.kernel_name=python3 --ExecutePreprocessor.timeout=900)",
+      "Bash(echo \"EXIT=$?\")",
+      "Read(//tmp/**)",
+      "Bash(PYTHONPATH=notebooks/analysis /opt/anaconda3/envs/effort_foraging_threat/bin/python -u /tmp/h2_partial.py)",
+      "Bash(sed -i.bak '/^[[:space:]]*%/d; /get_ipython/d' /tmp/h2_partial.py && PYTHONPATH=notebooks/analysis /opt/anaconda3/envs/effort_foraging_threat/bin/python -u /tmp/h2_partial.py 2>&1 | tail -80)",
+      "Bash(kill 46497)"
     ]
   },
   "hooks": {
