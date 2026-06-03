@@ -29,12 +29,12 @@ MANOVA: Wilks' λ significant for all three params (all p ≈ 0).
 
 ## Interpretation
 
-The CCA solution finds two orthogonal pathways: one carries (z, k, β) jointly into choice, the other carries them into vigor. The two dimensions are nearly orthogonal in canonical-loading space, with the choice dimension explaining the bulk of the canonical variance and the vigor dimension a smaller but cleanly separable component. This is the multivariate confirmation of the parameter → behavior dissociation that appears piece-by-piece in [[result_402]] and [[result_404]].
+The CCA solution finds two orthogonal pathways: one carries (z, k, β) jointly into choice, the other carries them into vigor. The two dimensions are nearly orthogonal in canonical-loading space, with the choice dimension explaining the bulk of the canonical variance and the vigor dimension a smaller but cleanly separable component. This is the multivariate confirmation of the parameter → behavior dissociation that appears piece-by-piece in [[result_208]] and [[result_404]].
 
 Under the current M4 framework with only (ω, κ), the analog CCA would yield at most two dimensions, with similar interpretation: one mostly choice-loaded, one mostly vigor-loaded.
 
 ## References
 
 - `instructions/memory/hypotheses.md` § H35.
-- [[result_402]] — Cross-channel ω → vigor.
+- [[result_208]] — Cross-channel ω/κ → vigor decomposition.
 - [[result_404]] — Threat reverses coupling.

@@ -59,7 +59,7 @@ See [[result_303]]. Same migration steps.
 
 **Related results:**
 - [[result_303]] — Multivariate PLS context.
-- [[result_402]] — Cross-channel ω/κ → vigor.
+- [[result_208]] — Cross-channel ω/κ → vigor decomposition (population partial slopes).
 
 **Source:**
 - `instructions/memory/hypotheses.md` § H24.

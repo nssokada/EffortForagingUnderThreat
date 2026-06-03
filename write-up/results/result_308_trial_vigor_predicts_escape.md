@@ -64,7 +64,7 @@ The trial-level test cleanly reproduces the between-subject finding in [[result_
 
 The within-subject framing is important because it rules out the possibility that the between-subject vigor → escape result is a confounded individual-difference effect (e.g., motor skill correlates with general task engagement, which correlates with both vigor and survival). Here, we ask the question "on the same subject's trials, does the trial-by-trial variation in pressing rate predict the trial-by-trial variation in escape outcome?" The answer is yes, in the predicted direction, with overwhelming statistical evidence.
 
-Combined with [[result_402]] (ω predicts vigor) and [[result_403]] (vigor dominates escape between-subject), this completes a chain: subjects who internalize capture as costly (high ω) press harder (cross-channel correlation), and pressing harder yields better trial-level escape outcomes (this result). The chain links the joint-model parameter ω to a directly survival-relevant behavioral consequence via the vigor channel — a stronger story than the model's choice-only predictions.
+Combined with [[result_208]] (ω → vigor partial slope) and [[result_403]] (vigor dominates escape between-subject), this completes a chain: subjects who internalize capture as costly (high ω) press harder (cross-channel correlation), and pressing harder yields better trial-level escape outcomes (this result). The chain links the joint-model parameter ω to a directly survival-relevant behavioral consequence via the vigor channel — a stronger story than the model's choice-only predictions.
 
 ## Caveats & Limitations
 
@@ -86,7 +86,7 @@ Migration needed. Steps:
 ## References
 
 **Related results:**
-- [[result_402]] — ω → anticipatory vigor (the upstream parameter link).
+- [[result_208]] — ω → vigor partial slope (the upstream parameter link).
 - [[result_403]] — Vigor dominates escape (between-subject).
 - [[result_307]] — Phase dissociation by parameters (the temporal decomposition).
 - [[result_201]] — Joint model M4 (mechanism via S(u, T, D)).

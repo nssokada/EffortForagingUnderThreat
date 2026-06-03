@@ -247,7 +247,6 @@ python scripts/analysis/h4_choice_decomp.py
 - [[result_205]] — Parameter recovery: both ω and κ are well-recovered per-subject (r ≈ 0.92), licensing their use as individual-difference predictors here.
 - [[result_207]] — Joint-likelihood necessity + embodiment argument; the cross-channel prediction here supplies the partial coefficients that make 207's "uniquely answerable questions" pillar quantitative.
 - [[result_401]] — Marginal `r(choice, vigor)` whose value is quantitatively predicted by the partial coefficients reported above.
-- [[result_402]] — ω predicts anticipatory vigor (cross-channel parameter mapping; the positive ω → vigor signature documented here).
 - [[result_502]] — Anxiety calibration as additional individual-difference predictor (H5a/b).
 
 **Notebook / drafts:**

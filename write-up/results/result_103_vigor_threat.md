@@ -176,7 +176,7 @@ Pressing rate rises with threat probability holding chosen cookie fixed, in both
 
 **3. Distance attenuates rather than amplifies the threat-vigor relationship.** The supplementary analysis revealed a small positive main effect of chosen distance on vigor (β ≈ +0.003–0.005, replicated) but, more strikingly, a **negative threat × distance interaction** (β ≈ −0.004, p < 10⁻³ in both samples; ΔAIC ≈ −10). This goes against the predatory-imminence prediction that longer exposure should amplify urgency. The most parsimonious mechanistic reading is, again, the calibration ceiling: at high threat and long distance, heavy-cookie pressing is already pinned near maximum, so additional distance no longer leaves room for further threat-driven escalation. The data are consistent with vigor responding to threat *probability* first, with distance setting the available *headroom* rather than amplifying urgency.
 
-The result establishes that threat shifts vigor within cookie but does not, on its own, distinguish whether the vigor adjustment is calibrated to the survival benefit it actually buys, whether it is driven by anticipatory affect, or whether choice and vigor are governed by a single underlying value computation. Those questions are addressed by the joint fitness model in [[result_201]] (which predicts an optimal pressing rate per condition), by the affect-to-vigor null tests (internal H9: no trial-level affect → vigor coupling), and by the choice-vigor coupling analyses in the 400 block ([[result_402]], [[result_404]]).
+The result establishes that threat shifts vigor within cookie but does not, on its own, distinguish whether the vigor adjustment is calibrated to the survival benefit it actually buys, whether it is driven by anticipatory affect, or whether choice and vigor are governed by a single underlying value computation. Those questions are addressed by the joint fitness model in [[result_201]] (which predicts an optimal pressing rate per condition), by the affect-to-vigor null tests (internal H9: no trial-level affect → vigor coupling), and by the choice-vigor coupling analyses in the 400 block ([[result_401]], [[result_404]]).
 
 ## Caveats & Limitations
 
@@ -221,7 +221,7 @@ Run both from the project root. `PYTHONPATH` is required so the notebook's local
 - [[result_102]] — Affect ~ threat + distance. The affect-side companion. Together with this result and result_101, completes the H1 triad of threat-driven adaptive responses.
 - [[result_201]] — Joint fitness model M4. The computational account that predicts an optimal pressing rate per condition.
 - [[result_302]] — Trial-level survival → vigor LMM (internal H6 partial result).
-- [[result_402]] — β creates choice-vigor dissociation. Shows that the parameter that suppresses heavy-cookie choice does *not* suppress vigor — they are dissociable.
+- [[result_401]] — Population-level marginal coupling between choice and vigor; the M4-era replacement for the deprecated β-dissociation story.
 
 **Notebook:**
 - `notebooks/analysis/H1_adaptive_shifts.ipynb` — produces this and the other H1 results.

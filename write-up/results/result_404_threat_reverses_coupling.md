@@ -86,7 +86,7 @@ This result is the empirical anchor for framing choice and vigor as *complementa
 
 **Related results:**
 - [[result_401]] — Choice and vigor are independent dimensions in the aggregate (internal H29, the null this result contextualizes).
-- [[result_402]] — Cross-channel ω → vigor (the parameter-level dissociation).
+- [[result_208]], [[result_401]] — Population-level cross-channel ω/κ pathways and marginal coupling.
 - [[result_403]] — Vigor dominates escape over choice.
 - [[result_405]] — Off-diagonal groups differ in metacognition (the consequences of the reversal-induced quadrants).
 - [[result_506]] — Confidence miscalibration tracks the dissociation.

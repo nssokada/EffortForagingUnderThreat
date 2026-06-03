@@ -70,7 +70,7 @@ A single subject-level trait cannot serve as both the avoidance parameter and th
 
 The substantive implication is that capture cost and effort cost are dissociable individual-difference dimensions: a person who is highly avoidant of capture is not, in general, also highly averse to physical effort, and vice versa. This is the core preregistered claim of H3c — that the two-parameter ω/κ structure is the minimal representation that fits both behavioral channels — and the result confirms it in both samples with substantial margin.
 
-The dissociation has implications that propagate through the rest of the paper. The H4 family of regressions in [[result_208]] interprets ω and κ as separate predictors of escape rate, overcaution, and decision quality, treating them as orthogonal traits. The exploratory choice-vigor dissociation analyses in the 400 block (especially [[result_402]]) further document that ω, κ, and the β bias parameter project differently onto choice and vigor behavior. Result 204 is the prereg-licensed basis for that decomposition: were ω and κ a single trait, none of those downstream individual-difference analyses would make sense.
+The dissociation has implications that propagate through the rest of the paper. The H4 family of regressions in [[result_208]] interprets ω and κ as separate predictors of escape rate, overcaution, and decision quality, treating them as orthogonal traits. The choice-vigor dissociation analyses in the 400 block (especially [[result_208]] and [[result_401]]) further document that ω and κ project differently onto choice and vigor behavior. Result 204 is the prereg-licensed basis for that decomposition: were ω and κ a single trait, none of those downstream individual-difference analyses would make sense.
 
 ## Caveats & Limitations
 
@@ -90,6 +90,6 @@ See [[result_201]] Replication block. Both M3 and M3b are fit by the same MCMC p
 - [[result_202]] — M4 vs M1 (effort-only).
 - [[result_203]] — M4 vs M2 (threat-only).
 - [[result_208]] — H4 family Bayesian regressions treating ω and κ as separable traits.
-- [[result_402]] — β-driven choice-vigor dissociation (downstream consequence of separable parameter structure).
+- [[result_208]] / [[result_401]] — Parameter-channel dissociation under M4 (downstream consequence of separable ω, κ structure).
 
 **Literature:** Vehtari, A., Gelman, A., & Gabry, J. (2017). Practical Bayesian model evaluation using leave-one-out cross-validation and WAIC.

@@ -62,7 +62,7 @@ OLS regression: `escape_rate ~ choice_z + vigor_z + choice_z × vigor_z`.
 
 The decision and the execution channel predict survival on opposite directions and very different magnitudes. Pressing harder protects you; choosing the heavy cookie hurts you (at fixed vigor) because heavy is at the far distance. The R² of 0.66 explained by two simple subject-level variables is large by individual-difference standards, suggesting that escape outcomes are dominated by *what subjects do during execution*, not by *which patch they entered*. The quadrant table sharpens the story: LH subjects (chose easy, pressed hard) achieve the highest escape rate, 60%, despite earning less reward per trial; HL subjects (chose hard, pressed easy) achieve the lowest, 19%, because they walked into the dangerous patch and then didn't compensate motorically.
 
-This result has implications for how the paper frames the choice-vigor coupling. A naive reading would treat choice as the primary behavioral output and vigor as a secondary motor parameter — but the survival data inverts that ordering. Vigor is where the action is when the question is "what predicts trial-level success." Choice determines the option entered; vigor determines what happens once you are in that option. The two channels are dissociable in their parameter signatures ([[result_402]]) and in their downstream consequences for survival (this result), and both dissociations are robust at the between-subject level.
+This result has implications for how the paper frames the choice-vigor coupling. A naive reading would treat choice as the primary behavioral output and vigor as a secondary motor parameter — but the survival data inverts that ordering. Vigor is where the action is when the question is "what predicts trial-level success." Choice determines the option entered; vigor determines what happens once you are in that option. The two channels are dissociable in their parameter signatures ([[result_208]], [[result_401]]) and in their downstream consequences for survival (this result), and both dissociations are robust at the between-subject level.
 
 The finding also licenses framing the metacognitive miscalibration in [[result_506]]: subjects whose choice and vigor are *out of alignment* (HL and LH quadrants) make systematic confidence errors that track the dissociation. This connects the choice-vigor coupling work to the H5 metacognition family.
 
@@ -86,7 +86,7 @@ The finding also licenses framing the metacognitive miscalibration in [[result_5
 ## References
 
 **Related results:**
-- [[result_402]] — Cross-channel ω → vigor (the parameter-level dissociation).
+- [[result_208]], [[result_401]] — Channel-specific parameter slopes and marginal coupling (the parameter-level dissociation).
 - [[result_404]] — Threat reverses choice-vigor coupling (the threat-modulation companion).
 - [[result_308]] — Trial-level vigor predicts escape (the within-subject version).
 - [[result_506]] — Confidence miscalibration tracks the choice-vigor dissociation.
