@@ -8,7 +8,8 @@ internal_h: []
 samples: [exploratory_290, confirmatory_281]
 notebooks: [notebooks/analysis/H4_profiles_optimality.ipynb]
 scripts: []
-outputs: [results/stats/confirmatory_hypothesis_results.csv, results/stats/joint_optimal/mcmc_m4_params.csv, results/stats/individual_diffs/profiles_exploratory.csv, results/stats/individual_diffs/profiles_confirmatory.csv, results/stats/individual_diffs/h4_polar_decomp.csv]
+outputs: [results/stats/confirmatory_hypothesis_results.csv, results/stats/joint_optimal/mcmc_m4_params.csv, results/stats/individual_diffs/profiles_exploratory.csv, results/stats/individual_diffs/profiles_confirmatory.csv, results/stats/individual_diffs/h4_polar_decomp.csv, results/stats/individual_diffs/h4_choice_decomp.csv, results/stats/individual_diffs/h4_predicted_r_cv.csv]
+scripts: [scripts/analysis/h4_choice_decomp.py]
 figures: [results/figs/h4/h4_param_behavior_exploratory.pdf, results/figs/h4/h4_optimality_1d_exploratory.pdf]
 created: 2026-05-27
 last_run: 2026-05-27
@@ -119,7 +120,7 @@ Both effects passed in exploratory. **Neither replicates** in confirmatory: both
 
 The preregistered H4 tests treat each model parameter as a one-dimensional individual-difference trait: H4a–c regress an outcome on a single parameter, and H4d collapses both parameters into a single *angle* — the ratio of effort-driven to threat-driven avoidance. None of these tests asks the joint question that the two-parameter model naturally raises: **does an individual's full position in (ω, κ) parameter space — its direction *and* its distance from the population centroid — shape behavior?** A subject who is moderately capture-averse and moderately effort-averse and one who is severely both lie at the same angle but represent very different cognitive phenotypes; H4d treats them as equivalent. Equivalently, ω and κ may have independent univariate effects of the same or opposite signs on a given outcome (as H4a already shows for escape rate, where ω drives the effect and κ is null), and they may interact — neither pattern is detectable from the angle alone.
 
-To examine these structural questions, we refit the three continuous outcomes from the H4 family — attack-trial escape rate, mean pressing intensity, and proportion of optimal choices — using two complementary decompositions of the 2D (ω, κ) space:
+To examine these structural questions, we refit four continuous outcomes — the three from the H4 family (attack-trial escape rate, mean pressing intensity, proportion of optimal choices) plus the most basic behavioral outcome, **P(heavy)**, which the prereg's H4 specifications do not include directly — using two complementary decompositions of the 2D (ω, κ) space:
 
 - **Polar:** `outcome ~ angle_z + magnitude_z + angle_z × magnitude_z`, where `magnitude = √(ω_z² + κ_z²)` is each subject's Euclidean distance from the centroid in standardized-parameter space, then z-scored.
 - **Cartesian:** `outcome ~ ω_z + κ_z + ω_z × κ_z`.
@@ -141,6 +142,9 @@ Posterior sampler kwargs match those used for H4a–e (`bambi`, 4 chains × 2,00
 | pct_opt | angle_z | **−0.049 [−0.063, −0.035]** | **−0.051 [−0.069, −0.033]** |
 |  | mag_z | **−0.052 [−0.065, −0.038]** | **−0.024 [−0.042, −0.006]** |
 |  | angle × mag | **−0.039 [−0.055, −0.024]** | **−0.027 [−0.045, −0.009]** |
+| p_heavy | angle_z | **−0.097 [−0.116, −0.079]** | **−0.083 [−0.105, −0.061]** |
+|  | mag_z | **−0.025 [−0.044, −0.006]** | +0.006 [−0.017, +0.028] |
+|  | angle × mag | **−0.092 [−0.113, −0.071]** | **−0.033 [−0.056, −0.012]** |
 
 **Cartesian decomposition (95% HDI):**
 
@@ -155,8 +159,11 @@ Posterior sampler kwargs match those used for H4a–e (`bambi`, 4 chains × 2,00
 | pct_opt | ω_z | **−0.072 [−0.085, −0.060]** | **−0.108 [−0.120, −0.095]** |
 |  | κ_z | **−0.035 [−0.048, −0.023]** | **−0.046 [−0.059, −0.034]** |
 |  | ω × κ | **−0.020 [−0.030, −0.009]** | −0.001 [−0.012, +0.009] |
+| p_heavy | ω_z | **−0.154 [−0.161, −0.147]** | **−0.168 [−0.177, −0.160]** |
+|  | κ_z | **−0.076 [−0.083, −0.069]** | **−0.062 [−0.070, −0.053]** |
+|  | ω × κ | +0.006 [+0.000, +0.013] | **+0.015 [+0.007, +0.022]** |
 
-Sampling diagnostics across all 36 fits: R̂ = 1.000–1.001, ESS_bulk = 7,001–13,212 per coefficient.
+Sampling diagnostics across all 48 fits: R̂ = 1.000–1.001, ESS_bulk = 7,001–13,212 per coefficient.
 
 ### What the decomposition reveals
 
@@ -166,15 +173,23 @@ Sampling diagnostics across all 36 fits: R̂ = 1.000–1.001, ESS_bulk = 7,001�
 
 Beyond these two main effects, the ω × κ interaction is robustly negative in both samples (β = −0.053 / −0.021), and the polar angle × magnitude interaction tells the same story from a different angle (β = −0.087 / −0.101). κ's suppressive effect on vigor is amplified for subjects with high ω: those who are simultaneously capture-averse and effort-averse show the steepest vigor drop, more than either trait alone would predict. This is a competition signature — the two avoidance signals act against each other on the motor channel, and the dominant one wins by a wider margin than the linear model would suggest. The polar magnitude effect on vigor is positive (β = +0.067 / +0.054), consistent with a parsimonious reading that *some* form of strong avoidance generally elevates pressing — but the Cartesian decomposition makes clear that this aggregate-magnitude story is the resultant of competing ω and κ effects, not a unitary "intensity" dimension.
 
+**Choice (P(heavy)) shows that both ω and κ suppress heavy choice, with ω carrying roughly twice the weight.** The Cartesian decomposition gives clean partial slopes: β(ω) = **−0.154** [−0.161, −0.147] / **−0.168** [−0.177, −0.160] and β(κ) = **−0.076** [−0.083, −0.069] / **−0.062** [−0.070, −0.053] across the two samples. Both effects are negative and substantial, and the ω-to-κ ratio sits at ≈ 2 : 1 in both samples — consistent with the W(u) structure, in which ω weights the survival term that dominates choice and κ enters only through the smaller demand-cost penalty `κ·req·D`. The interaction term is small and positive in both samples (β = +0.006 / +0.015), suggesting a slight "competition" pattern: when both ω and κ are high, total choice suppression is *less* than the additive sum, consistent with subjects who are extreme in both dimensions saturating their avoidance behaviour on the choice channel before the second parameter has full room to contribute. The polar decomposition recovers a strong angle effect (β(angle) = −0.097 / −0.083) and a robust angle × magnitude interaction (β = −0.092 / −0.033), confirming that *which kind* of avoidance dominates matters for P(heavy) above and beyond raw avoidance intensity. This is the missing piece of the H4 parameter-to-behavior map: choice was inferred indirectly through H4b's overcaution test, and the direct decomposition now closes that loop with clean ω-vs-κ partial slopes that can be used as inputs in cross-channel predictions (see the next subsection).
+
 **Decision quality (proportion of optimal choices) shows that both direction and intensity matter.** H4d's preregistered angle effect replicates cleanly (β = −0.049 / −0.051), and the polar magnitude effect adds an independent negative contribution in both samples (β = −0.052 / −0.024). Substantively, subjects who are more extreme in (ω, κ) space — far from the population centroid in *any* direction — make worse choices than subjects nearer to the centroid. The Cartesian fit confirms a symmetric picture: ω and κ are both negatively associated with optimality on their own (β = −0.072 / −0.108 for ω; β = −0.035 / −0.046 for κ), with the interaction small and unstable across samples. This is consistent with optimality being a U-shaped function of trait avoidance: too little avoidance leads to capture-driven losses; too much avoidance leads to overcautious losses (consistent with H4b — overcaution dominates the error pool); the population centroid sits near the basin of the U. The angle effect H4d adds onto this is that *effort-driven* extremity is worse than threat-driven extremity for matched magnitudes, consistent with the prereg's claim that effort-driven avoidance is indiscriminate while threat-driven avoidance is context-appropriate.
 
 > THIS IS A HEADLINE FIGURE WE NEED TO BUILD.
 
+### Feeds the cross-channel marginal-correlation derivation in [[result_401]]
+
+The four partial slopes reported above — ω → choice, κ → choice, ω → vigor, κ → vigor — plus the population correlation `r(ω_z, κ_z) = +0.369 (expl) / +0.302 (conf)` are exactly the quantities the embodied W(u) framework needs to derive the marginal `r(choice, vigor)` *without seeing the marginal during fitting*. The derivation, the pathway-by-pathway decomposition, and the predicted-vs-observed comparison in both samples are reported in [[result_401]]'s Result and Interpretation sections. The headline from that derivation — that the ω pathway (dissociated: avoidance on choice, mobilised execution on vigor) and the κ pathway (aligned: effort cost on both) nearly cancel, leaving a small positive residual that matches the observed `r(choice, vigor)` to within 0.025 in both samples — is *generated* by the slopes above. Cached at `results/stats/individual_diffs/h4_predicted_r_cv.csv`.
+
 ### Synthesis
 
-The decomposition turns the H4 family from a list of five univariate tests into a coherent picture of how a 2D parameter space maps onto three behavioral channels. ω and κ are confirmed as separable traits with distinct ecological signatures (consistent with the M4 vs M3 model comparison in [[result_204]]). On the **choice channel**, ω and κ act in the same direction — both inflate avoidance — but the angle additionally biases the *kind* of avoidance, and the angle and magnitude of the (ω, κ) vector jointly predict decision quality. On the **motor channel**, they act in opposite directions — capture aversion mobilizes effort, effort aversion suppresses it — and these competing signals interact such that the dominant one wins more decisively than additive logic would predict. On the **survival channel**, ω alone governs escape, and where a subject sits on the effort axis is essentially irrelevant. These three channel-specific signatures are coherent with the survival-weighted value framework: each outcome reflects a different projection of the same two-parameter trait structure onto a different behavioral measurement, and the projections are interpretable rather than arbitrary.
+The decomposition turns the H4 family from a list of five univariate tests into a coherent picture of how a 2D parameter space maps onto **four** behavioral channels. ω and κ are confirmed as separable traits with distinct ecological signatures (consistent with the M4 vs M3 model comparison in [[result_204]]). On the **choice channel** (P(heavy)), both ω and κ are negative — both kinds of avoidance suppress heavy choice — with ω carrying roughly twice the weight (≈ 2 : 1 ratio) and a small positive interaction. On the **motor channel** (mean_vigor), ω and κ act in **opposite** directions — capture aversion mobilizes effort (β ≈ +0.13), effort aversion suppresses it (β ≈ −0.24) — and these competing signals interact such that the dominant one wins more decisively than additive logic would predict. On the **survival channel** (escape rate), ω alone governs the outcome, and where a subject sits on the effort axis is essentially irrelevant. On the **optimality channel** (pct_opt), both parameters and the magnitude of the (ω, κ) vector jointly predict decision quality, with effort-driven extremity worse than threat-driven extremity for matched magnitudes. These four channel-specific signatures are coherent with the survival-weighted value framework: each outcome reflects a different projection of the same two-parameter trait structure onto a different behavioral measurement, and the projections are interpretable rather than arbitrary.
 
-In the current (ω, κ) parameterization, that summary holds for escape rate but not for mean vigor or decision quality, both of which require the full 2D structure. The earlier parameterization's collapse into a one-dimensional story appears to have been specific to its variable choice rather than a general fact about the joint model.
+A structural feature worth flagging for downstream results: **ω has dissociated effects across channels** (avoidance on choice, mobilised execution on vigor — same parameter, two opposite-signed behavioural expressions), while **κ has aligned effects** (effort cost on both channels in the same direction). This dissociated-vs-aligned asymmetry between the two parameters is what produces the structured marginal correlation between choice and vigor reported in [[result_401]]. The cross-channel derivation lives there; the partial slopes above are the inputs that make it quantitative.
+
+In the current (ω, κ) parameterization, that summary holds for escape rate but not for mean vigor, decision quality, or P(heavy), all three of which require the full 2D structure. The earlier parameterization's collapse into a one-dimensional story appears to have been specific to its variable choice rather than a general fact about the joint model.
 
 **Status:** Exploratory and post-hoc. The verdict for the preregistered H4a–d tests remains tied to their univariate / angle specifications above; the decomposition is reported as a follow-up that contextualizes those results, not a replacement for them.
 
@@ -212,13 +227,27 @@ PYTHONPATH=notebooks/analysis \
 - Stdout reports of each H4a–e regression with β posterior summaries and pass/fail.
 - Figures regenerated at `results/figs/h4/`.
 
+**To regenerate the choice decomposition + cross-channel prediction (added 2026-06-03):**
+
+```bash
+python scripts/analysis/h4_choice_decomp.py
+```
+
+**Expected runtime:** ~1 min (12 bambi fits, each ≈ 1 s on CPU under NumPyro).
+
+**Expected outputs:**
+- `results/stats/individual_diffs/h4_choice_decomp.csv` — coefficient table for P(heavy) and mean_vigor decompositions.
+- `results/stats/individual_diffs/h4_predicted_r_cv.csv` — predicted vs observed r(choice, vigor) per sample.
+
 ## References
 
 **Related results:**
 - [[result_201]] — Joint model M4 fit (source of ω, κ used here as predictors).
 - [[result_204]] — M4 vs M3 (single-parameter), establishing ω and κ as separable.
 - [[result_205]] — Parameter recovery: both ω and κ are well-recovered per-subject (r ≈ 0.92), licensing their use as individual-difference predictors here.
-- [[result_402]] — β creates choice-vigor dissociation (extends H4 to a third parameter).
+- [[result_207]] — Joint-likelihood necessity + embodiment argument; the cross-channel prediction here supplies the partial coefficients that make 207's "uniquely answerable questions" pillar quantitative.
+- [[result_401]] — Marginal `r(choice, vigor)` whose value is quantitatively predicted by the partial coefficients reported above.
+- [[result_402]] — ω predicts anticipatory vigor (cross-channel parameter mapping; the positive ω → vigor signature documented here).
 - [[result_502]] — Anxiety calibration as additional individual-difference predictor (H5a/b).
 
 **Notebook / drafts:**

@@ -1,7 +1,40 @@
 # Pipeline State
 
 Current execution status of each notebook and script in the analysis pipeline.
-Last updated: 2026-05-29 (M1 effort-kernels both-sample run + model_input bug fix).
+Last updated: 2026-06-03 (H4 choice decomposition + parameter-mediated r(choice, vigor) prediction).
+
+---
+
+## 2026-06-03 — H4 choice decomposition + cross-channel r(choice, vigor) prediction (result_208 update)
+
+**Script:** `scripts/analysis/h4_choice_decomp.py` ✅ run on both samples.
+
+**Outputs:**
+- `results/stats/individual_diffs/h4_choice_decomp.csv` ✅ (32 coefficient rows: P(heavy) + mean_vigor × polar + Cartesian + main-effects × both samples)
+- `results/stats/individual_diffs/h4_predicted_r_cv.csv` ✅ (2 rows: predicted vs observed r(choice, vigor) per sample)
+
+**Key findings:**
+
+Choice partial coefficients (Cartesian with interaction):
+- Exploratory: β(ω → P(heavy)) = −0.154 [−0.161, −0.147], β(κ → P(heavy)) = −0.076 [−0.083, −0.069]
+- Confirmatory: β(ω → P(heavy)) = −0.168 [−0.177, −0.160], β(κ → P(heavy)) = −0.062 [−0.070, −0.053]
+- Both samples: ω ≈ 2× stronger than κ on choice; small positive ω × κ interaction (+0.006 / +0.015)
+
+Predicted vs observed r(choice, vigor) — embodied W(u) framework prediction:
+- Exploratory: predicted = +0.143, observed = +0.150 (p=0.011) — match within 0.007
+- Confirmatory: predicted = +0.052, observed = +0.077 (p=0.201) — match within 0.025
+
+Pathway decomposition (both samples):
+- ω-pathway Cov (β_ωc·β_ωv): consistently ≈ −0.020 (negative; ω lowers choice but raises vigor)
+- κ-pathway Cov (β_κc·β_κv): +0.018 / +0.014 (positive; κ lowers both)
+- Cross term (driven by r(ω,κ) ≈ +0.30–0.37): +0.010 / +0.010
+- Near-cancellation between channel pathways; small positive residual from cross term explains observed r
+
+**Implication:** Marginal r(choice, vigor) is *quantitatively* predicted by the embodied two-parameter framework, not just qualitatively consistent. Anchors the embodiment argument for [[result_401]] rewrite (Phase 2, deferred).
+
+**Sampling diagnostics:** R̂ = 1.000 across all 12 fits; ESS_bulk ≥ 7,001. Each fit ≈ 1 s wall time (bambi/NumPyro).
+
+**Note on operationalization:** `mean_vigor` here is the M4 cell-mean aggregate, NOT the legacy "pre-encounter capacity-normalized + choice-ratio-adjusted" metric used in legacy H29 (which reported r ≈ −0.018). Different operationalization → different sign on marginal r. The current operationalization is the one that matches 208's vigor partial coefficients, so it is the consistent metric for the cross-channel prediction.
 
 ---
 
