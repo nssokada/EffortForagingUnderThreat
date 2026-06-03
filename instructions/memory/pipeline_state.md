@@ -35,6 +35,27 @@ The cached MCMC fits in `results/stats/joint_optimal/exploratory/mcmc_m4_params.
 
 ---
 
+## 2026-06-02 — H2 vigor dynamics (result_104) blocked by two bugs
+
+**Status:** Deferred. Notebook execution attempted; cannot ship a valid both-sample result_104 yet.
+
+**Investigation:**
+
+1. Patched a missing `outputs: []` / `execution_count: null` on the "H2 Summary" cell of `notebooks/analysis/H2_vigor_dynamics.ipynb` (via a sub-agent). This fixed `nbformat.validator.NotebookValidationError`. No source-code change.
+2. Re-executing the notebook end-to-end fails on the H2c GAM cell with `LinAlgError: Singular matrix` — the cell tries to fit a MixedLM with `K = min(K_SPLINE, 4)` cubic-spline basis on a `t_epoch` column with only 4 unique values, which is rank-deficient. The cell's own comment notes that the original analysis used the raw `alignedEffortRate` timecourse, not 4 discrete epochs. This is a substantive analysis bug, not an environment issue.
+3. Extracted cells 1 + 3 + 5 (imports, H2a paired-t, H2b encounter spike) as a standalone Python script and ran them. Output for the two samples is **byte-for-byte identical**: Heavy Δ=+0.0349 / t=7.72 / p=1.89e-13 / d=+0.454 and Light Δ=+0.0541 / t=12.95 / p=1.45e-30 / d=+0.762 in both samples; H2b mean spike +0.0358 / t=11.01 / p=8.73e-24 / d=+0.647 in both. The H2b numbers match `confirmatory_hypothesis_results.csv` exactly, indicating `vigor_metrics` is loaded from a single confirmatory source regardless of which sample is requested.
+
+**Diagnosis of the data-loading bug.** `len(d['vigor_metrics'])` is `93960` for both "exploratory" and "confirmatory" in `load_both()` output, while `len(d['trials'])` correctly differs (23,490 expl vs 22,761 conf). Same shape of bug as the `data/model_input/` mislabel resolved 2026-05-29 — a data-loading path returning one sample's data under both labels.
+
+**Fix needed (next session):**
+- Trace `vigor_metrics` source inside `notebooks/analysis/load_data.py` and fix sample dispatch.
+- Decide the H2c GAM specification (restore raw `alignedEffortRate` timecourse with K=10 matching prereg, or accept degenerate epoch-level with K ≤ 3 and document deviation).
+- Re-execute H2 notebook, T3-validate confirmatory against the cached CSV (d=0.647, GAM enc χ²=1024.8, GAM threat χ²=114.8), write up result_104 as a full lab report.
+
+**At-risk results.** Any result that reads `d['vigor_metrics']` is at the same risk. Trial-level paths (`d['vigor']`, `d['vigor_valid']`) used by H1 (results 101–103) and H8 (result 402) are NOT affected.
+
+---
+
 ## 2026-05-29 — Trial-level affect ~ S_probe LMM (result_501)
 
 **Script:** `scripts/analysis/affect_survival_lmm.py` ✅ run on both samples.

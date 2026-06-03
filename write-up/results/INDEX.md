@@ -107,7 +107,8 @@ These results were established in earlier framework versions and have been retai
 
 ## Top items needing attention
 
-1. **104** (H2 splines): `H2_vigor_dynamics.ipynb` has 1/5 cells executed. Run end-to-end.
-2. **All `supported_exploratory` results** depend on legacy `instructions/memory/hypotheses.md` numbers. Migration to current notebook structure is the highest-impact maintenance task.
-3. **H4e non-replication (208)** and **H5c ROPE marginal (503)** are the two soft spots in the prereg confirmatory replication.
-4. **M3 confirmatory convergence failure (204)** — caveat noted; result still favors M4 decisively.
+1. **`load_data.py` vigor_metrics bug** (discovered 2026-06-02): `load_both()` returns the same `vigor_metrics` table for both samples (confirmatory only). Blocks **result_104** and at-risk for any 300-block result that reads `d['vigor_metrics']`. Trial-level paths (`d['vigor']`, `d['vigor_valid']`) — used by result_101/102/103 and the H8 result_402 — are NOT affected.
+2. **104** (H2 splines): deferred — see (1) plus the H2c GAM cell's K=4-on-4-epochs singular-matrix bug. Notebook-validation issue patched 2026-06-02; data and analysis bugs remain.
+3. **All `supported_exploratory` results** depend on legacy `instructions/memory/hypotheses.md` numbers. Migration to current notebook structure is the highest-impact maintenance task.
+4. **H4e non-replication (208)** and **H5c ROPE marginal (503)** are the two soft spots in the prereg confirmatory replication.
+5. **M3 confirmatory convergence failure (204)** — caveat noted; result still favors M4 decisively.
