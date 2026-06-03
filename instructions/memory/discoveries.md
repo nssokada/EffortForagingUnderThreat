@@ -456,7 +456,34 @@ Note: STAI_Trait loads negatively on F1 (low trait anxiety = high distress facto
 
 ## 5. Choice-Vigor Dissociation — MAJOR FINDING
 
-### Core result: choice and vigor are uncorrelated (r=+0.008, p=0.894)
+### 5.0. Current finding (2026-06-03, M4 framework, both samples) — SUPERSEDES the older z/k/β/alpha entries below
+
+Marginal `r(P(heavy), mean_vigor)` across subjects is **small positive**, not null, under the current operationalisation (M4 cell-mean vigor, raw P(heavy)):
+
+| Sample | N | r | p |
+|---|---|---|---|
+| Exploratory | 290 | **+0.150** | 0.011 |
+| Confirmatory | 281 | **+0.077** | 0.201 |
+
+The embodied W(u) framework **quantitatively predicts** these marginals from the partial slopes in [[result_208]] + r(ω, κ):
+
+- **ω-pathway Cov** = β_ωc · β_ωv ≈ **−0.020** in both samples (negative because ω is dissociated across channels: avoidance on choice, mobilised execution on vigor)
+- **κ-pathway Cov** = β_κc · β_κv ≈ **+0.013 to +0.018** (positive because κ is aligned across channels: effort cost suppresses both)
+- **Cross-term Cov** = r(ω, κ) · (β_ωc · β_κv + β_κc · β_ωv) ≈ +0.010 (positive because ω and κ are themselves positively correlated, r ≈ +0.30 to +0.37)
+- **r_predicted** = +0.143 (expl) / +0.052 (conf); matches r_observed within 0.007 / 0.025
+
+The marginal correlation is therefore **generated, not free**. Three theory classes make different predictions:
+- Single-drive activation: r > 0 of substantial magnitude → falsified
+- Channel-independent: r ≈ 0 with no mechanism → consistent but no specific prediction
+- Embodied W(u): small specific r via cancellation + cross term → matches in both samples
+
+**Operationalisation note:** the older value r ≈ −0.018 from this section (and from legacy H29) used a pre-encounter capacity-normalised choice-ratio-adjusted vigor metric. The current M4 cell-mean operationalisation is what's consistent with the 208 partial slopes that predict the marginal. They are different metrics, not contradictory findings.
+
+**Outputs:** `results/stats/individual_diffs/h4_choice_decomp.csv`, `h4_predicted_r_cv.csv`. Script: `scripts/analysis/h4_choice_decomp.py`. Writeup: [[result_401]] (rewritten 2026-06-03).
+
+---
+
+### 5.1. Legacy result (older framework, kept for audit) — choice and vigor are uncorrelated (r=+0.008, p=0.894)
 P(choose high-effort cookie) and tonic vigor (alpha_bayes from HBM) are near-perfectly independent. N=293. **Updated 2026-03-20** using alpha_bayes (HBM) as vigor measure; prior version used raw press counts.
 
 **Output:** results/stats/choice_vigor_dissociation_results.csv, choice_vigor_dissociation_subjects.csv
