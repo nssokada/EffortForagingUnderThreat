@@ -5,6 +5,61 @@ Last updated: 2026-06-03 (H4 choice decomposition + parameter-mediated r(choice,
 
 ---
 
+## 2026-06-04 — result_604 Stage 3: HiTOP-style factor analysis confirms clinical null
+
+**Script:** `scripts/analysis/embodied_clinical_factor_analysis.py` ✅
+
+**Method:** Parallel analysis (Horn's, 500 perms) + EFA with varimax rotation on N = 568 pooled. Tested whether (ω, κ) predicts factor scores rather than individual subscales (addresses the HiTOP / p-factor concern).
+
+**Parallel analysis:** 2 factors retained. F1 eigenvalue = 8.52 (dominant — consistent with p-factor literature). F2 eigenvalue = 1.42 (modest). Subsequent eigenvalues drop below random 95% threshold.
+
+**Factor structure (varimax):**
+- **F1 (general internalising distress)**: positive loadings on DASS21_Anxiety (+0.86), STICSA (+0.86), DASS21_Stress (+0.82), OASIS (+0.77), PHQ9 (+0.76), DASS21_Depression (+0.72), STAI_State (+0.71). STAI_Trait anomalously loads opposite (−0.59).
+- **F2 (apathy/fatigue/anhedonia)**: negative loadings on MFIS_Psychosocial (−0.75), MFIS_Cognitive (−0.72), MFIS_Physical (−0.69), AMI_Behavioural (−0.57), DASS21_Depression (−0.47), PHQ9 (−0.46).
+
+**Structure matches HiTOP's internalising distress + somatic-form distinction. Theoretically sensible.**
+
+**(ω, κ) → factor scores: ALL NULL.**
+- F1: β(ω) = −0.073 [−0.160, +0.016] marginal wrong-direction; β(κ) = +0.027; β(ω×κ) = +0.029
+- F2: β(ω) = −0.003; β(κ) = −0.016; β(ω×κ) = +0.033
+
+**Verdict across three analyses:** Stage 1 (subscales, pooled-z): 1 hit in interpretable direction. Stage 2 (comorbidity groups): all null. Stage 3 (factor analysis): all null. **The clinical decomposition is genuinely absent in this data, not just underpowered or hidden by comorbidity confound.**
+
+**Outputs:** `results/stats/clinical/parallel_analysis.csv`, `factor_loadings.csv`, `factor_scores.csv`, `factor_param_regressions.csv`.
+
+---
+
+## 2026-06-04 — result_604 verification: analysis correct, but cross-sample heterogeneous + result_602 doesn't replicate at cell-mean vigor
+
+**Script:** `scripts/analysis/verify_clinical_decomp.py` ✅
+
+**Triggered by:** Skepticism about the result_604 Stage 1 finding (ω → AMI Social/Emotional/Total positive, β ≈ +0.10–0.14, 95% HDI excludes zero). Question: was the analysis right, or was there a scoring/sign error?
+
+**Verdict: the analysis was correct.** The bambi regression coefficients (β ≈ +0.11 on ω → AMI_Total) are properly within-sample partial standardised slopes; the raw pooled Pearson (r = +0.062, p = 0.14) appears smaller because pooled-raw is contaminated by between-sample heterogeneity in both AMI and ω means. Within-sample z-scoring (which result_604 uses) is the correct way to handle this.
+
+**But verification surfaced two real concerns:**
+
+1. **Cross-sample heterogeneity in the AMI → ω signal.** Within-sample raw Pearson:
+   - Exploratory: r(AMI_Total, log_ω) = +0.076 (weak, would not pass HDI test alone)
+   - Confirmatory: r(AMI_Total, log_ω) = +0.146 (moderate)
+   - The pooled β ≈ +0.114 is the *average* of these. The "ω → social/emotional apathy" headline is driven primarily by confirmatory. Exploratory shows same-sign but much smaller effects. Not a strong "both samples" replication.
+
+2. **The legacy result_602 (AMI → vigor) does NOT replicate at the master-table mean_vigor metric.** r(AMI_Total, mean_vigor):
+   - Exploratory: +0.012 (p = 0.84, NULL)
+   - Confirmatory: −0.029 (p = 0.63, NULL)
+   - Result_602's claim "AMI apathy tracks vigor (negative)" relied on a different vigor operationalisation (pre-encounter capacity-normalised). At the cell-mean aggregate used by result_208 / result_401 / result_604, AMI and vigor are uncorrelated. The κ → apathy chain (κ → vigor → AMI) breaks at the second link.
+
+**Parameter distributions verified reasonable** in both samples (ω log-normal-ish, κ log-normal-ish, r(log_ω, log_κ) = +0.369 / +0.302 matching result_208).
+
+**No item-level AMI data** available in psych.csv (only subscales + total). Cannot rule out scoring-direction issues by inspecting items. r(AMI, mean_vigor) ≈ 0 in both samples is *consistent with* either standard scoring (AMI ↑ = apathy ↑, behavioural correlate just absent) or reverse-scoring; without items, the direction is determined by convention (result_602 framing assumes standard).
+
+**Implications for the paper:**
+- The result_604 headline "ω → social/emotional apathy" survives mathematically but with the honest caveat that confirmatory drives most of the signal
+- The result_602 finding (κ → apathy via vigor) does not hold at the metric consistent with the rest of the paper
+- The clinical story stays narrow: a small ω → social/emotional apathy effect, replicated in direction but heterogeneous in magnitude. Not strong enough to anchor Frame A.
+
+---
+
 ## 2026-06-03 — H4 choice decomposition + cross-channel r(choice, vigor) prediction (result_208 update)
 
 **Script:** `scripts/analysis/h4_choice_decomp.py` ✅ run on both samples.

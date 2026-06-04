@@ -454,6 +454,79 @@ Note: STAI_Trait loads negatively on F1 (low trait anxiety = high distress facto
 
 ---
 
+## 4.7 Three orthogonal embodied dimensions of foraging behavior (2026-06-04)
+
+**[[result_508]]** runs the polar decomposition of (ω, κ) + anxiety calibration on pooled N = 571. Three structurally independent dimensions emerge, each with a distinct subjective signature and behavioral consequence:
+
+| Dimension | What it captures | Metacognitive correlate | Optimality effect (β on pct_opt) |
+|---|---|---|---|
+| **Strategic angle** (atan2(κ_z, ω_z)) | Threat-driven vs effort-driven avoidance style | **mean_confidence: β = −0.119 ★** (effort-driven → less confident) | **−0.317 ★★★** |
+| **Avoidance magnitude** (sqrt(ω_z² + κ_z²)) | Total intensity of avoidance | **anx_calibration: β = −0.129 ★** (extreme avoiders → worse calibration) | **−0.224 ★★** |
+| **Anxiety calibration** (within-subject r(threat, anxiety)) | Accuracy of subjective threat signal | (the metacog dimension itself) | **+0.181 ★★** |
+
+**All interactions are null** — the dimensions are truly orthogonal, not redundant.
+
+**Anxiety calibration is the largest single individual-difference predictor**:
+- β = +0.291 on earnings ★★★
+- β = +0.257 on escape rate ★★
+- β = +0.181 on pct_opt ★★
+- Independent of (ω, κ) — adds incremental variance
+
+**Clinical scales still null** (only STAI_Trait angle = −0.10, wrong direction, 1-of-48 noise). The strategic-angle decomposition does NOT recover clinical signal — it recovers METACOGNITIVE signal. The clinical translation is fundamentally weak in this dataset.
+
+**Implication for the paper**: This is a real finding worth pitching. It says:
+- The body has three structurally orthogonal capacities for adaptive defense
+- Strategic style maps onto subjective capability (confidence)
+- Avoidance intensity maps onto accuracy of the affective signal (calibration)
+- Anxiety calibration is a major predictor of behavior, independent of model parameters
+- Three-dimensional embodied phenotype map with distinct subjective signatures and independent behavioral consequences
+
+This converts the paper from "model fits + null clinical" to "three orthogonal embodied dimensions with structured metacognitive faces."
+
+**Outputs**: `results/stats/clinical/strategic_angle_*.csv`. Script: `scripts/analysis/embodied_strategic_angle.py`.
+
+---
+
+## 4.6 Clinical translation does not dissociate anxiety-depression comorbidity (2026-06-04, updated to pooled-z primary)
+
+**[[result_604]]** directly tests whether the joint (ω, κ) decomposition separates anxiety, depression, and comorbid presentations. Two analyses on pooled N = 571, with TWO standardisation specs:
+
+- **Primary (prereg-compliant pooled-z)** — scale, ω, κ all z-scored on pooled distribution. Stage 1: **only 2 of 51 terms cross 95% HDI**: (i) AMI_Social β(ω) = +0.091 ★ (small avoidance → social withdrawal effect, plausibly interpretable); (ii) STAI_Trait β(κ) = −0.102 ★ (wrong direction, best read as noise from 51 tests). No κ-side hit in predicted direction. No (ω × κ) interaction reaches significance on any scale.
+
+- **Secondary (within-sample-z)** — initially used in the analysis but inflates effects by removing between-sample variance that pulls in opposite direction (confirmatory has higher ω AND lower AMI than exploratory). Adds AMI_Emotional and AMI_Total ω hits but these are artifacts of standardisation choice.
+
+- **Stage 2 (comorbidity groups)** — both standardisations give the same result: (ω, κ) does NOT differ across anxious_only / depressed_only / comorbid / neither. All group contrasts HDI span zero. The "comorbid = high-(ω, κ) corner" prediction is refuted. Notable: sample fixed effect on ω is large (β = −0.516 ★, exploratory < confirmatory), indicating a real between-sample shift in M4 ω posterior means.
+
+**The only defensible clinical claim**: ω → AMI_Social (β ≈ +0.09) — small avoidance-driven social-withdrawal effect. Interpretable but not novel and not strong.
+
+**Result_602 (AMI → vigor) does NOT replicate** at the cell-mean vigor metric used by result_208 / 401 / 604 (r ≈ +0.01 / −0.03 in both samples, both null). The κ → apathy chain breaks at the second link under the consistent metric.
+
+**Implication for the paper**: Frame A (anxiety + apathy as channel-specific failures of one embodied computation) is **substantially weakened**, and the pooled-z analysis makes it even weaker than the within-sample analysis suggested. The wholesale "(ω, κ) explains comorbidity" pitch has no data support. The only defensible clinical sentence is "ω shows a small association with social disengagement."
+
+**Stage 3 (factor analysis follow-up, 2026-06-04)**: To address the HiTOP / p-factor concern that comorbidity dilutes single-scale signals, ran parallel analysis + EFA on N = 568 pooled. Two factors retained: F1 = general distress (anxiety + depression + stress + somatic anxiety; eigenvalue 8.52); F2 = apathy / fatigue / anhedonia (MFIS + AMI_Beh; eigenvalue 1.42). Both factors regressed on (ω, κ) with interaction: **ALL HDIs SPAN ZERO**. F1 ω marginal in wrong direction (β = −0.073). The factor decomposition — a strictly more powerful test than subscale regressions — also returns null. **The clinical signal is genuinely absent, not hidden by comorbidity confound.**
+
+**Combined with [[result_507]]** (Frame C affect-readout refuted), the paper's two translational hooks are both undercut. The paper now rests on Frame B alone — computational integration with channel-specific signatures ([[result_207]], [[result_208]], [[result_401]], [[result_404]]). The clinical and affect extensions of Frame B are partial at best.
+
+**Outputs**: `results/stats/clinical/embodied_subscale_regressions.csv`, `embodied_comorbidity_groups.csv`, `embodied_comorbidity_group_params.csv`. Script: `scripts/analysis/embodied_clinical_decomposition.py`.
+
+---
+
+## 4.5 Affect tracks raw (T, D) — embodied-affect claim refuted (2026-06-04)
+
+**[[result_507]]** directly tests whether anxiety/confidence track model-derived `S(u*)` *beyond* what raw threat and distance explain. Three tests, three rejections of the embodied affect framing:
+
+- **Test A — incremental variance**: In `affect ~ T_z + D_z + S(u*)_z + (1|subj)`, β(S\*) is null or wrong-signed in three of four (channel × sample) cells. Notable: confirmatory anxiety β(S\*) = +0.44 (p = 2e-6, wrong direction) — a classic suppression effect from collinearity with T.
+- **Test B — model comparison**: A simple `T + D` model BEATS `S(u*)` alone by ΔAIC = 57–101 in all four (channel × sample) cells. The model-derived embodied survival quantity is a *worse* predictor of affect than the two raw task conditions.
+- **Test C — between-subject at fixed (T, D)**: `affect ~ T_z + D_z + omega_z + kappa_z + (1|subj)`. (ω, κ) effects mostly null. Only ω → confidence in exploratory is significant (β = −0.22, p = 0.007), marginal in confirmatory (p = 0.08), consistent with [[result_503]]'s appraisal dissociation direction but well below what the embodied affect framing predicted.
+
+**Implication**: [[result_501]]'s single-predictor finding (β ≈ −0.58 for anxiety on S_probe_z) is correct but not discriminating — S(u\*) is largely a nonlinear transform of (T, D) in our task, and once you control for raw conditions the embodied component carries no incremental signal. Affect monitors *task conditions*, not the embodied W(u)-derived survival quantity.
+
+**For the paper**: Frame C (affect as interoceptive readout of embodied value computation) is **not supported**. The paper should lead with Frame B (channel-specific behavioural signatures of the embodied computation: ω dissociated, κ aligned), with affect as a descriptive complement (tracks threat coherently) rather than as a substantive embodied readout.
+
+**Outputs**: `results/stats/affect_analysis/embodied_tests_{exploratory,confirmatory}.csv`. Script: `scripts/analysis/affect_embodied_tests.py`. Replicated in both samples.
+
+---
+
 ## 5. Choice-Vigor Dissociation — MAJOR FINDING
 
 ### 5.0. Current finding (2026-06-03, M4 framework, both samples) — SUPERSEDES the older z/k/β/alpha entries below

@@ -1,0 +1,13 @@
+outcome,term,n,beta,hdi_lo,hdi_hi,sig
+pct_opt,angle_z,563,-0.317,-0.39,-0.24,True
+pct_opt,anx_cal_z,563,0.181,0.104,0.256,True
+pct_opt,angle_z:anx_cal_z,563,0.037,-0.037,0.114,False
+pct_opt,magnitude_z,563,-0.224,-0.304,-0.153,True
+earnings,angle_z,563,-0.02,-0.098,0.059,False
+earnings,anx_cal_z,563,0.291,0.215,0.373,True
+earnings,angle_z:anx_cal_z,563,0.006,-0.07,0.085,False
+earnings,magnitude_z,563,-0.133,-0.211,-0.054,True
+escape_rate,angle_z,563,0.137,0.061,0.219,True
+escape_rate,anx_cal_z,563,0.257,0.179,0.337,True
+escape_rate,angle_z:anx_cal_z,563,0.004,-0.075,0.078,False
+escape_rate,magnitude_z,563,-0.078,-0.156,0.002,False

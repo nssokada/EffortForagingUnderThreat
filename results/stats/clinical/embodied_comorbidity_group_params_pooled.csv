@@ -1,0 +1,9 @@
+outcome,contrast,beta,hdi_lo,hdi_hi,sig
+omega_z,group_factor[comorbid],-0.062,-0.335,0.207,False
+omega_z,group_factor[depressed_only],0.049,-0.289,0.386,False
+omega_z,group_factor[neither],0.017,-0.256,0.287,False
+omega_z,sample[exploratory],-0.516,-0.673,-0.356,True
+kappa_z,group_factor[comorbid],0.025,-0.253,0.297,False
+kappa_z,group_factor[depressed_only],0.041,-0.32,0.371,False
+kappa_z,group_factor[neither],0.012,-0.265,0.284,False
+kappa_z,sample[exploratory],0.025,-0.133,0.2,False

@@ -1,0 +1,7 @@
+factor,term,n,beta,hdi_lo,hdi_hi,sig
+F1,omega_z,568,-0.073,-0.16,0.016,False
+F1,kappa_z,568,0.027,-0.06,0.114,False
+F1,omega_z:kappa_z,568,0.029,-0.045,0.103,False
+F2,omega_z,568,-0.003,-0.091,0.084,False
+F2,kappa_z,568,-0.016,-0.105,0.074,False
+F2,omega_z:kappa_z,568,0.033,-0.048,0.103,False
