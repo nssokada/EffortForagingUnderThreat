@@ -1,7 +1,34 @@
 # Pipeline State
 
 Current execution status of each notebook and script in the analysis pipeline.
-Last updated: 2026-06-03 (H4 choice decomposition + parameter-mediated r(choice, vigor) prediction).
+Last updated: 2026-06-07 (clinical → dynamics: AMI/apathy reaches anticipatory baseline + abs peak).
+
+---
+
+## 2026-06-07 — ★★★ Clinical → vigor dynamics: AMI (apathy) reaches anticipatory phase
+
+**Script:** `scripts/analysis/clinical_predict_dynamics.py` ✅. Both samples N=569 (anticipatory); exploratory N=290 (reactive).
+
+**Output:** `results/stats/clinical/clinical_predict_dynamics.csv` ✅ (180 rows: 15 scales × 5 anticip outcomes × 2 samples + 15 × 2 reactive × 1 sample, after dropping cells lacking data).
+
+**Setup:** Each clinical scale (DASS21_{Anx,Dep,Stress}, PHQ9, OASIS, STAI_{Trait,State}, STICSA, AMI_{Total,Beh,Soc,Emo}, MFIS_Total) plus EFA factors (F1=distress, F2=engagement/anti-apathy) z-scored within sample. Regressed on each dynamics outcome, partialing (ω_z, κ_z). For peak_post, baseline (pre_mean) as additional covariate.
+
+**Replicating findings (p<0.05 BOTH samples, same sign):**
+- AMI_Total / AMI_Behavioural / AMI_Social → pre_at_lowT/midT/highT: β ≈ +0.20 to +0.32, p < 1e-5 both samples (apathy → higher anticipatory baseline at all threat levels)
+- F2 (engagement factor) → pre_at_lowT/midT/highT: β ≈ −0.17 to −0.23, p < 0.01 both samples (consistent with AMI; F2 has negative AMI loadings)
+- PHQ9_Total → pre_at_midT: marginal replication (p < 0.05 both)
+
+**Follow-up diagnostic on AMI → abs_peak_strike (initially looked replicated, β = −0.16/−0.26):**
+- Re-ran with pre_mean as covariate (baseline disentangle): exp collapses to null (β=−0.09, p=0.09), conf survives (β=−0.24, p<1e-5). Single-sample only — fails cross-sample bar.
+- This mirrors the §4.59 anxiety→peak diagnostic. The naive AMI→peak claim is dropped.
+
+**Nulls:**
+- DASS21_Anxiety / Depression / Stress: nothing replicates
+- STAI_Trait, OASIS, STICSA: confirmatory-only effects, don't replicate
+- All clean reactive measures (peak_post baseline-controlled, accel_post in exp): NO clinical hits (best accel_post p = 0.15, best peak_post p = 0.07)
+- AMI_Emotional: doesn't reach the dynamics
+
+**Status:** ★★★ SUPPORTED on anticipatory baseline only. Apathy → higher uniform anticipatory pressing, INDEPENDENT of (ω, κ). Clinical signal the parameter-level analysis (§4.6) missed lives in the *anticipatory baseline*, not the reactive component. Anxiety-spectrum scales remain null across all dynamics measures.
 
 ---
 
@@ -141,6 +168,437 @@ The cached MCMC fits in `results/stats/joint_optimal/exploratory/mcmc_m4_params.
 - Re-execute H2 notebook, T3-validate confirmatory against the cached CSV (d=0.647, GAM enc χ²=1024.8, GAM threat χ²=114.8), write up result_104 as a full lab report.
 
 **At-risk results.** Any result that reads `d['vigor_metrics']` is at the same risk. Trial-level paths (`d['vigor']`, `d['vigor_valid']`) used by H1 (results 101–103) and H8 (result 402) are NOT affected.
+
+---
+
+## 2026-06-07 (final) — Disentangle: anxiety→peak fully mediated by baseline; confidence_intercept→peak EMERGES
+
+**Script:** `scripts/analysis/anxiety_peak_disentangle.py` ✅ (exploratory only)
+
+**Output:** `results/stats/joint_optimal/anxiety_peak_disentangle.csv` ✅
+
+**Setup.** For each affect predictor × each reactive measure (peak_post, accel_post, time_to_peak), fit two models: with and without pre_mean as covariate. Compare β.
+
+**Headline:**
+- anxiety_intercept → peak_post: β = −0.143 (p=0.005) → β = −0.045 (p=0.43, NULL) when baseline controlled — FULLY MEDIATED
+- All other anxiety→peak effects: same pattern, all mediated
+- **confidence_intercept → peak_post: EMERGES with baseline control** β = −0.093 (p=0.079) → β = −0.125 (p=0.001) ★★★
+- Real effect: higher baseline confidence → lower absolute peak, controlling anticipatory baseline
+
+**Status:** Clean affect-reactive finding identified: confidence baseline → lower peak. Anxiety effects on reactive measures are all baseline-mediated. Needs confirmatory replication via vigor_ts pipeline.
+
+---
+
+## 2026-06-07 (latest) — ⚠️ Anxiety does NOT modulate reactive acceleration; interactions null
+
+**Script:** `scripts/analysis/anxiety_modulates_reactive_dynamics.py` ✅ (exploratory only)
+
+**Output:** `results/stats/joint_optimal/anxiety_modulates_reactive_dynamics.csv` ✅
+
+**Setup.** Tested 6 anxiety features (intercept, slope_T, slope_D, mean, sd, range) on 4 reactive measures (accel_post, peak_post, time_to_peak, latency), as direct effects (controlling ω, κ) and as ω×anx / κ×anx interactions.
+
+**Headline:**
+- accel_post: only anxiety_slope_D marginal (β = −0.119, p = 0.041); all others null
+- peak_post (baseline-confounded): anxiety_intercept → lower peak (β = −0.14, p = 0.005); anxiety_slope_T → higher peak (β = +0.13, p = 0.015)
+- All interactions on accel_post: NULL
+- ω, κ effects on acceleration stable across anxiety profiles
+
+**Status:** Anxiety doesn't robustly modulate the clean reactive measure. Paper §3.7 simplifies to one paragraph noting affect calibrates to conditions but does not modulate parameter-dynamics coupling.
+
+---
+
+## 2026-06-07 (later) — ★ Reactive acceleration from timecourse: ω, κ reach reactive phase with opposite effects
+
+**Script:** `scripts/analysis/reactive_dynamics_from_timecourse.py` ✅ (exploratory only — confirmatory vigor_ts not processed)
+**Env:** /opt/anaconda3/envs/limaAnalysis/bin/python3.11 (pyarrow required for parquet)
+
+**Output:** `results/stats/joint_optimal/reactive_dynamics_timecourse.csv` ✅
+
+**Setup.** Loaded smoothed_vigor_ts.parquet (3.9M rows, 20Hz). Per-subject mean across attack trials of: pre_mean, peak_post, time_to_peak, accel_post (slope over first 500ms after encounter), latency. Tested ω + κ + affect predictors.
+
+**Baseline-confound check:**
+- accel_post × pre_mean: r = −0.19 (clean, baseline-independent)
+- Other measures: r = −0.35 to −0.75 (heavily confounded)
+
+**Headline:**
+- ω → faster reactive acceleration (β = +0.178, p = 0.005)
+- κ → slower reactive acceleration (β = −0.174, p = 0.006)
+- R² = 0.04 (small but clean)
+- Affect features null on acceleration
+
+**Status:** SUPPORTED in exploratory. ω is NOT confined to anticipatory phase — both parameters reach both anticipatory and reactive phases with opposite signs. Need confirmatory replication via vigor_ts pipeline processing.
+
+---
+
+## 2026-06-07 — ⚠️ Spike measurement diagnostic: anxiety→spike LARGELY ARTIFACT; ω/κ → absolute peak emerges
+
+**Script:** `scripts/analysis/spike_measurement_diagnostic.py` ✅
+
+**Output:** `results/stats/joint_optimal/spike_measurement_diagnostic.csv` ✅
+
+**Setup.** Tested 5 spike measures (absolute peak, subtractive delta, ratio, normalized to calibrationMax, peak-to-peak) plus key test of subtractive spike with baseline as covariate. Within-sample replication.
+
+**Headline:**
+- Baseline (pre_mean) strongly negatively correlates with subtractive spike measures (r = −0.58 to −0.81) — ceiling problem confirmed
+- ABSOLUTE peak strike is uncorrelated with baseline (r = +0.06)
+- anxiety_slope_T effect on spike DISAPPEARS when controlling for baseline in exp (β = +0.003, p = 0.94); ~40% reduction in conf
+- ω → absolute peak: REPLICATES POSITIVE (β = +0.13/+0.22)
+- κ → absolute peak: REPLICATES STRONGLY NEGATIVE (β = −0.49/−0.56, R² up to 0.31)
+
+**Status:** §4.55's "anxiety front-loading" finding is LARGELY ARTIFACT. §3.7 paper section needs rework. κ → reactive damping emerges as the cleaner replicating finding.
+
+---
+
+## 2026-06-06 — ★★ Affect modulates vigor dynamics beyond (ω, κ): anxiety_slope_T → smaller reactive spike, replicates
+
+**Script:** `scripts/analysis/affect_modulates_dynamics.py` ✅
+
+**Output:** `results/stats/affect_analysis/affect_modulates_dynamics.csv` ✅
+
+**Setup.** Per-subject dynamics features (anticipatory baseline at low/mid/high T; spike magnitudes) regressed on ω + κ alone vs ω + κ + 6 affect features. Within-sample replication.
+
+**Replicating affect predictors (both samples, p<0.05, same sign, after controlling ω, κ):**
+- anxiety_slope_T → anticipatory baseline at all T levels: POSITIVE (β ≈ +0.15)
+- anxiety_slope_T → reactive spike: NEGATIVE (β ≈ −0.15) — counterintuitive but replicates
+- anxiety_intercept → reactive spike: POSITIVE (β ≈ +0.12)
+- confidence_slope_D → anticipatory baseline: NEGATIVE (β ≈ −0.17)
+- confidence_slope_D → reactive spike: POSITIVE (β ≈ +0.20)
+
+**R² lifts substantial:** spike_mag_mean R² from 0.02 to 0.24 with affect added.
+
+**Status:** SUPPORTED. Affect modulates dynamics beyond parameters with a non-obvious counterintuitive pattern (anxiety reactivity REDUCES rather than INCREASES reactive spike). This is the substantive empirical finding the embodied paper needs.
+
+---
+
+## 2026-06-06 — ★★ Parameters predict embodied vigor dynamics (strategic/reactive dissociation)
+
+**Script:** `scripts/analysis/parameters_predict_vigor_dynamics.py` ✅
+
+**Output:** `results/stats/joint_optimal/parameters_predict_vigor_dynamics.csv` ✅
+
+**Setup.** Per-subject features from beh phase-segmented effort columns (mean_preEncounter_effort, mean/peak_strike_effort, mean_postEncounter_effort). Computed anticipatory slope on T, baseline at low T, reactive spike (3 metrics). Within each sample.
+
+**Headline (replicates both samples):**
+- ω → anticipatory steepness on T: exp β = +0.215 p = 6e-4; conf β = +0.188 p = 3e-3 ★
+- κ → baseline anticipatory at low T: exp β = −0.458 p < 10⁻¹³; conf β = −0.512 p < 10⁻¹⁶ ★★★
+- ω → baseline anticipatory at low T (positive): β ≈ +0.26 both p < 10⁻⁵
+- ω → reactive spike NULL in both samples on all 3 spike metrics (predicted dissociation ✓)
+- κ → reactive: marginal/null on peak; replicates negative on post-pre ramping
+
+**Status:** SUPPORTED. The substantive embodied finding the paper has been missing. Parameters control within-trial dynamics, not just averages. Strategic/reactive dissociation maps onto predatory imminence continuum.
+
+---
+
+## 2026-06-05 — Multivariate (ω, κ) MMR + CCA: no new signal
+
+**Script:** `scripts/analysis/multivariate_omega_kappa.py` ✅ (after manual Pillai/Wilks computation; statsmodels MANOVA formula crashed initially)
+
+**Output:** `results/stats/affect_analysis/multivariate_omega_kappa.csv` ✅
+
+**Headline:**
+- MMR clinical → (ω, κ) joint: Pillai p = 0.62 exp, 0.12 conf (NULL/marginal)
+- CCA (ω, κ) ↔ affect top r = 0.247 exp, drops to 0.157 conf-projected
+- CCA (ω, κ) ↔ clinical top r = 0.207 exp, drops to 0.108 conf-projected
+- Confidence_intercept loads dominantly on the shared (ω, κ) conservative dimension but the dimension itself is modest
+
+**Status:** Confirms clinical decoupling at multivariate level (5th independent confirmation). Confirms confidence baseline as joint-substrate but with weak replication. No new finding.
+
+---
+
+## 2026-06-05 — CCA behavior × affect/clinical: affect replicates (r=0.41), clinical collapses (r=0.06)
+
+**Script:** `scripts/analysis/behavior_clinical_cca.py` ✅
+
+**Output:** `results/stats/affect_analysis/behavior_clinical_cca.csv` ✅
+
+**Setup.** Per-subject behavioral features (12: choice GLM coefs, vigor GLM coefs, autocorrelations, vigor SD) × clinical (10 scales) and affect (6 features). CCA within each sample + cross-sample projection.
+
+**Headline:**
+- Behavior × Clinical: exp top r = 0.32, conf-projected r = 0.06 (COLLAPSES — no replicable dimension)
+- Behavior × Affect: exp top r = 0.49, conf-projected r = 0.41 ★ (REPLICATES)
+- The replicating affect dimension = joint behavioral and metacognitive calibration to T and D
+
+**Status:** SUPPORTED. Confirms multivariate clinical decoupling. Confirms behavioral-affective calibration as the cleanest replicating between-subject signature.
+
+---
+
+## 2026-06-05 — ⚠️ Controlled regressions: substrate not parameter-specific; clinical does NOT predict ω/κ
+
+**Scripts:**
+- `scripts/analysis/affect_clinical_controlled.py` ✅ — Tests A, B (affect substrate after controlling other parameter)
+- `scripts/analysis/clinical_predict_params.py` ✅ — Test C corrected: ω/κ ~ clinical scales jointly
+
+**Outputs:**
+- `results/stats/affect_analysis/affect_clinical_controlled.csv` ✅
+- `results/stats/affect_analysis/clinical_predict_params.csv` ✅
+
+**Headline:**
+- Affect substrate (§4.49) DOES NOT survive controlling for the other parameter — collapses to shared (ω,κ) variance
+- Only cross-parameter effects replicate (ω→κ and κ→ω at β≈0.2, p<0.001)
+- Clinical scales joint F-test for ω: exp p=0.60, conf p=0.075 — NOT replicating
+- Clinical scales joint F-test for κ: exp p=0.70, conf p=0.44 — NULL
+- No single clinical predictor replicates across both samples for either parameter
+
+**Status:** SUPPORTED clinical decoupling finding. Substrate story needs revision: not ω-specific but joint conservative-style.
+
+---
+
+## 2026-06-05 — ★★ Heavy-minus-light confidence_intercept → ω: sharper substrate, replicates
+
+**Script:** `scripts/analysis/affect_heavy_minus_light_predict_params.py` ✅
+
+**Output:** `results/stats/affect_analysis/affect_heavy_minus_light_predict_params.csv` ✅
+
+**Setup.** Per-subject (heavy − light) contrasts for intercept, slope_T, slope_D in anxiety and confidence. Two models: contrasts-only (6 predictors), contrasts+light baselines (12 predictors).
+
+**Headline:** confidence_intercept_HvL → ω replicates in BOTH model variants:
+- Contrasts-only: exp β = −0.23, p = 0.028; conf β = −0.40, p = 4e-4
+- Contrasts+light: exp β = −0.34, p = 0.005; conf β = −0.48, p = 2e-4
+
+Effect strengthens with light baseline as covariate → variance is in the contrast, not the absolute level.
+
+**Status:** SUPPORTED. The substrate of ω is sharpened from "global low confidence" (§4.46) to "confidence selectively suppressed on heavy/demanding cookies" (§4.49). κ side remains weaker.
+
+---
+
+## 2026-06-05 — ★ Cookie-stratified affect → params: confidence_heavy_intercept → ω replicates
+
+**Script:** `scripts/analysis/affect_TD_by_cookie_predict_params.py` ✅
+
+**Output:** `results/stats/affect_analysis/affect_TD_by_cookie_predict_params.csv` ✅
+
+**Setup.** Per-subject `response ~ T + D` fit separately for heavy and light probe trials, anxiety and confidence. 12 affect features. N ≈ 9 trials per cookie × question. Second-level regressions within each sample.
+
+**Headline:**
+- confidence_heavy_intercept → ω: exp β = −0.342 (p = 0.005), conf β = −0.543 (p = 0.0002) ★ REPLICATES
+- Near-replications on ω: confidence_heavy_slope_T, confidence_heavy_slope_D (strong in conf, weaker in exp, same direction)
+- κ side weaker: confidence_heavy_intercept hits exp (p = 0.014), marginal conf (p = 0.099)
+- Cookie stratification roughly doubles R² in confirmatory (ω 0.07; κ 0.14)
+
+**Status:** SUPPORTED. The substrate finding from §4.46 localizes to heavy-cookie trials. The honest paper claim is: lower baseline confidence on HEAVY trials specifically (not globally) predicts higher ω.
+
+---
+
+## 2026-06-05 — Separate anxiety vs confidence regressions: confirms anxiety effects are not hidden
+
+**Script:** `scripts/analysis/affect_TD_predict_params_separate.py` ✅
+
+**Output:** `results/stats/affect_analysis/affect_TD_predict_params_separate.csv` ✅
+
+**Setup.** Three models per outcome × sample: anxiety_only (3 predictors), confidence_only (3 predictors), joint (6 predictors).
+
+**Headline:** Anxiety effects null in both separate AND joint models. Confidence_intercept replicates in both separate and joint models. The asymmetry is genuine, not a methodological artifact.
+
+**Status:** §4.46's finding stands. No new replicating predictors.
+
+---
+
+## 2026-06-05 — ★ Simplified affect→params (T, D only): only confidence_intercept replicates
+
+**Script:** `scripts/analysis/affect_TD_predict_params.py` ✅. Predictors: 6 features (anxiety/confidence × intercept, slope_T, slope_D) from `phenotype_metacog_slopes_subjects.csv`.
+
+**Output:** `results/stats/affect_analysis/affect_TD_predict_params.csv` ✅
+
+**Setup.** Per-subject affect slopes from `response ~ T + D` (no cookie reward). Second-level regression: ω_z and κ_z (log-z within sample) on the 6 affect features, within each sample.
+
+**Headline:**
+- confidence_intercept → ω: REPLICATES (exp β=−0.20 p=0.001; conf β=−0.14 p=0.025)
+- confidence_intercept → κ: REPLICATES (exp β=−0.15 p=0.011; conf β=−0.15 p=0.016)
+- All slope predictors (anxiety/confidence × T, D) null in both samples
+- All anxiety predictors null in both samples
+
+R² = 0.03–0.05. Modest but replicated.
+
+**Status:** SUPPORTED but conservative. The previous reward-reactivity finding (§4.45) was driven by a heavy-vs-light intercept difference that collapses without cookie weight in the regression. The honest substrate finding is baseline confidence, not reactivity.
+
+---
+
+## 2026-06-05 — ★ Affect features predict ω and κ (metacognitive substrate)
+
+**Script:** `scripts/analysis/affect_features_predict_params.py` ✅. Within-sample regressions, N = 290 + 281.
+
+**Output:** `results/stats/affect_analysis/affect_features_predict_params.csv` ✅
+
+**Setup.** ω_z and κ_z (log-z-scored within sample) regressed on 8 affect predictors: anxiety/confidence × T-slope, D-slope, reward-slope, intercept. All predictors z-scored within sample.
+
+**Headline (replicates in both samples):**
+- confidence_slope_reward → ω: β = −0.22 (exp), −0.30 (conf); p = 0.002, 5e-5
+- confidence_slope_reward → κ: β = −0.20 (exp), −0.16 (conf); p = 0.008, 0.025
+- confidence_intercept → κ: β = −0.22 (exp), −0.20 (conf); p = 0.025, 0.039
+
+Anxiety features and threat-reactivity slopes mostly null. R² = 0.04–0.08.
+
+**Status:** SUPPORTED with replication. Both ω and κ share a confidence-based metacognitive substrate — specifically, how steeply confidence drops with cookie reward. Affect is NOT a parallel readout; it's the substrate of conservative computational style.
+
+---
+
+## 2026-06-05 — ★★★ Fitness landscape over (ω, κ) parameter space
+
+**Script:** `scripts/analysis/fitness_landscape.py` ✅. 30×30 grid (900 points).
+
+**Outputs:**
+- `results/stats/joint_optimal/fitness_landscape.csv` ✅
+- `results/figs/joint_optimal/fitness_landscape.png` ✅ (3-panel heatmap)
+
+**Setup.** For each (ω, κ) on log-spaced grid: solve W = S·R − (1−S)·ω·(R+C) − κ(u−req)²·D for optimal vigor on each branch, softmax choice with τ=2.01, compute objective E[earnings] = S·R − (1−S)·C and E[survival] = S, averaged across 9 (T, D_heavy) conditions.
+
+**Headline.** Three distinct optima:
+- Earnings max: ω = 0.12, κ = 0.05
+- Survival max: ω = 10 (boundary), κ = 0.49
+- Combined fitness: ω = 0.26, κ = 0.05
+
+Observed N = 571 subject median (ω = 1.42, κ = 0.21) sits in an intermediate Pareto position — over-cautious vs EV-max but not at survival-max extreme.
+
+**Status:** SUPPORTED — the conceptual centerpiece for the paper's normative section. Frames human computational individual differences as departures from a multi-objective fitness landscape, not from a single "right" optimum.
+
+---
+
+## 2026-06-05 — ★★ Foraging-optimum grid analysis (calibrated κ_opt)
+
+**Script:** `scripts/analysis/foraging_optimum_grid.py` ✅. N=571, within-sample analysis.
+
+**Output:** `results/stats/joint_optimal/foraging_optimum_grid.csv` ✅
+
+**Setup.** Foraging objective W = S·R − (1−S)(R+C) − κ_opt(u−req)²D, ω=1 fixed. κ_opt calibrated via SSE-minimization against group-median observed vigor: κ_opt* = 6.87. Sensitivity bounds: 3.43 and 13.73. Per-subject signed deviations in Δ_choice, Δ_vigor_heavy, Δ_vigor_light. Tested with params alone and + affect slopes/intercepts.
+
+**Headline (replicates in both samples, all κ_opt values):**
+- ω → over-avoidance + over-pressing (signature of cautious arousal)
+- κ → over-avoidance + under-pressing (signature of effort conservation)
+- R² params alone: 0.88–0.92 (choice), 0.61–0.78 (vigor)
+- Affect signal small (ΔR² 0.005–0.025), inconsistent across affect predictors, weakest at calibrated κ_opt*
+
+**Status:** SUPPORTED — strong normative validation of the framework. Calibrated foraging optimum is the cleanest definition of "optimal" for the paper. Affect-reactivity → residual deviation is modest under this framing (much weaker than under pct_opt).
+
+---
+
+## 2026-06-05 — ★★ Optimal switching + affect reactivity → optimality
+
+**Script:** `scripts/analysis/optimal_switching_affect.py` ✅. N = 571 pooled.
+
+**Output:** `results/stats/joint_optimal/optimal_switching_affect.csv` ✅
+
+**Setup.** Group-level adaptive switching shown (P(heavy) drops with T, vigor rises). pct_opt regressed on (ω, κ) base + each per-subject affect slope on (T, D, cookie reward).
+
+**Headline.** Base R² = 0.57 from ω + κ. Adding all affect slopes + intercepts: R² = 0.65 (ΔR² = +0.08). Strongest: confidence_slope_threat β = −0.23, p = 3×10⁻¹⁷ (subjects whose confidence drops more with rising threat are more optimal). Anxiety_slope_threat β = +0.18, p = 5×10⁻¹¹. Confidence_slope_distance β = −0.15, p = 2×10⁻⁸.
+
+**Status:** SUPPORTED — confirms user's proposed Nuzzi-style framing: humans approximately optimal at group level; deviations from optimality driven by affect reactivity to task conditions (esp. confidence to threat). Within-sample replication needed before headline status.
+
+---
+
+## 2026-06-05 — ★ ω → survival: normative validation, replicates both samples
+
+**Script:** `scripts/analysis/omega_survival.py` ✅. N = 571 pooled, both samples separately.
+
+**Output:** `results/stats/joint_optimal/omega_survival.csv` ✅
+
+**Headline:** ω → escape_rate β = +0.222, p = 1×10⁻⁶ (pooled). Replicates exploratory (β=+0.24, p=2e-4) and confirmatory (β=+0.19, p=2e-3). κ null. Holds at all three threat levels (strongest at T=0.5: β=+0.27, p=2e-9). Also: ω → fewer total captures per trial (β=−0.22, p=1e-6).
+
+**Status:** SUPPORTED with strong within-sample replication. Major normative-validation finding. Belongs in paper §2.4 or new §2.5.
+
+---
+
+## 2026-06-05 — Param-vs-behavior comparison + Fung bug fix
+
+**Scripts:** 
+- `scripts/analysis/param_vs_behavior_clinical.py` ✅ (N=571, merge bug avoided from the start)
+- `scripts/analysis/fung_style_condition_clinical.py` ✅ (re-run after fixing merge bug)
+
+**Outputs:**
+- `results/stats/clinical/param_vs_behavior_clinical.csv` ✅
+- `results/stats/clinical/fung_style_condition_clinical.csv` ✅ (corrected)
+
+**Bug discovered:** Both scripts originally used `groupby(["subj", "T_round"])` aliasing exp/conf subj=1. Fixed to include sample.
+
+**Headline (corrected):**
+- 36/264 Bonferroni hits (up from 18). Top: confidence_T0.5 → AMI_Social β=−0.24 p=1e-8.
+- (ω, κ) predict vigor_shift (R²=0.072) and p_heavy_shift (R²=0.023) — model captures behavior.
+- (ω, κ) DO NOT carry clinical signal that survives when shift or affect intercept is in the model.
+- Bridge: parameters → behavior → clinical is the mechanism; parameters → clinical directly is null.
+
+**Status:** SUPPORTED with sample-replication caveat. Headline now: model describes behavior; behavior + subjective state predict clinical apathy; ω/κ do not directly predict clinical scales but do explain behavioral deployment.
+
+---
+
+## 2026-06-05 — ★ Fung-style condition × clinical: 18/264 survive Bonferroni — clinical signal lives in affect readouts and behavioral shifts
+
+**Script:** `scripts/analysis/fung_style_condition_clinical.py` ✅. Pooled N = 571, sample-controlled.
+
+**Output:** `results/stats/clinical/fung_style_condition_clinical.csv` ✅
+
+**Setup.** 264 univariate regressions: clinical_z ~ predictor_z + sample. Three predictor groups: (a) per-condition behavior/affect (P_heavy_T0.1/0.5/0.9, vigor_T*, anxiety_T*, confidence_T*), (b) condition shifts (high-T minus low-T), (c) per-subject affect reactivity (intercept, slope_T, slope_D, cal_T from result_510).
+
+**Headline.** 18 survive Bonferroni at α = 0.000189. Two findings matter most:
+- **p_heavy_shift_THighLow → AMI_Behavioural** (β = −0.154, p = 2e-4): Fung-style behavior × clinical hit. Apathy = failure to modulate choice across threat.
+- **confidence_intercept → apathy scales** (AMI_Total β = −0.20, AMI_Behavioural β = −0.18, AMI_Social β = −0.22): low task-baseline confidence ↔ broad apathy/engagement deficit.
+
+Anxiety_intercept ↔ anxiety scales hits at p < 1e-7 but partly method-variance.
+
+**Status:** SUPPORTED in pooled data; within-sample replication required before headline status.
+
+---
+
+## 2026-06-05 — Mediation v3: trial-level (state) mediation
+
+**Script:** `scripts/analysis/trial_level_mediation.py` ✅. Probe-trial mixed-effects. Monte Carlo CI (20k iter). N=293, ~10k trials per question.
+
+**Output:** `results/stats/affect_analysis/trial_level_mediation.csv` ✅
+
+**Setup.** Probe-trial pooled. Three mixed-effects fits per question: c-total (vigor ~ T+D+ω+κ), a-path (affect ~ same), b-path (vigor ~ same + affect). All with random intercept by subject. Affect decomposed into between (subject mean) + within (trial deviation). MC CI on indirect = a × b assuming independence.
+
+**Headline.** Anxiety: null (a-paths ≈ 0). Confidence: state-level indirect statistically robust (p < 0.001 for both ω and κ) but quantitatively small (β ≈ +0.002–0.004, prop_mediated ~0.5%). κ pathway is a suppressor. Between-subject mediation null by design (random intercept absorbs trait variance).
+
+**Result status:** PARTIAL/SMALL. Concludes the mediation thread. Verb is "*adaptively tunes*" / "*participates in*" — NOT "organizes." Confidence is part of a real but small within-trial regulatory loop; it is not the pipeline through which (ω, κ) shape behavior.
+
+---
+
+## 2026-06-05 — Mediation v2: confidence STRUCTURE (intercept + slope_T + slope_D + cal_T)
+
+**Script:** `scripts/analysis/confidence_structure_mediation.py` ✅. Pooled N = 559. 5000-iter bootstrap.
+
+**Outputs:**
+- `results/stats/affect_analysis/confidence_structure_mediation.csv` ✅ (single-mediator)
+- `results/stats/affect_analysis/confidence_structure_mediation_multi.csv` ✅ (multi-mediator)
+
+**Setup.** Used per-subject confidence/anxiety structure decomposition from [[result_510]] (intercept after partialing T, D; slope on T; slope on D; r(T, response)). Multivariate mediation with both ω_z and κ_z as exposures simultaneously, sample-controlled. Tested each structure measure singly and the three (intercept + slope_T + slope_D) jointly.
+
+**Headline.** Slopes uniformly null. Intercept (baseline) carries small bootstrap-significant indirect effects for p_heavy, escape_rate, earnings (β ≈ −0.005 to −0.019 on z-scaled outcomes). Anxiety structure completely null.
+
+**Result status:** PARTIAL. Picks the verb between §4.35's "reflects only" and full "organizes" — confidence *level* (not reactivity) carries a small piece of the (ω, κ) → behavior link, but total indirects are null and intercept interpretation has a circularity risk (intercept partly downstream of choice patterns).
+
+---
+
+## 2026-06-05 — Mediation test: confidence/anxiety as (ω, κ) → behavior mediators (NULL)
+
+**Script:** `scripts/analysis/confidence_mediation.py` ✅. Pooled N = 571. 5000-iter bootstrap subject resamples.
+
+**Output:** `results/stats/affect_analysis/confidence_mediation.csv` ✅
+
+**Setup.** Multivariate mediation: ω_z and κ_z entered together as exposures, mediator (mean_confidence or mean_anxiety), outcome ∈ {earnings, pct_opt, p_heavy, mean_vigor, escape_rate}. Sample-controlled. Bootstrap CI on indirect (a × b).
+
+**Headline numbers.** All indirect effects |β| ≤ 0.007 (z-scaled). c′ ≈ c throughout — no path through affect. The one bootstrap CI that excludes zero (ω → p_heavy via mean_confidence, p_boot = 0.039) gives prop_mediated < 1%, substantively null.
+
+**Result status:** NULL. Picks the verb: "confidence *reflects* / *tracks* / *tunes*" are supported by other analyses; "confidence *organizes* / *mediates*" is NOT. The integrative-readout framing remains valid only as correlation + moment-to-moment regulation, not as a pipeline.
+
+---
+
+## 2026-06-05 — Affect reshapes within-trial vigor (probe trials, pooled)
+
+**Script:** `scripts/analysis/affect_reshapes_behavior.py` ✅ run pooled (exp + conf).
+
+**Output:** `results/stats/affect_analysis/affect_reshapes_behavior.csv` ✅
+
+**Approach.** Long-form probe-trial table (each probe asks one question — anxiety OR confidence; not both). Per-trial vigor (`norm_rate`) joined to per-trial rating, plus per-subject (ω, κ) from M4. Within-question z-score for affect. Fit `statsmodels.MixedLM` with random intercept by subject (REML=False so logL comparable). Three nested models: M_base (T, D, ω, κ) → M_affect (+aff_z) → M_int (+ T:aff + D:aff). Fit separately per question (n ~10k trials each, N = 293).
+
+**Headline numbers:**
+
+| Question | aff β | aff p | ΔAIC (M_affect vs M_base) | Notable interaction |
+|---|---|---|---|---|
+| Anxiety | +0.021 | 0.002 ★★ | −7.5 | T:aff p = 0.06 (marginal) |
+| Confidence | −0.041 | 2.6e-9 ★★★ | −33.4 | D:aff β = +0.020, p = 8e-4 ★★★ |
+
+Trait param effects (ω β ≈ +0.38, κ β ≈ −0.75) dwarf the affect signal but the affect-of-the-moment carries small, well-resolved incremental within-subject structure. Anxiety nudges vigor up; confidence nudges it down on average but supports vigor at high D.
+
+**Result status:** SUPPORTED. Used to back the "metacognitive signals are structured alongside the W(u) computation" framing. Honest magnitude caveats apply: affect adds incremental, not dominant, predictive value.
 
 ---
 

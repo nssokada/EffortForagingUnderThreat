@@ -51,8 +51,10 @@ def load_sample_data(sample_config):
         data['vigor'] = tv
         data['vigor_valid'] = tv[tv['norm_rate'].notna()].copy()
 
-    # Vigor metrics (epoch-level)
-    vm_path = s.vigor_dir / 'vigor_metrics.csv'
+    # Vigor metrics (epoch-level) — prefer per-sample subdir, fall back to root for legacy
+    vm_path = s.vigor_dir / s.name / 'vigor_metrics.csv'
+    if not vm_path.exists():
+        vm_path = s.vigor_dir / 'vigor_metrics.csv'
     if vm_path.exists():
         vm = pd.read_csv(vm_path)
         vm = vm[~vm['subj'].isin(s.exclude)]

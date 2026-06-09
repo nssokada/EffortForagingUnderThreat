@@ -1,0 +1,7 @@
+scale,contrast,beta,hdi_lo,hdi_hi,sig
+AMI_Social,phenotype_factor[HL],-0.305,-0.54,-0.055,True
+AMI_Social,phenotype_factor[LH],0.065,-0.169,0.295,False
+AMI_Social,phenotype_factor[LL],-0.054,-0.272,0.173,False
+AMI_Total,phenotype_factor[HL],-0.315,-0.553,-0.072,True
+AMI_Total,phenotype_factor[LH],0.002,-0.229,0.232,False
+AMI_Total,phenotype_factor[LL],-0.029,-0.246,0.194,False
