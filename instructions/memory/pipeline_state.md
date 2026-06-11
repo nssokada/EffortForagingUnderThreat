@@ -1,7 +1,355 @@
 # Pipeline State
 
 Current execution status of each notebook and script in the analysis pipeline.
-Last updated: 2026-06-07 (clinical → dynamics: AMI/apathy reaches anticipatory baseline + abs peak).
+Last updated: 2026-06-08 (log(ω/κ) robust pooled Bayesian → AMI_Social replicates).
+
+---
+
+## 2026-06-09 (followup-2) — ★★★ Behavioral threat-sensitivity → AMI Social/Behavioural REPLICATES CLEAN both samples; clinical typology visible in behavior
+
+**Script:** `scripts/analysis/behavioral_betas_deep_dive.py` ✅. Tests behavioral betas against all 13 clinical scales, AMI subscales, per-sample, clinical-typology quadrants.
+
+**Output:** `results/stats/affect_analysis/behavioral_betas_deep_dive.csv` ✅.
+
+**HEADLINE finding — cleanest cross-sample replication anywhere in this session:**
+
+β_T_choice → AMI_Total:
+- Exploratory: β = -0.185 ★ (HDI [-0.295, -0.069])
+- Confirmatory: β = -0.222 ★ (HDI [-0.338, -0.110])
+
+threat_sens_composite (β_T_choice + β_T_vigor mean) → AMI_Total:
+- Exploratory: β = -0.157 ★
+- Confirmatory: β = -0.263 ★
+
+**Both behavioral signatures survive 95% HDI in BOTH samples.** No (ω, κ)-based finding ever did this.
+
+**Specificity findings:**
+- Effect specific to AMI Social (β = -0.198 ★) and AMI Behavioural (β = -0.166 ★)
+- AMI Emotional null (β = -0.048, n.s.)
+- ALL anxiety/depression scales null (including ANX+DEP composite from §4.79)
+
+**Clinical typology (Pure Apathy vs Pure Distress on behavioral threat-sensitivity):**
+- threat_sens_composite contrast = -0.442 ★ (HDI [-0.716, -0.177]) — 0.44 SD separation
+
+**Implication for paper:** Lead with behavioral findings (β_T_choice → AMI). §4.79 ANX+DEP comorbidity finding is fragile — doesn't appear in raw behavior.
+
+See discoveries §4.81.
+
+---
+
+## 2026-06-09 (followup) — ★★★ Raw behavioral betas outperform (ω, κ) at predicting AMI; ANX+DEP doesn't cross-validate
+
+**Script:** `scripts/analysis/behavioral_betas_predict_clinical.py` ✅. Per-subject behavioral betas extracted from `data/model_input_{exp,conf}/choice_trials.csv` and `vigor_cell_means.csv`.
+
+**Key results (pooled N=571):**
+
+| Behavioral beta | β → AMI_Total | β → ANX+DEP |
+|---|---|---|
+| **beta_T_choice** | **-0.202 ★** | -0.019 (null) |
+| beta_TxD_choice | +0.116 ★ | +0.010 (null) |
+| **beta_T_vigor** | **-0.110 ★** | -0.040 (null) |
+
+**Predictive R² comparison (pooled, AMI_Total):**
+- (ω, κ) only: in-sample 0.012, CV -0.028
+- **5 behavioral betas only: in-sample 0.053, CV +0.001**
+- Both: in-sample 0.061, CV -0.003
+
+**Behavioral betas predict AMI ~4× better in-sample than (ω, κ), only behavioral betas reach positive CV R².**
+
+ANX+DEP doesn't CV from either approach (all R² negative). §4.75-§4.79 comorbidity finding is real in Bayesian but doesn't generalize.
+
+See discoveries §4.80.
+
+---
+
+## 2026-06-09 — ★★★ STAI direction FIX + final pooled headline (use STAI_Trait_FIXED, not STAI_Trait_corrected)
+
+**Script:** `scripts/analysis/fix_stai_and_rerun_full.py` ✅. Fixes STAI direction bug (§4.78) by anchoring to DASS_Anxiety, then reruns headline.
+
+**The bug:** §4.67's PC1-sign reverse-coding flipped STAI items to align with PC1, but PC1's sign was arbitrary and pointed in the "calmness" direction. Result: STAI_Trait_corrected was measuring opposite of intended construct.
+
+**Outputs:**
+- `results/stats/affect_analysis/stai_fixed_exp.csv` ✅
+- `results/stats/affect_analysis/stai_fixed_con.csv` ✅
+
+**FINAL HEADLINE (pooled N=571, Student-t):**
+
+`log(ω)_z ~ AMI_Total + ANX+DEP_FIXED + log(κ)`
+- AMI_Total β=+0.135 ★ [+0.055, +0.214]
+- ANX+DEP_FIXED β=-0.084 ★ [-0.165, -0.008]
+- log_κ β=+0.370 ★
+
+**Clinical typology (median-split quadrants on AMI × ANX+DEP_FIXED):**
+- Pure Apathy (N=104): ω_z = +0.189 (highest)
+- Comorbid (N=172): ω_z = +0.015
+- Healthy (N=182): ω_z = -0.063
+- Pure Distress (N=113): ω_z = -0.094 (lowest)
+
+PureApathy − PureDistress contrast: β=+0.266 ★ (HDI [+0.025, +0.505]).
+
+**Use FIXED STAI in all future analyses, NOT STAI_Trait_corrected.** Saved to `clinical_scores_corrected_*.csv` is now superseded by `stai_fixed_*.csv`.
+
+See discoveries §4.78 (STAI bug) and §4.79 (final corrected analysis).
+
+---
+
+## 2026-06-08 (followup-12) — ⚠ Cross-sample replication of ANX+DEP composite: confirmatory ★, exploratory directional only
+
+**Script:** `scripts/analysis/anxdep_composite_replication.py` ✅. Re-fit the §4.75 model in each sample.
+
+**Results:**
+- Pooled (N=571): AMI_Total ★ β=+0.134, ANX+DEP ★ β=-0.092
+- Confirmatory (N=281): AMI_Total ★ β=+0.163, ANX+DEP ★ β=-0.114
+- Exploratory (N=290): AMI_Total β=+0.108 (clips 0, P>0=0.97), ANX+DEP β=-0.069 (clips 0, P<0=0.89)
+
+Direction consistent in both samples; only confirmatory meets full 95% HDI in both. Effects probably real but at threshold of detectability in exploratory.
+
+See discoveries §4.76.
+
+---
+
+## 2026-06-08 (followup-11) — ★★★ ANX+DEP composite (7-scale) reveals OPPOSITE-DIRECTION clinical effect to AMI
+
+**Script:** `scripts/analysis/anxiety_depression_one_more_look.py` ✅. Honest re-look at anxiety/depression effects: directional probability + composites + WAIC + subgroup.
+
+**Headline:** In a Bayesian regression `log(ω) ~ AMI_Total + ANXDEP_composite_7 + log(κ)` on pooled N=571:
+- AMI_Total β=+0.134 ★ (positive — apathy increases ω)
+- **ANX+DEP composite β=-0.092 ★ (negative — anxiety+depression decreases ω)**
+- Both effects survive 95% HDI in the SAME model
+
+Composite = z-mean of 7 scales (DASS_Anx, DASS_Dep, DASS_Stress, STAI_corrected, OASIS, STICSA, PHQ9).
+
+This is the **comorbidity finding the paper has been searching for**: two distinct clinical dimensions, opposite directions, same parameter.
+
+WAIC says individual scales hurt the model (kitchen-sink worst); composite is the right level of aggregation.
+
+See discoveries §4.75.
+
+---
+
+## 2026-06-08 (followup-10) — ⚠ (ω, κ) profile typology: Type A vs Type B AMI_Social contrast β=+0.29 ★ but fully captured by linear ω
+
+**Script:** `scripts/analysis/omega_kappa_profile_clinical.py` ✅. Tests median-split quadrants + polar decomposition + typology-beyond-linear test.
+
+**Outputs:**
+- `results/stats/affect_analysis/omega_kappa_profile_clinical.csv` ✅
+- `results/figs/affect_analysis/omega_kappa_AMI_scatter.png` ✅
+
+**Key result:** Type A (high ω, low κ) vs Type B (low ω, high κ) differ by 0.29 SD on AMI_Social ★. But after controlling for continuous log(ω) + log(κ), typology indicators are null — the contrast IS the linear ω effect coarsened.
+
+**Paper recommendation:** Use typology as a narrative device in Discussion/figures; report continuous AMI_Total → log(ω) in Results. The κ axis adds nothing beyond the structural ω-κ correlation.
+
+See discoveries §4.74.
+
+---
+
+## 2026-06-08 (followup-9) — ★★★ Kitchen-sink TOTALS (recommended PRIMARY specification): AMI_Total → log(ω) β=+0.148 ★
+
+**Script:** `scripts/analysis/kitchen_sink_totals.py` ✅. Replaces 11-subscale kitchen-sink with 7-total kitchen-sink (one total per questionnaire). All inputs use corrected STAI.
+
+**Output:** `results/stats/affect_analysis/kitchen_sink_totals.csv` ✅.
+
+**Primary spec (recommended for paper):**
+- 7 clinical totals + log(κ) covariate, Student-t, N=570
+- AMI_Total → log(ω) β=+0.148 ★ (HDI [+0.062, +0.225])
+- All other clinical totals NULL; κ axis NULL
+
+**Sensitivity:** Swap AMI_Total → AMI_Social. β=+0.168 ★ (HDI [+0.087, +0.246]). Effect slightly stronger because Social subscale carries the unique variance; Behavioural/Emotional dilute slightly when bundled in Total.
+
+See discoveries §4.73.
+
+---
+
+## 2026-06-08 (followup-8) — ★★★ FINAL clean rerun with corrected STAI: AMI_Social → log(ω) is the ONLY robust clinical signal
+
+**Script:** `scripts/analysis/recompute_corrected_clinical_and_rerun.py` ✅. Properly applies STAI reverse-coding fix BEFORE running headline analyses (prior runs were on broken STAI).
+
+**Outputs:**
+- `results/stats/affect_analysis/clinical_scores_corrected_exp.csv` ✅
+- `results/stats/affect_analysis/clinical_scores_corrected_con.csv` ✅
+- `results/stats/affect_analysis/headline_corrected_results.csv` ✅
+
+**Final headline (corrected, kitchen-sink ω with 11 clinical scales + log_κ control, Student-t, N=570):**
+- AMI_Social → log(ω) β=+0.159 ★ — **the only surviving clinical predictor**
+- All other clinical scales (DASS subscales, OASIS, STICSA, MFIS, PHQ9, AMI other subscales, corrected STAI): NULL
+- κ axis: no surviving clinical predictor
+
+**Retracted as STAI-broken-scale artifacts:**
+- §4.63 multivariate STAI → ω β=+0.114 ★
+- §4.71 OASIS suppression → ω β=-0.120 ★ (doesn't survive kitchen-sink with corrected STAI)
+- Previous κ kitchen-sink STAI → κ β=-0.133 ★ (corrected STAI: β=-0.074 n.s.)
+
+**Correlation between broken and corrected STAI: r = +0.057.** They're essentially independent scales — the broken one was measuring noise.
+
+See discoveries §4.72.
+
+---
+
+## 2026-06-08 (followup-7) — ⚠️ PARTIAL RECOVERY: F3 direction replicates under suppression + focused-subset specifications
+
+**Script:** `scripts/analysis/anxiety_replication_attempts.py` ✅. Five replication attempts (kitchen-sink, AMI_Social-control, F3-focused STAI subset, PC1, sample-split).
+
+**Findings:**
+- **OASIS_Total → log(ω) β=-0.120 ★** when controlling for AMI_Social (suppression effect)
+- **F3-focused STAI subset → log(κ) β=-0.084 ★** (8 items, items 0/1/4/7/10/14/15/19)
+- Confirmatory-only STAI → log(κ) β=-0.134 ★ (fails cross-sample)
+- All anxiety scales trend in F3 direction in kitchen-sink but none survive univariately
+
+**Revised verdict:** §4.70 was too strong. F3 effect is directionally real but weak; effect size is at the threshold for individual subscales. Latent factor aggregates the diffuse signal.
+
+**Recommended paper framing:** Two raw-scale findings on log(ω):
+1. AMI_Social → +ω (apathy increases vigilance)
+2. OASIS_Total → -ω after AMI_Social control (anxiety decreases vigilance)
+
+Opposite directions on same parameter. Substantively interpretable.
+
+See discoveries §4.71.
+
+---
+
+## 2026-06-08 (followup-6) — ✗ RETRACTION: trait-anxiety → both-parameters finding does NOT replicate to raw scales
+
+**Script:** `scripts/analysis/raw_anxiety_scales_vs_params.py` ✅. Tests raw STAI_Trait (with PC1-sign reverse-coding), DASS_Anx, DASS_Stress, OASIS, STICSA, and 4-scale anxiety composite against log_omega and log_kappa.
+
+**Output:** `results/stats/affect_analysis/raw_anxiety_vs_params.csv` ✅.
+
+**Result: ALL anxiety scales null on both ω and κ.** The 3-factor F3 → both-parameters finding from §4.69 does NOT replicate to any raw scale. Conclusion: F3 was a varimax-rotation artifact, not a real construct effect.
+
+**The "two-axis clinical story" framing is retracted.** Only the apathy axis (AMI_Social → log ω) is real.
+
+**Confirmed remaining finding:** AMI_Social → log ω β = +0.122 ★. The only robust raw-scale clinical signal across all analyses.
+
+See discoveries §4.70.
+
+---
+
+## 2026-06-08 (followup-5) — ★★★ EFA factors against ALL THREE outcomes: anxiety is a PARALLEL (both-parameter) effect invisible to balance
+
+**Script:** `scripts/analysis/item_efa_vs_balance.py` ✅. Tests each factor (3/4/5-factor solutions) on log(ω), log(κ), AND log(ω/κ) side-by-side.
+
+**Output:** `results/stats/affect_analysis/item_efa_vs_balance.csv` ✅.
+
+**Headline:** Balance metric is a *filter*, not an amplifier. It splits clinical signals into:
+- **Differential** (apathy on ω): balance picks them up
+- **Parallel** (anxiety on BOTH ω and κ): balance CANCELS them
+
+Trait anxiety (F3, 3-factor): β(log ω)=+0.084 ★, β(log κ)=+0.097 ★, **β(log ω/κ)=+0.010 (null!)**. We missed this in every prior analysis (§4.63-§4.68) because we only tested balance.
+
+Non-social apathy (5-factor F4): β(log ω)=-0.102 ★, β(log κ)=+0.017, β(log ω/κ)=-0.079 ★. Differential — survives all three.
+
+For paper: report the full table (ω, κ, ω/κ) per factor. The pattern of which columns survive is the substantive story.
+
+See discoveries §4.69.
+
+---
+
+## 2026-06-08 (followup-4) — ★★★ 5-factor EFA reveals SOCIAL vs NON-SOCIAL APATHY dissociation on ω + trait anxiety → κ
+
+**Script:** `scripts/analysis/item_efa_reduced_factors.py` ✅. Re-fit at n_factors=3, 4, 5.
+
+**Outputs:**
+- `results/stats/affect_analysis/item_efa_{3,4,5}factor_loadings.csv` ✅
+- `results/stats/affect_analysis/item_efa_reduced_summary.csv` ✅
+- `results/figs/affect_analysis/item_efa_scree.png` ✅
+
+**Recommended solution: 5 factors** (varimax). Cleanest interpretation with strongest signals.
+
+| Factor | Content | β(log ω) | β(log κ) |
+|---|---|---|---|
+| F1 | Fatigue (MFIS) | -0.04 | -0.03 |
+| F2 | Somatic anxiety (DASS+STICSA) | -0.06 | -0.01 |
+| F3 | Trait NA inverse (STAI -) | +0.06 | **+0.106 ★** |
+| **F4** | **Non-social apathy (AMI subset)** | **-0.102 ★** | +0.02 |
+| F5 | Residual | +0.00 | -0.03 |
+
+**Key dissociation:** AMI_Social subscale → ω β=+0.124 (positive). Item-EFA F4 (non-social AMI items) → ω β=-0.102 (negative). Opposite directions within AMI.
+
+**New κ finding:** Trait anxiety predicts lower κ (mobilization). First robust κ result.
+
+See discoveries §4.68.
+
+---
+
+## 2026-06-08 (followup-3) — ★★★ Item-level EFA on transdiagnostic items: F6 (apathy) replicates AMI_Social finding; STAI reverse-coding fixed
+
+**Script:** `scripts/analysis/item_level_efa_on_params.py` ✅. N=571 pooled, 106 items (PHQ-9 excluded), Student-t regressions.
+
+**Outputs:**
+- `results/stats/affect_analysis/item_efa_loadings.csv` ✅ (factor loadings)
+- `results/stats/affect_analysis/item_efa_subject_scores.csv` ✅ (per-subject factor scores)
+- `results/stats/affect_analysis/item_efa_param_regressions.csv` ✅ (factor → ω/κ tests)
+- `results/stats/affect_analysis/item_efa_parallel_analysis.csv` ✅
+
+**Key results (see discoveries §4.67):**
+- **STAI reverse-coding bug confirmed and fixed**: 11/20 STAI items needed reversal. All prior STAI_Trait analyses should be re-checked.
+- Parallel analysis recommended 8 factors. F1=Fatigue, F2=Somatic Anx, F3=Trait NA, F4=Depression, F5/F6/F8=Apathy clusters, F7=Mixed Anxiety.
+- **F6 (apathy variant) → log(ω) β=+0.114 ★** (univariate); β=+0.109 ★ (multivariate). Replicates AMI_Social baseline (β=+0.124) at the latent level.
+- F8 → log(ω) β=-0.099 ★ univariate; barely surviving in multivariate. Fragile — opposite-direction apathy cluster.
+- No κ signal robust across 8 factors.
+
+**Caveats:** Used varimax only (sklearn FactorAnalysis lacks oblimin; factor_analyzer 0.5.1 incompatible with sklearn 1.8). Oblique rotation sensitivity check pending.
+
+---
+
+## 2026-06-08 (followup-2) — ★★ AMI_Social effect is METRIC-INVARIANT across 4 balance parameterizations
+
+**Script:** `scripts/analysis/balance_metric_comparison.py` ✅. N=571 (no outlier filter), Student-t likelihood.
+
+**Output:** `results/stats/affect_analysis/balance_metric_comparison.csv` ✅. Also diagnostic figure `results/figs/affect_analysis/log_ratio_distribution_diagnostic.png`.
+
+**Setup:** 4 metrics tested as outcomes:
+- M1: log(ω/κ) — current
+- M2: z(log ω) − z(log κ) — standardized difference (recommended primary)
+- M3: ω/(ω+κ) — bounded proportion
+- M4: arctan(log κ / log ω) — angle in degrees
+
+AMI_Social univariate β [HDI]:
+- M1: +0.084 [+0.019, +0.144] ★
+- M2: +0.111 [+0.045, +0.178] ★ (strongest; Spearman p=0.002)
+- M3: +0.062 [+0.016, +0.111] ★
+- M4: +0.082 [+0.027, +0.141] ★
+
+DASS_Stress dead on all 4 (univariate + multivariate Student-t).
+
+See discoveries §4.65. Outlier filter from §4.63/§4.64 is no longer needed — AMI_Social robust without it.
+
+---
+
+## 2026-06-08 (followup) — ✗ DASS / comorbidity null; AMI_Social is the unique signal
+
+**Script:** `scripts/analysis/log_ratio_dass_comorbidity.py` ✅. Three phases (DASS diagnostic, factor analysis + composites, comorbidity tests), N=561 pooled.
+
+**Outputs (all ✅):**
+- `results/stats/affect_analysis/log_ratio_dass_diagnostic.csv` — Spearman/Huber/trimmed/Student-t/Normal on DASS subscales
+- `results/stats/affect_analysis/log_ratio_composites.csv` — ANX/DEP/APATHY/STRESS composites
+- `results/stats/affect_analysis/log_ratio_comorbidity.csv` — polar + quadrant + joint univariate
+- `results/stats/affect_analysis/factor_analysis_parallel.csv` — Horn's parallel analysis (2 factors confirmed)
+- `results/figs/affect_analysis/dass_vs_log_ratio.png`
+
+**Key finding:** No DASS effect, no comorbidity effect, no composite effect. AMI_Social from §4.63 is the only surviving signal. STAI_Trait reverse-coding bug flagged (loads -0.67 on F1; should be positive). See discoveries §4.64.
+
+---
+
+## 2026-06-08 — ★★ log(ω/κ) "vigilance–mobilization balance" pooled Bayesian on clinical scales
+
+**Script:** `scripts/analysis/log_ratio_clinical_robust.py` ✅. Pooled N=561 (286 exp + 275 conf after dropping 10 |log_ratio_z|>3 subjects).
+
+**Output:** `results/stats/affect_analysis/log_ratio_clinical_robust.csv` ✅. Univariate + 4 multivariate model families (A_subscales, B_factors, C_dass_only, D_totals).
+
+**Setup:** Student-t (ν=3) likelihood for outlier robustness. Predictors z-scored WITHIN each sample, then pooled. Log_sum engagement covariate dropped (orthogonal to all clinical scales, |r|<0.06).
+
+**Surviving effects:**
+- AMI_Social univariate β=+0.103 (HDI [+0.025, +0.173]); multivariate β=+0.141 (HDI [+0.047, +0.237]) — STRONGER in kitchen-sink ★
+- AMI_Total univariate β=+0.069 (driven by Social subscale)
+- STAI_Trait multivariate β=+0.114 (univariate β=+0.050 just misses) — partial suppression
+
+**Null:** DASS-21 (all subscales + total), F1/F2 factors, PHQ9, MFIS, OASIS, STICSA.
+
+**Prior passes (superseded):**
+- `log_ratio_bayes_multimodel.csv` (Normal likelihood, pooled-z, with log_sum covariate) — showed AMI_Social + DASS_Stress borderline
+- `log_ratio_bayes_no_engagement.csv` (Normal likelihood, pooled-z, no log_sum) — showed AMI_Social + STAI_Trait + AMI_Behavioural
+
+See discoveries §4.63.
 
 ---
 

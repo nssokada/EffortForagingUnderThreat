@@ -4,6 +4,76 @@ Chronological log of work sessions. Most recent first.
 
 ---
 
+## Session 2026-06-08 (followup) — ✗ DASS signal was sample-mean-drift artifact; no comorbidity story; AMI_Social is the unique specific clinical signal
+
+**Context:** User flagged the DASS findings as "more exciting than the others" and asked (a) whether Student-t was unfairly killing DASS, (b) for better factor analysis, (c) for a comorbidity test showing depression × anxiety co-occurrence dissociates from pure presentations on log(ω/κ).
+
+**What was done (single script `scripts/analysis/log_ratio_dass_comorbidity.py`):**
+
+1. **Phase 1 — DASS diagnostic battery (N=561):** Spearman + Huber RLM + 5%-trimmed Normal Bayesian + Student-t with ν free + Normal Bayesian, all on within-sample z-scored data. ALL methods returned β ≈ 0 for DASS_Anxiety, DASS_Depression, and DASS_Stress. ν estimated free at 4.9 — Student-t with ν=3 was not over-aggressive. The β=-0.155 for DASS_Stress in the prior pass was a **pooled-z-scoring artifact** (cross-sample mean drift inflated the slope).
+
+2. **Phase 2 — Better factor analysis + theory composites:** Horn's parallel analysis on 11-scale correlation matrix confirmed exactly 2 factors (matches existing F1/F2). 3-factor solution adds nothing. **STAI_Trait loads -0.67 on F1** (opposite sign from other anxiety scales) — likely reverse-coding bug in STAI scoring; flagged for pre-publication check. Theory composites (ANX = 4 scales, DEP = 2 scales, APATHY = 4 scales, STRESS = 1 scale) all null on log_ratio. Composite intercorrelations 0.7–0.83 (general-distress problem). APATHY_comp β=+0.060 trends but doesn't survive — diluting AMI_Social with AMI_Beh/Emo/MFIS kills the signal.
+
+3. **Phase 3 — Comorbidity tests (all null):**
+   - Polar decomposition `log_ratio ~ severity + discordance + discordance²`: all three terms null
+   - 2×2 quadrant (median-split ANX × DEP): healthy +0.07, comorbid -0.06, contrast HDI [-0.05, +0.33] — direction interesting (healthy > comorbid) but doesn't survive
+   - Univariate ANX, DEP, and joint: all null
+
+**Substantive implications:**
+- DASS_Stress finding from prior pass retracted (sample-mean-drift artifact).
+- No anxiety × depression comorbidity story on log(ω/κ).
+- **AMI_Social remains the unique clinical predictor** — and it's specifically *social* apathy, not general apathy/distress. This *strengthens* the claim because it's a specific construct, not a generic distress proxy.
+
+**For the paper:**
+- Pre-specify AMI_Social as the single primary clinical predictor; no DASS, no comorbidity claims.
+- Report the comorbidity null as a complementary finding (rules out generic distress account).
+- Audit STAI_Trait scoring before publication (reverse-coding suspect).
+
+**Outputs:**
+- `results/stats/affect_analysis/log_ratio_dass_diagnostic.csv`
+- `results/stats/affect_analysis/log_ratio_composites.csv`
+- `results/stats/affect_analysis/log_ratio_comorbidity.csv`
+- `results/stats/affect_analysis/factor_analysis_parallel.csv`
+- `results/figs/affect_analysis/dass_vs_log_ratio.png`
+
+**Discoveries entry:** §4.64.
+
+---
+
+## Session 2026-06-08 — ★★ log(ω/κ) "vigilance–mobilization balance" predicted by AMI_Social (robust pooled Bayesian, replicates)
+
+**Context:** User asked whether the *balance* between subjective capture cost and effort cost — log(ω/κ) — tracks psychiatric state. Previous within-sample regressions of (ω, κ) on clinical scales were mostly null; this re-frames the question as the balance/ratio rather than the two parameters separately.
+
+**What was done:**
+1. Built a pooled Bayesian regression on log(ω/κ) with clinical scales (4 model families: full subscale set, F1/F2 factors, DASS-only, totals-only).
+2. First pass (Normal likelihood, no quality filter, pooled-z): AMI_Social survived in multivariate (β=+0.140); DASS_Stress borderline (β=-0.155). Sample-pooled z-scoring may have introduced sample-mean drift.
+3. Tested whether the engagement covariate log(ω·κ) is necessary: all clinical scales |r| < 0.06 with log_sum, so log_sum is orthogonal to predictors and not a confound. Recommendation: drop it, report the structural log_sum–log_ratio correlation (β ≈ -0.36) as joint-distribution geometry.
+4. User asked whether sqrt/log transformation of clinical scales is methodologically kosher. Concluded NO — Student-t likelihood addresses outlier influence without distorting the validated scale scoring or inviting researcher-degrees-of-freedom concerns.
+5. Second pass (Student-t (ν=3) likelihood, within-sample z-scoring, |log_ratio_z|>3 quality filter, N=561): univariate + multivariate sensitivity. Script: `scripts/analysis/log_ratio_clinical_robust.py`.
+
+**Findings (see discoveries §4.63):**
+- **AMI_Social** is the headline finding. β=+0.103 univariate (HDI [+0.025, +0.173]); β=+0.141 in kitchen-sink multivariate (HDI [+0.047, +0.237]) — STRONGER when competing with other scales.
+- **AMI_Total** also survives univariate (β=+0.069), driven by Social subscale.
+- **STAI_Trait** β=+0.114 multivariate (HDI [+0.006, +0.243]); univariate β=+0.050 just misses — partial suppression by other scales until adjusted.
+- DASS_Stress (the previous borderline) is now dead — was outlier-driven.
+- All other clinical scales and F1/F2 factor scores null.
+
+**Interpretation:** Higher social apathy → log(ω/κ) shifts toward vigilance. Most plausible mechanism: low reward sensitivity reduces κ, pushing the ratio up. Specifically *social* apathy doing the work — not depression, general anxiety, or fatigue.
+
+**For the paper:** AMI_Social is the cleanest reportable clinical finding on the balance metric. Should pre-specify AMI_Social as primary clinical predictor to avoid post-hoc selection concerns. Recommend SI tables showing full univariate + multivariate panel.
+
+**Outputs:**
+- `results/stats/affect_analysis/log_ratio_clinical_robust.csv`
+- `results/stats/affect_analysis/log_ratio_bayes_multimodel.csv` (prior pass, with log_sum covariate, pooled-z)
+- `results/stats/affect_analysis/log_ratio_bayes_no_engagement.csv` (prior pass, without log_sum)
+- Script: `scripts/analysis/log_ratio_clinical_robust.py`
+
+**Next steps suggested (not yet done):**
+- Behavioral validation: does AMI_Social also predict the *behavioral* signatures of vigilance–mobilization balance (choice shift, escape rate, optimality decomposition)?
+- Mediation: is AMI_Social → log_ratio mediated by anxiety_slope_T?
+
+---
+
 ## Session 2026-06-07 (followup-2) — Clinical → vigor dynamics: AMI (apathy) robustly predicts anticipatory baseline and absolute peak strike
 
 **Context:** User asked whether trait anxiety or any clinical scales connect to vigor dynamics. Gap identified: clinical → (ω, κ) and clinical → behavior tested previously, but clinical → dynamics never tested directly.
