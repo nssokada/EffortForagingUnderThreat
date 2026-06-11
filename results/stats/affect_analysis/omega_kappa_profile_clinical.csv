@@ -1,0 +1,17 @@
+comparison,scale,mean,hdi_lo,hdi_hi,survives
+TypeA_vs_TypeB,AMI_Total,0.235,-0.043,0.521,False
+TypeA_vs_TypeB,AMI_Social,0.29,0.016,0.571,True
+TypeA_vs_TypeB,DASS21_Total,-0.002,-0.273,0.285,False
+TypeA_vs_TypeB,OASIS_Total,-0.079,-0.354,0.23,False
+TypeA_vs_TypeB,STICSA_Total,-0.045,-0.332,0.245,False
+TypeA_vs_TypeB,STAI_Trait_corrected,0.066,-0.24,0.368,False
+TypeA_vs_TypeB,MFIS_Total,0.002,-0.292,0.294,False
+TypeA_vs_TypeB,PHQ9_Total,-0.007,-0.307,0.276,False
+polar_AMI_Total,AMI_Total,0.053,-0.035,0.146,False
+polar_AMI_Social,AMI_Social,0.053,-0.033,0.146,False
+polar_DASS21_Total,DASS21_Total,-0.019,-0.105,0.071,False
+polar_OASIS_Total,OASIS_Total,-0.049,-0.138,0.033,False
+polar_STICSA_Total,STICSA_Total,0.029,-0.052,0.119,False
+polar_STAI_Trait_corrected,STAI_Trait_corrected,-0.045,-0.131,0.042,False
+polar_MFIS_Total,MFIS_Total,-0.003,-0.087,0.088,False
+polar_PHQ9_Total,PHQ9_Total,-0.011,-0.093,0.083,False

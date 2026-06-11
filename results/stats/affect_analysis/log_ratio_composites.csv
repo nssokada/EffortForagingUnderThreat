@@ -1,0 +1,9 @@
+composite,family,N,mean,sd,hdi_lo,hdi_hi,survives
+ANX_comp,gaussian,561,-0.007,0.042,-0.094,0.071,False
+ANX_comp,t,561,-0.005,0.037,-0.075,0.069,False
+DEP_comp,gaussian,561,-0.005,0.042,-0.091,0.073,False
+DEP_comp,t,561,0.0,0.039,-0.072,0.076,False
+APATHY_comp,gaussian,561,0.06,0.043,-0.027,0.141,False
+APATHY_comp,t,561,0.056,0.037,-0.021,0.123,False
+STRESS_comp,gaussian,561,-0.033,0.042,-0.112,0.056,False
+STRESS_comp,t,561,-0.011,0.038,-0.08,0.066,False

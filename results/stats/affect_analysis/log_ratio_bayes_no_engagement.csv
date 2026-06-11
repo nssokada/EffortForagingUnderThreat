@@ -1,0 +1,22 @@
+model,predictor,mean,sd,hdi_lo,hdi_hi,survives
+A. All subscales,DASS21_Anxiety,0.112,0.078,-0.043,0.264,False
+A. All subscales,DASS21_Depression,0.126,0.089,-0.052,0.295,False
+A. All subscales,DASS21_Stress,-0.122,0.088,-0.294,0.055,False
+A. All subscales,STAI_Trait,0.149,0.064,0.02,0.273,True
+A. All subscales,OASIS_Total,-0.096,0.078,-0.251,0.049,False
+A. All subscales,STICSA_Total,-0.043,0.09,-0.216,0.138,False
+A. All subscales,PHQ9_Total,0.003,0.093,-0.19,0.177,False
+A. All subscales,MFIS_Total,0.135,0.077,-0.009,0.289,False
+A. All subscales,AMI_Behavioural,-0.122,0.056,-0.237,-0.018,True
+A. All subscales,AMI_Social,0.128,0.051,0.03,0.226,True
+A. All subscales,AMI_Emotional,0.003,0.045,-0.08,0.096,False
+"B. Factor scores (F1, F2)",F1,-0.051,0.042,-0.133,0.031,False
+"B. Factor scores (F1, F2)",F2,-0.001,0.043,-0.093,0.077,False
+C. DASS-21 subscales only,DASS21_Anxiety,0.084,0.068,-0.048,0.213,False
+C. DASS-21 subscales only,DASS21_Depression,0.052,0.07,-0.082,0.188,False
+C. DASS-21 subscales only,DASS21_Stress,-0.156,0.084,-0.318,0.005,False
+D. Totals only (no STICSA/PHQ9),DASS21_Total,0.089,0.081,-0.057,0.261,False
+D. Totals only (no STICSA/PHQ9),AMI_Total,0.037,0.045,-0.05,0.125,False
+D. Totals only (no STICSA/PHQ9),STAI_Trait,0.151,0.062,0.029,0.269,True
+D. Totals only (no STICSA/PHQ9),MFIS_Total,0.069,0.07,-0.071,0.2,False
+D. Totals only (no STICSA/PHQ9),OASIS_Total,-0.096,0.078,-0.251,0.057,False

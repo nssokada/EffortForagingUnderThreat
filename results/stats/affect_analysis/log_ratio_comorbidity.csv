@@ -1,0 +1,18 @@
+test,family,term,N,mean,sd,hdi_lo,hdi_hi,survives
+A_polar,gaussian,severity,561,-0.015,0.045,-0.102,0.072,False
+A_polar,gaussian,discordance,561,0.011,0.047,-0.076,0.103,False
+A_polar,gaussian,discordance_sq,561,0.018,0.029,-0.042,0.07,False
+A_polar,t,severity,561,-0.004,0.04,-0.082,0.073,False
+A_polar,t,discordance,561,-0.004,0.041,-0.086,0.073,False
+A_polar,t,discordance_sq,561,0.002,0.025,-0.045,0.05,False
+B_quadrant,gaussian,quadrant[healthy],561,0.133,0.097,-0.053,0.326,False
+B_quadrant,gaussian,quadrant[pure_anx],561,0.04,0.144,-0.222,0.328,False
+B_quadrant,gaussian,quadrant[pure_dep],561,0.053,0.142,-0.226,0.319,False
+C_ANX_comp,gaussian,ANX_comp,561,-0.007,0.042,-0.094,0.071,False
+C_ANX_comp,t,ANX_comp,561,-0.005,0.037,-0.075,0.069,False
+C_DEP_comp,gaussian,DEP_comp,561,-0.005,0.042,-0.091,0.073,False
+C_DEP_comp,t,DEP_comp,561,0.0,0.039,-0.072,0.076,False
+C_ANX_comp + DEP_comp,gaussian,ANX_comp,561,-0.009,0.059,-0.125,0.104,False
+C_ANX_comp + DEP_comp,gaussian,DEP_comp,561,0.002,0.059,-0.121,0.111,False
+C_ANX_comp + DEP_comp,t,ANX_comp,561,-0.011,0.052,-0.12,0.082,False
+C_ANX_comp + DEP_comp,t,DEP_comp,561,0.009,0.052,-0.097,0.108,False

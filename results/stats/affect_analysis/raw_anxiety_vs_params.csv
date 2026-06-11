@@ -1,0 +1,10 @@
+scale,N,beta_omega,hdi_lo_omega,hdi_hi_omega,surv_omega,beta_kappa,hdi_lo_kappa,hdi_hi_kappa,surv_kappa
+STAI_Trait_corrected,571,-0.004,-0.086,0.071,False,-0.059,-0.138,0.022,False
+STAI_Trait_original,571,-0.072,-0.15,0.01,False,-0.049,-0.132,0.034,False
+DASS21_Anxiety,571,-0.042,-0.123,0.039,False,-0.023,-0.101,0.059,False
+DASS21_Stress,571,-0.068,-0.151,0.004,False,-0.0,-0.078,0.086,False
+DASS21_Depression,571,-0.028,-0.112,0.05,False,-0.014,-0.1,0.062,False
+OASIS_Total,571,-0.068,-0.143,0.016,False,-0.004,-0.087,0.076,False
+STICSA_Total,571,-0.031,-0.113,0.045,False,0.027,-0.057,0.105,False
+AMI_Social,571,0.122,0.043,0.207,True,-0.004,-0.083,0.078,False
+ANX_composite,571,-0.07,-0.15,0.008,False,-0.027,-0.107,0.051,False
